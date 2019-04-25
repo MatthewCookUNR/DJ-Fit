@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "748844684371",
+    "firebase_url": "https://dj-fit.firebaseio.com",
+    "project_id": "dj-fit",
+    "storage_bucket": "dj-fit.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:748844684371:android:b96f43ccf0b602b4",
+        "android_client_info": {
+          "package_name": "com.example.dj_fit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "748844684371-8f6jre16qnfi48p69kca5friuvvt104c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dj_fit",
+            "certificate_hash": "1564aea15635d323c93665db2186dd99097f681d"
+          }
+        },
+        {
+          "client_id": "748844684371-sdvftup5r46gcck8kvj5dj83pdoj2q42.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB58xV6tJ_rIJkzfE233OrdYcl0abbq7Gg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "748844684371-sdvftup5r46gcck8kvj5dj83pdoj2q42.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
