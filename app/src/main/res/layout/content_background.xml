@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".BackgroundActivity"
+    tools:showIn="@layout/activity_background">
+
+    <RelativeLayout
+        android:id="@+id/activity_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/additionalLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/availabilityEdit"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="21dp"
+            android:layout_marginLeft="21dp"
+            android:layout_marginTop="27dp"
+            android:text="Additional Information:"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/additionalEdit"
+            android:layout_width="361dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/additionalLabel"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="21dp"
+            android:layout_marginLeft="21dp"
+            android:layout_marginEnd="21dp"
+            android:layout_marginRight="21dp"
+            android:ems="10"
+            android:hint="Please enter:"
+            android:inputType="textMultiLine" />
+
+        <TextView
+            android:id="@+id/availabilityLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/goalEdit"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="21dp"
+            android:layout_marginLeft="21dp"
+            android:layout_marginTop="27dp"
+            android:text="Weekly Availability:"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/availabilityEdit"
+            android:layout_width="361dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/availabilityLabel"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="21dp"
+            android:layout_marginLeft="21dp"
+            android:layout_marginEnd="21dp"
+            android:layout_marginRight="21dp"
+            android:ems="10"
+            android:hint="Please enter:"
+            android:inputType="textMultiLine" />
+
+        <TextView
+            android:id="@+id/goalLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/medicalEdit"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="19dp"
+            android:layout_marginLeft="21dp"
+            android:layout_marginTop="27dp"
+            android:text="Goals:"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/goalEdit"
+            android:layout_width="361dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/goalLabel"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="21dp"
+            android:layout_marginLeft="21dp"
+            android:layout_marginEnd="21dp"
+            android:layout_marginRight="21dp"
+            android:ems="10"
+            android:hint="Please enter:"
+            android:inputType="textMultiLine" />
+
+        <TextView
+            android:id="@+id/currentFitLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/howToText"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="21dp"
+            android:layout_marginLeft="21dp"
+            android:layout_marginTop="38dp"
+            android:text="Current Fitness Program:"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/currentFitEdit"
+            android:layout_width="361dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/currentFitLabel"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="21dp"
+            android:layout_marginLeft="21dp"
+            android:layout_marginEnd="21dp"
+            android:layout_marginRight="21dp"
+            android:ems="10"
+            android:hint="Please enter:"
+            android:inputType="textMultiLine" />
+
+        <TextView
+            android:id="@+id/medicalLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/currentFitEdit"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="21dp"
+            android:layout_marginLeft="21dp"
+            android:layout_marginTop="27dp"
+            android:text="Medical History/Pains:"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/medicalEdit"
+            android:layout_width="361dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/medicalLabel"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="21dp"
+            android:layout_marginLeft="21dp"
+            android:layout_marginEnd="21dp"
+            android:layout_marginRight="21dp"
+            android:ems="10"
+            android:hint="Please enter:"
+            android:inputType="textMultiLine" />
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Your Background"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textSize="30sp" />
+
+
+        <TextView
+            android:id="@+id/howToText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="63dp"
+            android:gravity="center"
+            android:lineSpacingExtra="8sp"
+            android:text="Please fill out the following information about yourself to help the trainer in developing your personal program."
+            android:textAppearance="@android:style/TextAppearance.Medium" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/additionalEdit"
+            android:layout_marginTop="27dp"
+            android:text="Submit" />
+
+
+    </RelativeLayout>
+
+</ScrollView>

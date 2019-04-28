@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if(currentUser != null)
         {
-            userSignedIn();
+            //userSignedIn();
         }
 
         //Button signs the user into the application if they have a existing account

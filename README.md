@@ -10,7 +10,7 @@ information on specific exercises and contain instructional videos to aid both t
 trainers to provide customers with a user-friendly way to access information about their personal fitness program on the go.
 
 ### Project Status
-In development
+Development started on April 25th, 2019
 
 ### Technologies Used
 - Android Studio

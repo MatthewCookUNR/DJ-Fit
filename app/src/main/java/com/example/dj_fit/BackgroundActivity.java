@@ -1,43 +1,52 @@
 package com.example.dj_fit;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-public class MainActivity extends BaseActivity {
 
-    //Variables
+public class BackgroundActivity extends BaseActivity {
+
+    private EditText currentFitEdit, goalEdit, medicalEdit,
+                     availabilityEdit, additionalEdit;
+    private Button btnSubmit;
     private FirebaseAuth mAuth;
-    private Button btnBackground;
+    private FirebaseFirestore mDatabase;
+    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_background);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Initialize layout variables
-        btnBackground = findViewById(R.id.btnBackground);
+        currentFitEdit = findViewById(R.id.currentFitEdit);
+        goalEdit = findViewById(R.id.goalEdit);
+        medicalEdit = findViewById(R.id.medicalEdit);
+        availabilityEdit = findViewById(R.id.availabilityEdit);
+        additionalEdit = findViewById(R.id.additionalEdit);
+        btnSubmit = findViewById(R.id.btnSubmit);
 
-        //Initializes Firebase variables
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseFirestore.getInstance();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        btnBackground.setOnClickListener(new View.OnClickListener() {
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent databaseAct = new Intent(MainActivity.this, BackgroundActivity.class);
-                startActivity(databaseAct);
+
             }
         });
-
-
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -48,4 +57,5 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+
 }
