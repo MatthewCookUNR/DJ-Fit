@@ -1,30 +1,24 @@
 package com.example.dj_fit;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
+    //Variables
     private FirebaseAuth mAuth;
-    private EditText emailText, passwordText;
-    private Button btnSignIn, btnSignOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,69 +27,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        emailText = findViewById(R.id.emailText);
-        passwordText = findViewById(R.id.passwordText);
-        btnSignIn = findViewById(R.id.btnSignIn);
-        btnSignOut = findViewById(R.id.btnSignOut);
-
+        //Initializes Firebase variables
         mAuth = FirebaseAuth.getInstance();
-
-        btnSignIn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                try
-                {
-                    String currentEmail = emailText.getText().toString();
-                    if(currentEmail.isEmpty())
-                    {
-                        throw new Exception();
-                    }
-
-                    String currentPass = passwordText.getText().toString();
-                    if(currentPass.isEmpty())
-                    {
-                        throw new Exception();
-                    }
-
-                    mAuth.signInWithEmailAndPassword(currentEmail, currentPass)
-                            .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
-                                        Log.d("Auth", "signInWithEmail:success");
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        Toast.makeText(MainActivity.this, "Successfully signed in",
-                                                Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        // If sign in fails, display a message to the user.
-                                        Log.w("Auth", "signInWithEmail:failure", task.getException());
-                                        Toast.makeText(MainActivity.this, "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    // ...
-                                }
-                            });
-                }
-                catch (Exception e)
-                {
-                    Toast.makeText(MainActivity.this, "Please enter a email and password.",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        btnSignOut.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v)
-            {
-
-            }
-        });
-
-
-
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -105,19 +38,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        onStart();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser == null)
-        {
-            Toast.makeText(MainActivity.this, "No one logged in", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,8 +56,29 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id)
+        {
+            //Logs the user out of the application
+            case R.id.action_signOut:
+                mAuth.signOut();
+                Toast.makeText(MainActivity.this, "User has signed out", Toast.LENGTH_SHORT).show();
+                Intent mainAct = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(mainAct);
+                return true;
+            //Displays a small about message
+            case R.id.action_about:
+                AlertDialog aboutDialog = new AlertDialog.Builder(MainActivity.this).create();
+                aboutDialog.setTitle("About DJ FIT");
+                aboutDialog.setMessage("Application is being developed by Matthew Cook");
+                aboutDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                });
+                aboutDialog.show();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
