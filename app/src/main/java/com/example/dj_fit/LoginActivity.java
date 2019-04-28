@@ -147,7 +147,8 @@ public class LoginActivity extends AppCompatActivity {
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d("SignUp", "createUserWithEmail:success");
                                         FirebaseUser user = mAuth.getCurrentUser();
-                                        addUserToDB(currentEmail, currentPass);
+                                        String id = user.getUid();
+                                        addUserToDB(id);
                                         Toast.makeText(LoginActivity.this, "Account successfully created.",
                                                 Toast.LENGTH_SHORT).show();
                                     } else {
@@ -200,11 +201,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     //Function adds a new user's login information to the database
-    private void addUserToDB ( String email, String password)
+    private void addUserToDB ( String userID)
     {
         Map<String, Object> doctData = new HashMap<>();
-        doctData.put("email", email);
-        doctData.put("password", password);
+        doctData.put("userID", userID);
         mDatabase.collection("users")
                 .add(doctData)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
