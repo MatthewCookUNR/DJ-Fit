@@ -122,53 +122,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        //Button handles creating a new account using the inputted email and password
+        //Button takes user to create account screen
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                try
-                {
-                    final String currentEmail = emailText.getText().toString();
-                    if (currentEmail.isEmpty())
-                    {
-                        throw new Exception();
-                    }
-
-                    final String currentPass = passwordText.getText().toString();
-                    if (currentPass.isEmpty())
-                    {
-                        throw new Exception();
-                    }
-
-                    mAuth.createUserWithEmailAndPassword(currentEmail, currentPass)
-                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
-                                        Log.d(TAG, "createUserWithEmail:success");
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        String id = user.getUid();
-                                        addUserToDB(id);
-                                        Toast.makeText(LoginActivity.this, "Account successfully created.",
-                                                Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        // If sign in fails, display a message to the user.
-                                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                        Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    // ...
-                                }
-                            });
-                }
-                catch (Exception e)
-                {
-                    Toast.makeText(LoginActivity.this, "Please enter a email and password.",
-                            Toast.LENGTH_SHORT).show();
-                }
+                Intent signUpAct = new Intent(LoginActivity.this, SignUpActivity.class);
+                startActivity(signUpAct);
             }
         });
 
@@ -200,27 +160,6 @@ public class LoginActivity extends AppCompatActivity {
     {
         Intent mainAct = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(mainAct);
-    }
-
-    //Function adds a new user's login information to the database
-    private void addUserToDB ( String userID)
-    {
-        Map<String, Object> doctData = new HashMap<>();
-        doctData.put("userID", userID);
-        mDatabase.collection("users")
-                .document(userID)
-                .set(doctData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Document Snapshot added");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
     }
 
     //Lets the user know if they are currently logged in

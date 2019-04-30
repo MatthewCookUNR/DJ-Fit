@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,12 +7,6 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".LoginActivity"
     tools:showIn="@layout/activity_login">
-
-    <RelativeLayout
-        android:id="@+id/activity_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
         <EditText
             android:id="@+id/emailText"
             android:layout_width="match_parent"
@@ -48,18 +42,18 @@
             android:layout_below="@+id/btnSignIn"
             android:text="Sign Out" />
 
-        <Button
-            android:id="@+id/btnCreateAccount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btnSignOut"
-            android:text="Create Account" />
+    <Button
+        android:id="@+id/btnCreateAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp"
+        android:text="Create New DJ-FIT Account" />
 
         <Button
             android:id="@+id/btnMainAct"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btnCreateAccount"
+            android:layout_below="@+id/btnSignOut"
             android:text="Go To Main" />
     </RelativeLayout>
-</ScrollView>
