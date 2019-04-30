@@ -32,6 +32,8 @@ import java.util.Map;
 
 public class BackgroundActivity extends BaseActivity {
 
+    private static final String TAG = "BackgroundActivity";
+
     private EditText currentFitEdit, goalEdit, medicalEdit,
                      availabilityEdit, additionalEdit;
 
@@ -57,32 +59,15 @@ public class BackgroundActivity extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        checkIfBackgroundExists();
+
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 String userID = mAuth.getCurrentUser().getUid();
-
-                Query myQuery = mDatabase.collection("users").whereEqualTo("userID", userID);
-                myQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful())
-                        {
-                            for(QueryDocumentSnapshot document: task.getResult())
-                            {
-                                String docID = document.getId();
-                                addBackgroundToDB(docID);
-                            }
-                        }
-                        else
-                        {
-                            Toast.makeText(BackgroundActivity.this, "Query failed",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                addBackgroundToDB(userID);
             }
         });
 
@@ -96,26 +81,78 @@ public class BackgroundActivity extends BaseActivity {
         });
     }
 
-    private void addBackgroundToDB(String docID)
+    private void checkIfBackgroundExists()
     {
+        final long start = System.currentTimeMillis();
+
         String userID = mAuth.getCurrentUser().getUid();
+        DocumentReference docRef = mDatabase.collection("users").document(userID).collection("background").document("backgroundDoc");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if( task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    if( document.exists())
+                    {
+                        Map<String, Object> doctData = document.getData();
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "DocumentSnapshot data at time: " + (end - start));
+                        populateBackground(doctData);
+                    }
+                    else
+                    {
+                        Log.d(TAG, "No such document");
+                    }
+                }
+                else
+                {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
+    }
+
+    private void populateBackground(Map<String, Object> docData)
+    {
+        currentFitEdit.setText(docData.get("currentFitProgram").toString());
+        medicalEdit.setText(docData.get("medicalHist").toString());
+        goalEdit.setText(docData.get("goals").toString());
+        availabilityEdit.setText(docData.get("availability").toString());
+        additionalEdit.setText(docData.get("otherInfo").toString());
+    }
+
+    private void addBackgroundToDB(String userID)
+    {
+        String currentFit = currentFitEdit.getText().toString();
+        String medicalHist = medicalEdit.getText().toString();
+        String goals = goalEdit.getText().toString();
+        String availability = availabilityEdit.getText().toString();
+        String otherInfo = additionalEdit.getText().toString();
 
         Map<String, Object> doctData = new HashMap<>();
-        doctData.put("CurrentFitness", "I have a dope fitness program");
-        doctData.put("userID", userID);
-        mDatabase.collection("users").document(docID).collection("background")
-                .add(doctData)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        doctData.put("currentFitProgram", currentFit);
+        doctData.put("medicalHist", medicalHist);
+        doctData.put("goals", goals);
+        doctData.put("availability", availability);
+        doctData.put("otherInfo", otherInfo);
+
+        mDatabase.collection("users").document(userID).collection("background")
+                .document("backgroundDoc")
+                .set(doctData).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("Database", "Document Snapshot added with ID: " + documentReference.getId());
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Document Snapshot added");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("Database", "Error adding document", e);
+                        Log.w(TAG, "Error adding document", e);
                     }
                 });
     }
+
+
 }

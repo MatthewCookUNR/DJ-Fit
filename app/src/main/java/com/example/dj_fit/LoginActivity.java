@@ -28,6 +28,8 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = "LoginActivity";
+
     //Variables
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
@@ -85,14 +87,14 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
-                                        Log.d("Auth", "signInWithEmail:success");
+                                        Log.d(TAG, "signInWithEmail:success");
                                         currentUser = mAuth.getCurrentUser();
                                         Toast.makeText(LoginActivity.this, "Successfully signed in",
                                                 Toast.LENGTH_SHORT).show();
                                         userSignedIn();
                                     } else {
                                         // If sign in fails, display a message to the user.
-                                        Log.w("Auth", "signInWithEmail:failure", task.getException());
+                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
                                         Toast.makeText(LoginActivity.this, "Authentication failed.",
                                                 Toast.LENGTH_SHORT).show();
                                     }
@@ -145,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
-                                        Log.d("SignUp", "createUserWithEmail:success");
+                                        Log.d(TAG, "createUserWithEmail:success");
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         String id = user.getUid();
                                         addUserToDB(id);
@@ -153,7 +155,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT).show();
                                     } else {
                                         // If sign in fails, display a message to the user.
-                                        Log.w("SignUp", "createUserWithEmail:failure", task.getException());
+                                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                         Toast.makeText(LoginActivity.this, "Authentication failed.",
                                                 Toast.LENGTH_SHORT).show();
                                     }
@@ -206,20 +208,19 @@ public class LoginActivity extends AppCompatActivity {
         Map<String, Object> doctData = new HashMap<>();
         doctData.put("userID", userID);
         mDatabase.collection("users")
-                .add(doctData)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                .document(userID)
+                .set(doctData).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("Database", "Document Snapshot added with ID: " + documentReference.getId());
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Document Snapshot added");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("Database", "Error adding document", e);
+                        Log.w(TAG, "Error adding document", e);
                     }
                 });
-
     }
 
     //Lets the user know if they are currently logged in
