@@ -83,7 +83,7 @@ public class BackgroundActivity extends BaseActivity {
         final long start = System.currentTimeMillis();
 
         String userID = mAuth.getCurrentUser().getUid();
-        DocumentReference docRef = mDatabase.collection("users").document(userID).collection("background").document("backgroundDoc");
+        DocumentReference docRef = mDatabase.collection("users").document(userID).collection("fitnessData").document("backgroundDoc");
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
@@ -134,7 +134,7 @@ public class BackgroundActivity extends BaseActivity {
 
         final long start = System.currentTimeMillis();
 
-        mDatabase.collection("users").document(userID).collection("background")
+        mDatabase.collection("users").document(userID).collection("fitnessData")
                 .document("backgroundDoc")
                 .set(doctData).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

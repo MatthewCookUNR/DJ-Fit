@@ -118,15 +118,32 @@ public class SignUpActivity extends AppCompatActivity {
         mDatabase.collection("users")
                 .document(userID)
                 .set(doctData).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG, "Document Snapshot added");
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Document Snapshot added");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error adding document", e);
+                    }
+                });
+
+        Map<String, Object> doctData2 = new HashMap<>();
+        doctData2.put("Role", "Owner");
+        mDatabase.collection("users")
+                .document(userID)
+                .collection("editors")
+                .document(userID)
+                .set(doctData2).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Document2 Snapshot added");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document 2", e);
                     }
                 });
     }
