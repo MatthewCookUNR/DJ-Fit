@@ -28,19 +28,21 @@
             android:textAppearance="@android:style/TextAppearance.Large"
             android:maxLines="1" />
 
-        <Button
-            android:id="@+id/btnSignIn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/passwordText"
-            android:text="Sign In" />
+    <Button
+        android:id="@+id/btnSignIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/passwordText"
+        android:text="Sign In"
+        android:textAppearance="@android:style/TextAppearance.Large" />
 
-        <Button
-            android:id="@+id/btnSignOut"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btnSignIn"
-            android:text="Sign Out" />
+    <Button
+        android:id="@+id/btnSignOut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnSignIn"
+        android:text="Sign Out"
+        android:textAppearance="@android:style/TextAppearance.Large" />
 
     <Button
         android:id="@+id/btnCreateAccount"
@@ -48,12 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="25dp"
-        android:text="Create New DJ-FIT Account" />
+        android:text="Create New DJ-FIT Account"
+        android:textAppearance="@android:style/TextAppearance.Large" />
 
-        <Button
-            android:id="@+id/btnMainAct"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btnSignOut"
-            android:text="Go To Main" />
-    </RelativeLayout>
+</RelativeLayout>

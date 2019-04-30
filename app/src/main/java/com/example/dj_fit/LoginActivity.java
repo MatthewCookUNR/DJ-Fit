@@ -3,8 +3,6 @@ package com.example.dj_fit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,17 +12,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -35,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseFirestore mDatabase;
     private FirebaseUser currentUser;
     private EditText emailText, passwordText;
-    private Button btnSignIn, btnSignOut, btnCreateAccount, btnMainAct;
+    private Button btnSignIn, btnSignOut, btnCreateAccount;
 
 
     @Override
@@ -51,17 +43,11 @@ public class LoginActivity extends AppCompatActivity {
         btnSignIn = findViewById(R.id.btnSignIn);
         btnSignOut = findViewById(R.id.btnSignOut);
         btnCreateAccount = findViewById(R.id.btnCreateAccount);
-        btnMainAct = findViewById(R.id.btnMainAct);
 
         //Initializing Firebase variables
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        if(currentUser != null)
-        {
-            //userSignedIn();
-        }
 
         //Button signs the user into the application if they have a existing account
         btnSignIn.setOnClickListener(new View.OnClickListener(){
@@ -132,27 +118,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        //Takes application to main activity for testing
-        btnMainAct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent databaseAct = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(databaseAct);
-            }
-        });
-
-
-
-        //Placeholder for floating action button
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        onStart();
     }
 
     //Function takes user to main page after logging in
@@ -168,9 +133,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser == null)
+        if(currentUser != null)
         {
-            Toast.makeText(LoginActivity.this, "No one logged in", Toast.LENGTH_SHORT).show();
+            userSignedIn();
         }
     }
 }
