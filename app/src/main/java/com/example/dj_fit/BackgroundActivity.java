@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,13 +20,18 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 
 public class BackgroundActivity extends BaseActivity {
@@ -87,27 +91,24 @@ public class BackgroundActivity extends BaseActivity {
 
         String userID = mAuth.getCurrentUser().getUid();
         DocumentReference docRef = mDatabase.collection("users").document(userID).collection("background").document("backgroundDoc");
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if( task.isSuccessful())
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null)
                 {
-                    DocumentSnapshot document = task.getResult();
-                    if( document.exists())
-                    {
-                        Map<String, Object> doctData = document.getData();
-                        long end = System.currentTimeMillis();
-                        Log.d(TAG, "DocumentSnapshot data at time: " + (end - start));
-                        populateBackground(doctData);
-                    }
-                    else
-                    {
-                        Log.d(TAG, "No such document");
-                    }
+                    Log.w(TAG, "Listen failed", e);
+                }
+
+                if (documentSnapshot != null && documentSnapshot.exists())
+                {
+                    long end = System.currentTimeMillis();
+                    Log.d(TAG, "Current data: " + documentSnapshot.getData());
+                    Log.d(TAG, "Logged at " + (end - start));
+                    populateBackground(documentSnapshot.getData());
                 }
                 else
                 {
-                    Log.d(TAG, "get failed with ", task.getException());
+                    Log.d (TAG, "Current data: null");
                 }
             }
         });
@@ -138,12 +139,15 @@ public class BackgroundActivity extends BaseActivity {
         doctData.put("availability", availability);
         doctData.put("otherInfo", otherInfo);
 
+        final long start = System.currentTimeMillis();
+
         mDatabase.collection("users").document(userID).collection("background")
                 .document("backgroundDoc")
                 .set(doctData).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Document Snapshot added");
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
