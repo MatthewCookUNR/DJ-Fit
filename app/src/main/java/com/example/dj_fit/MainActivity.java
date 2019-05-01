@@ -14,7 +14,7 @@ public class MainActivity extends BaseActivity {
 
     //Variables
     private FirebaseAuth mAuth;
-    private Button btnBackground;
+    private Button btnBackground, btnWorkoutOutline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +25,7 @@ public class MainActivity extends BaseActivity {
 
         //Initialize layout variables
         btnBackground = findViewById(R.id.btnBackground);
+        btnWorkoutOutline = findViewById(R.id.btnWorkoutOutline);
 
         //Initializes Firebase variables
         mAuth = FirebaseAuth.getInstance();
@@ -32,8 +33,16 @@ public class MainActivity extends BaseActivity {
         btnBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent databaseAct = new Intent(MainActivity.this, BackgroundActivity.class);
-                startActivity(databaseAct);
+                Intent backgroundAct = new Intent(MainActivity.this, BackgroundActivity.class);
+                startActivity(backgroundAct);
+            }
+        });
+
+        btnWorkoutOutline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent workoutOutlineAct = new Intent(MainActivity.this, WorkoutOutline.class);
+                startActivity(workoutOutlineAct);
             }
         });
 
