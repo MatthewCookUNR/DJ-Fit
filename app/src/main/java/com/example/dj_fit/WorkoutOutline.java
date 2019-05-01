@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,7 +17,8 @@ public class WorkoutOutline extends BaseActivity {
 
     private static int integer = 0;
     private RelativeLayout container;
-    private Button btnAddDay;
+    private EditText hrEdit, restPeriodEdit, repRangeEdit;
+    private Button btnAddDay, btnSaveOutline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +27,11 @@ public class WorkoutOutline extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        container = findViewById(R.id.activity_workout_outline);
+        //container = findViewById(R.id.activity_workout_outline);
+        hrEdit = findViewById(R.id.hrEdit);
+        restPeriodEdit = findViewById(R.id.restPeriodEdit);
+        repRangeEdit = findViewById(R.id.repRangeEdit);
+        btnSaveOutline = findViewById(R.id.btnWorkoutOutline);
         btnAddDay = findViewById(R.id.btnAddDay);
 
         btnAddDay.setOnClickListener(new View.OnClickListener() {
