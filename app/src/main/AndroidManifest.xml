@@ -14,6 +14,7 @@
         <activity
             android:name=".WorkoutOutline"
             android:label="@string/title_activity_workout_outline"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".SignUpActivity"

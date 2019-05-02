@@ -27,7 +27,7 @@ public class WorkoutOutline extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //container = findViewById(R.id.activity_workout_outline);
+        container = findViewById(R.id.activity_workout_outline);
         hrEdit = findViewById(R.id.hrEdit);
         restPeriodEdit = findViewById(R.id.restPeriodEdit);
         repRangeEdit = findViewById(R.id.repRangeEdit);
