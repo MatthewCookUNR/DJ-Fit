@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-        <RelativeLayout
+<RelativeLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
@@ -159,35 +159,54 @@
                 android:layout_above="@id/botButtons"
                 android:layout_below="@id/topContent">
 
-                <TableLayout
+            <RelativeLayout
+                android:id="@+id/relativeScroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/dayLabel"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="25dp"
+                    android:gravity="center"
+                    android:text="Monday"
+                    android:textAppearance="@android:style/TextAppearance.Medium"
+                    android:textSize="30sp" />
+
+                <TableLayout
+                    android:id="@+id/myTable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/dayLabel"
+                    android:layout_marginTop="25dp">
 
                     <TableRow>
 
                         <TextView
                             android:layout_column="1"
+                            android:layout_weight="50"
                             android:gravity="center"
                             android:text="Exercise"
-                            android:layout_weight="50"
                             android:textSize="10sp" />
 
                         <TextView
+                            android:layout_weight="20"
                             android:gravity="center"
                             android:text="Target"
-                            android:layout_weight="20"
                             android:textSize="10sp" />
 
                         <TextView
+                            android:layout_weight="15"
                             android:gravity="center"
                             android:hint="Weight Min"
-                            android:layout_weight="15"
                             android:textSize="10sp" />
 
                         <TextView
+                            android:layout_weight="15"
                             android:gravity="center"
                             android:text="Weight Max"
-                            android:layout_weight="15"
                             android:textSize="10sp" />
                     </TableRow>
 
@@ -211,36 +230,36 @@
                             android:background="@drawable/edit_border"
                             android:hint="Exercise name \n(Warm up)"
                             android:inputType="textMultiLine"
-                            android:maxLength="40"
                             android:lines="2"
+                            android:maxLength="40"
                             android:maxLines="2"
                             android:textSize="14sp" />
 
                         <TextView
-                            android:id = "@+id/clickView"
-                            android:background="@drawable/edit_border"
-                            android:layout_weight="20"
+                            android:id="@+id/clickView"
                             android:layout_height="match_parent"
+                            android:layout_weight="20"
+                            android:background="@drawable/edit_border"
+                            android:clickable="true"
                             android:gravity="center"
                             android:text="View"
-                            android:textSize="14sp"
-                            android:clickable="true" />
+                            android:textSize="14sp" />
 
                         <EditText
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_weight="15"
                             android:background="@drawable/edit_border"
                             android:gravity="center"
-                            android:layout_weight="15"
                             android:hint="#"
                             android:textSize="14sp" />
 
                         <EditText
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_weight="15"
                             android:background="@drawable/edit_border"
                             android:gravity="center"
-                            android:layout_weight="15"
                             android:hint="#"
                             android:textSize="14sp" />
 
@@ -257,41 +276,178 @@
                             android:background="@drawable/edit_border"
                             android:hint="Exercise name"
                             android:inputType="textMultiLine"
-                            android:maxLength="40"
                             android:lines="2"
+                            android:maxLength="40"
                             android:maxLines="2"
                             android:textSize="14sp" />
 
                         <TextView
-                            android:id = "@+id/clickView2"
-                            android:background="@drawable/edit_border"
-                            android:layout_weight="20"
+                            android:id="@+id/clickView2"
                             android:layout_height="match_parent"
+                            android:layout_weight="20"
+                            android:background="@drawable/edit_border"
+                            android:clickable="true"
                             android:gravity="center"
                             android:text="View"
-                            android:textSize="14sp"
-                            android:clickable="true" />
+                            android:textSize="14sp" />
 
                         <EditText
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_weight="15"
                             android:background="@drawable/edit_border"
                             android:gravity="center"
-                            android:layout_weight="15"
                             android:hint="#"
                             android:textSize="14sp" />
 
                         <EditText
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_weight="15"
                             android:background="@drawable/edit_border"
                             android:gravity="center"
+                            android:hint="#"
+                            android:textSize="14sp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+
+                        <EditText
+                            android:layout_column="1"
+                            android:layout_weight="50"
+                            android:background="@drawable/edit_border"
+                            android:hint="Exercise name"
+                            android:inputType="textMultiLine"
+                            android:lines="2"
+                            android:maxLength="40"
+                            android:maxLines="2"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_height="match_parent"
+                            android:layout_weight="20"
+                            android:background="@drawable/edit_border"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:text="View"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="15"
+                            android:background="@drawable/edit_border"
+                            android:gravity="center"
+                            android:hint="#"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="15"
+                            android:background="@drawable/edit_border"
+                            android:gravity="center"
+                            android:hint="#"
+                            android:textSize="14sp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+
+                        <EditText
+                            android:layout_column="1"
+                            android:layout_weight="50"
+                            android:background="@drawable/edit_border"
+                            android:hint="Exercise name"
+                            android:inputType="textMultiLine"
+                            android:lines="2"
+                            android:maxLength="40"
+                            android:maxLines="2"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_height="match_parent"
+                            android:layout_weight="20"
+                            android:background="@drawable/edit_border"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:text="View"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="15"
+                            android:background="@drawable/edit_border"
+                            android:gravity="center"
+                            android:hint="#"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="15"
+                            android:background="@drawable/edit_border"
+                            android:gravity="center"
+                            android:hint="#"
+                            android:textSize="14sp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+
+                        <EditText
+                            android:layout_column="1"
+                            android:layout_weight="50"
+                            android:background="@drawable/edit_border"
+                            android:hint="Exercise name"
+                            android:inputType="textMultiLine"
+                            android:lines="2"
+                            android:maxLength="40"
+                            android:maxLines="2"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_height="match_parent"
+                            android:layout_weight="20"
+                            android:background="@drawable/edit_border"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:text="View"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="15"
+                            android:background="@drawable/edit_border"
+                            android:gravity="center"
+                            android:hint="#"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="15"
+                            android:background="@drawable/edit_border"
+                            android:gravity="center"
                             android:hint="#"
                             android:textSize="14sp" />
 
                     </TableRow>
 
                 </TableLayout>
+            </RelativeLayout>
+
             </ScrollView>
-        </RelativeLayout>
+</RelativeLayout>
