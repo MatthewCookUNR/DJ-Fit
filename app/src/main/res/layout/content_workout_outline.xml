@@ -175,6 +175,16 @@
                     android:textAppearance="@android:style/TextAppearance.Medium"
                     android:textSize="30sp" />
 
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/myTable"
+                    android:layout_marginTop="25dp"
+                    android:gravity="center"
+                    android:text="Tuesday"
+                    android:textSize="30sp"/>
+
                 <TableLayout
                     android:id="@+id/myTable"
                     android:layout_width="match_parent"
@@ -200,7 +210,7 @@
                         <TextView
                             android:layout_weight="15"
                             android:gravity="center"
-                            android:hint="Weight Min"
+                            android:text="Weight Min"
                             android:textSize="10sp" />
 
                         <TextView
