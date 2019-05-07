@@ -169,7 +169,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="477dp"
                     android:gravity="center"
                     android:text="Monday"
                     android:textAppearance="@android:style/TextAppearance.Medium"
@@ -192,10 +192,11 @@
                     android:layout_below="@+id/dayLabel"
                     android:layout_marginTop="25dp">
 
-                    <TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
                         <TextView
-                            android:layout_column="1"
                             android:layout_weight="50"
                             android:gravity="center"
                             android:text="Exercise"
@@ -224,7 +225,6 @@
 
                         <TextView
                             android:layout_height="match_parent"
-                            android:layout_column="1"
                             android:layout_weight="100"
                             android:background="@drawable/edit_border"
                             android:text="Chest"
@@ -235,14 +235,10 @@
                     <TableRow>
 
                         <EditText
-                            android:layout_column="1"
                             android:layout_weight="50"
                             android:background="@drawable/edit_border"
                             android:hint="Exercise name \n(Warm up)"
-                            android:inputType="textMultiLine"
-                            android:lines="2"
                             android:maxLength="40"
-                            android:maxLines="2"
                             android:textSize="14sp" />
 
                         <TextView
@@ -275,20 +271,15 @@
 
                     </TableRow>
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <TableRow>
 
 
                         <EditText
-                            android:layout_column="1"
                             android:layout_weight="50"
+                            android:lines="2"
                             android:background="@drawable/edit_border"
                             android:hint="Exercise name"
-                            android:inputType="textMultiLine"
-                            android:lines="2"
                             android:maxLength="40"
-                            android:maxLines="2"
                             android:textSize="14sp" />
 
                         <TextView
@@ -321,20 +312,16 @@
 
                     </TableRow>
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <TableRow>
 
 
                         <EditText
-                            android:layout_column="1"
                             android:layout_weight="50"
                             android:background="@drawable/edit_border"
                             android:hint="Exercise name"
                             android:inputType="textMultiLine"
                             android:lines="2"
                             android:maxLength="40"
-                            android:maxLines="2"
                             android:textSize="14sp" />
 
                         <TextView
@@ -366,20 +353,16 @@
 
                     </TableRow>
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <TableRow>
 
 
                         <EditText
-                            android:layout_column="1"
                             android:layout_weight="50"
                             android:background="@drawable/edit_border"
                             android:hint="Exercise name"
                             android:inputType="textMultiLine"
                             android:lines="2"
                             android:maxLength="40"
-                            android:maxLines="2"
                             android:textSize="14sp" />
 
                         <TextView
@@ -411,20 +394,16 @@
 
                     </TableRow>
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <TableRow>
 
 
                         <EditText
-                            android:layout_column="1"
                             android:layout_weight="50"
                             android:background="@drawable/edit_border"
                             android:hint="Exercise name"
                             android:inputType="textMultiLine"
                             android:lines="2"
                             android:maxLength="40"
-                            android:maxLines="2"
                             android:textSize="14sp" />
 
                         <TextView
