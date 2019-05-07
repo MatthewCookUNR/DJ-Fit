@@ -10,19 +10,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
 
 public class WorkoutOutline extends BaseActivity {
 
-    private static int integer = 0;
+    private static int integer = 1;
     private RelativeLayout container;
     private EditText hrEdit, restPeriodEdit, repRangeEdit;
     private Button btnAddDay, btnSaveOutline;
+    private int[] intArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +36,13 @@ public class WorkoutOutline extends BaseActivity {
         repRangeEdit = findViewById(R.id.repRangeEdit);
         btnSaveOutline = findViewById(R.id.btnWorkoutOutline);
         btnAddDay = findViewById(R.id.btnAddDay);
+        intArray = new int[5];
 
         btnAddDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TextView mText = new TextView(WorkoutOutline.this);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 params.topMargin = 85;
                 params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
                 mText.setId(integer);
@@ -52,6 +52,7 @@ public class WorkoutOutline extends BaseActivity {
                 mText.setGravity(Gravity.CENTER);
                 mText.setLayoutParams(params);
                 container.addView(mText);
+                intArray[integer] = mText.getId();
                 integer++;
 
                 TableLayout newTable = new TableLayout(WorkoutOutline.this);
@@ -61,29 +62,36 @@ public class WorkoutOutline extends BaseActivity {
                 exerText.setGravity(Gravity.CENTER);
                 exerText.setTextSize(10);
                 exerText.setText("Exercises");
-                exerText.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+                TableRow.LayoutParams paramEX1 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, .62f);
+                exerText.setLayoutParams(paramEX1);
 
                 TextView targetText = new TextView(WorkoutOutline.this);
                 targetText.setGravity(Gravity.CENTER);
                 targetText.setTextSize(10);
                 targetText.setText("Target");
-                targetText.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+                TableRow.LayoutParams paramEX2 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, .20f);
+                targetText.setLayoutParams(paramEX2);
 
                 TextView minText = new TextView(WorkoutOutline.this);
                 minText.setGravity(Gravity.CENTER);
                 minText.setTextSize(10);
                 minText.setText("Min Weight");
-                minText.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+                TableRow.LayoutParams paramEX3 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, .09f);
+                minText.setLayoutParams(paramEX3);
 
                 TextView maxText = new TextView(WorkoutOutline.this);
                 maxText.setGravity(Gravity.CENTER);
                 maxText.setTextSize(10);
                 maxText.setText("Max Weight");
-                maxText.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+                TableRow.LayoutParams paramEX4 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, .09f);
+                maxText.setLayoutParams(paramEX4);
 
                 EditText edit1 = new EditText(WorkoutOutline.this);
 
 
+                RelativeLayout.LayoutParams paramsR = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                paramsR.addRule(RelativeLayout.BELOW, 1);
+                paramsR.topMargin = 85;
                 TableLayout.LayoutParams params2 = new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 newTable.setLayoutParams(params2);
                 newRow1.addView(exerText);
@@ -92,7 +100,7 @@ public class WorkoutOutline extends BaseActivity {
                 newRow1.addView(maxText);
 
                 newTable.addView(newRow1);
-                container.addView(newTable);
+                container.addView(newTable, paramsR);
 
             }
         });
@@ -105,6 +113,11 @@ public class WorkoutOutline extends BaseActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    void addTable()
+    {
+
     }
 
 }
