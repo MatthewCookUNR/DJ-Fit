@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 public class WorkoutOutline extends BaseActivity {
 
-    private static int integer = 1;
+    private int integer = 1;
     private RelativeLayout container;
     private EditText hrEdit, restPeriodEdit, repRangeEdit;
     private Button btnAddDay, btnSaveOutline;
