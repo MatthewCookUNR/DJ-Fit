@@ -11,11 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".PopActivity"
+            android:theme= "@style/AppTheme.PopMe" />
         <activity
             android:name=".WorkoutOutline"
             android:label="@string/title_activity_workout_outline"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".SignUpActivity"
             android:label="@string/title_activity_sign_up"

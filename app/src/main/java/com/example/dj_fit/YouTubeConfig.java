@@ -1,6 +1,5 @@
 package com.example.dj_fit;
 
-//Class stores API key and allows activities to retrieve it
 public class YouTubeConfig
 {
     public YouTubeConfig()

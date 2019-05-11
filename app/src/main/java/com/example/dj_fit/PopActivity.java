@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
@@ -44,7 +46,14 @@ public class PopActivity extends YouTubeBaseActivity {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b)
             {
-                youTubePlayer.loadVideos(addedVideos);
+                youTubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
+                youTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
+                    @Override
+                    public void onFullscreen(boolean b) {
+                        fullScreenLayout();
+                    }
+                });
+                youTubePlayer.cueVideos(addedVideos);
             }
 
             @Override
@@ -86,6 +95,7 @@ public class PopActivity extends YouTubeBaseActivity {
                 finish();
             }
         });
+
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
@@ -100,6 +110,14 @@ public class PopActivity extends YouTubeBaseActivity {
 
         getWindow().setAttributes(params);
 
+
+    }
+
+    private void fullScreenLayout()
+    {
+        RelativeLayout.LayoutParams playerParams = (RelativeLayout.LayoutParams) mYouTubePlayerView.getLayoutParams();
+        playerParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        playerParams.height = RelativeLayout.LayoutParams.MATCH_PARENT;
 
     }
 }
