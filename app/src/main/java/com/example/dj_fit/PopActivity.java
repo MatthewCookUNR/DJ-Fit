@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -20,30 +20,27 @@ import com.google.android.youtube.player.YouTubePlayerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.android.youtube.player.YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION;
-
 //Activity shows data on exercise when "View" is clicked on the Workout Outline page
 public class PopActivity extends YouTubeBaseActivity {
 
     YouTubePlayerView mYouTubePlayerView;
     YouTubePlayer.OnInitializedListener mOnInitializedListener;
     List<String> addedVideos = new ArrayList<>();
-    boolean fullscreen = false;
 
-    RelativeLayout relLay;
     TextView linksView;
-    Button btnClose, btnPlayVideos, btnAddVideo;
+    Button btnSaveVid, btnAddVideo, btnDeleteVideo;
     EditText editAddVideo;
+    YouTubePlayer mYouTubePlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop);
 
-        btnClose = findViewById(R.id.btnClose);
+        btnSaveVid = findViewById(R.id.btnSaveVid);
         linksView = findViewById(R.id.linksView);
-        btnPlayVideos = findViewById(R.id.btnPlayVideos);
         btnAddVideo = findViewById(R.id.btnAddVideo);
+        btnDeleteVideo = findViewById(R.id.btnDeleteVideo);
         editAddVideo = findViewById(R.id.editAddVideo);
         mYouTubePlayerView = findViewById(R.id.youtubePlay);
 
@@ -68,7 +65,11 @@ public class PopActivity extends YouTubeBaseActivity {
             {
                 if(!wasRestored)
                 {
-                    youTubePlayer.cueVideos(addedVideos);
+                    mYouTubePlayer = youTubePlayer;
+                    if(!addedVideos.isEmpty())
+                    {
+                        youTubePlayer.cueVideos(addedVideos);
+                    }
                 }
             }
 
@@ -79,28 +80,49 @@ public class PopActivity extends YouTubeBaseActivity {
             }
         };
 
-        //Button plays videos saved for video player/
-        btnPlayVideos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                mYouTubePlayerView.initialize(YouTubeConfig.getApiKey(), mOnInitializedListener);
-            }
-        });
-
         //Button adds a video to the list of videos for the exercise
         btnAddVideo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 String link = editAddVideo.getText().toString();
-                String delims = "be/";
-                String [] tokens = link.split(delims);
-                addedVideos.add(tokens[1]);
+                editAddVideo.setText("");
+                try
+                {
+                    if (link.contains(".be/"))
+                    {
+                        String delims = "be/";
+                        String[] tokens = link.split(delims);
+                        addedVideos.add(tokens[1]);
+                    }
+                    else if (link.contains("v="))
+                    {
+                        String delims = "v=";
+                        String[] tokens = link.split(delims);
+                        addedVideos.add(tokens[1]);
+                    }
+                    else
+                    {
+                        Toast toast = Toast.makeText(PopActivity.this, "Please enter a valid youtube address", Toast.LENGTH_SHORT);
+                        toast.show();
+                        throw new Exception();
+                    }
+
+                    if (mYouTubePlayer != null)
+                    {
+                        mYouTubePlayer.release();
+                    }
+                    mYouTubePlayerView.initialize(YouTubeConfig.getApiKey(), mOnInitializedListener);
+                }
+                catch (Exception e)
+                {
+                    System.out.println("Error in adding video button functionality");
+                }
             }
         });
 
         //Button closes pop up activity and sends data back
-        btnClose.setOnClickListener(new View.OnClickListener() {
+        btnSaveVid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
@@ -121,15 +143,19 @@ public class PopActivity extends YouTubeBaseActivity {
             fullScreenLayout();
             mYouTubePlayerView.initialize(YouTubeConfig.getApiKey(), mOnInitializedListener);
         }
+        else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        {
+            mYouTubePlayerView.initialize(YouTubeConfig.getApiKey(), mOnInitializedListener);
+        }
     }
 
     private void fullScreenLayout()
     {
         linksView.setVisibility(View.GONE);
-        btnPlayVideos.setVisibility(View.GONE);
         btnAddVideo.setVisibility(View.GONE);
         editAddVideo.setVisibility(View.GONE);
-        btnClose.setVisibility(View.GONE);
+        btnSaveVid.setVisibility(View.GONE);
+        btnDeleteVideo.setVisibility(View.GONE);
     }
 
 }

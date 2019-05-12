@@ -8,12 +8,12 @@
     tools:context=".PopActivity">
 
     <Button
-        android:id="@+id/btnClose"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnSaveVid"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Close" />
+        android:text="Save" />
 
     <TextView
         android:id="@+id/linksView"
@@ -28,10 +28,11 @@
 
     <EditText
         android:id="@+id/editAddVideo"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/youtubePlay"
         android:layout_marginTop="9dp"
+        android:hint="Please enter YouTube link here:"
         android:ems="10"
         android:inputType="textPersonName" />
 
@@ -43,24 +44,25 @@
         android:layout_below="@+id/linksView"
         android:layout_marginTop="11dp" />
 
-    <Button
-        android:id="@+id/btnPlayVideos"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editAddVideo"
-        android:layout_marginTop="8dp"
-        android:text="Play" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnAddVideo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/youtubePlay"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="10dp"
-        android:layout_toEndOf="@+id/editAddVideo"
-        android:layout_toRightOf="@+id/editAddVideo"
-        android:text="Add Video" />
+        <Button
+            android:id="@+id/btnAddVideo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Add Video"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btnDeleteVideo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Delete Video"
+            android:layout_weight="1" />
+    </LinearLayout>
 
 </RelativeLayout>

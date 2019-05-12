@@ -171,7 +171,7 @@ public class WorkoutOutline extends BaseActivity {
         TextView targetTitle = new TextView(WorkoutOutline.this);
         targetTitle.setGravity(Gravity.CENTER);
         targetTitle.setTextSize(10);
-        targetTitle.setText("Target");
+        targetTitle.setText("Videos");
         TableRow.LayoutParams paramColumn2 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.MATCH_PARENT, .20f);
         targetTitle.setLayoutParams(paramColumn2);
 
