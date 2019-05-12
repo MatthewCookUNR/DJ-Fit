@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -20,6 +19,8 @@ import com.google.android.youtube.player.YouTubePlayerView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.android.youtube.player.YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION;
 
 //Activity shows data on exercise when "View" is clicked on the Workout Outline page
 public class PopActivity extends YouTubeBaseActivity {
@@ -63,15 +64,18 @@ public class PopActivity extends YouTubeBaseActivity {
         //Handles playing videos for YouTube Player
         mOnInitializedListener = new YouTubePlayer.OnInitializedListener() {
             @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer youTubePlayer, boolean b)
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer youTubePlayer, boolean wasRestored)
             {
-                youTubePlayer.cueVideos(addedVideos);
+                if(!wasRestored)
+                {
+                    youTubePlayer.cueVideos(addedVideos);
+                }
             }
 
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult)
             {
-                Toast.makeText(PopActivity.this, youTubeInitializationResult.toString(), Toast.LENGTH_LONG).show();
+                System.out.println("Initialize failed...");
             }
         };
 
@@ -121,7 +125,6 @@ public class PopActivity extends YouTubeBaseActivity {
 
     private void fullScreenLayout()
     {
-        System.out.println("Set views gone");
         linksView.setVisibility(View.GONE);
         btnPlayVideos.setVisibility(View.GONE);
         btnAddVideo.setVisibility(View.GONE);
