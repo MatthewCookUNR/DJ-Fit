@@ -39,7 +39,7 @@ public class PopActivity extends YouTubeBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop);
 
-        //btnClose = findViewById(R.id.btnClose);
+        btnClose = findViewById(R.id.btnClose);
         linksView = findViewById(R.id.linksView);
         btnPlayVideos = findViewById(R.id.btnPlayVideos);
         btnAddVideo = findViewById(R.id.btnAddVideo);
@@ -65,7 +65,6 @@ public class PopActivity extends YouTubeBaseActivity {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer youTubePlayer, boolean b)
             {
-                //fullScreenLayout();
                 youTubePlayer.cueVideos(addedVideos);
             }
 
@@ -96,7 +95,7 @@ public class PopActivity extends YouTubeBaseActivity {
             }
         });
 
-        /*Button closes pop up activity and sends data back
+        //Button closes pop up activity and sends data back
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,7 +106,6 @@ public class PopActivity extends YouTubeBaseActivity {
                 finish();
             }
         });
-        */
     }
 
     @Override
@@ -128,6 +126,7 @@ public class PopActivity extends YouTubeBaseActivity {
         btnPlayVideos.setVisibility(View.GONE);
         btnAddVideo.setVisibility(View.GONE);
         editAddVideo.setVisibility(View.GONE);
+        btnClose.setVisibility(View.GONE);
     }
 
 }

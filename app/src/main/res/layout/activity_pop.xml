@@ -7,6 +7,15 @@
     tools:context=".PopActivity">
 
 
+
+    <Button
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Close" />
+
     <TextView
         android:id="@+id/linksView"
         android:layout_width="wrap_content"
