@@ -1,6 +1,7 @@
 package com.example.dj_fit;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -8,8 +9,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
@@ -26,7 +27,10 @@ public class PopActivity extends YouTubeBaseActivity {
     YouTubePlayerView mYouTubePlayerView;
     YouTubePlayer.OnInitializedListener mOnInitializedListener;
     List<String> addedVideos = new ArrayList<>();
+    boolean fullscreen = false;
 
+    RelativeLayout relLay;
+    TextView linksView;
     Button btnClose, btnPlayVideos, btnAddVideo;
     EditText editAddVideo;
 
@@ -35,24 +39,33 @@ public class PopActivity extends YouTubeBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop);
 
-        btnClose = findViewById(R.id.btnClose);
+        //btnClose = findViewById(R.id.btnClose);
+        linksView = findViewById(R.id.linksView);
         btnPlayVideos = findViewById(R.id.btnPlayVideos);
         btnAddVideo = findViewById(R.id.btnAddVideo);
         editAddVideo = findViewById(R.id.editAddVideo);
         mYouTubePlayerView = findViewById(R.id.youtubePlay);
 
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+
+        getWindow().setLayout((int)(width*.8), (int)(height*.7));
+
+        WindowManager.LayoutParams params = getWindow().getAttributes();
+        params.gravity = Gravity.CENTER;
+        params.x = 0;
+        params.y = 20;
+
+        getWindow().setAttributes(params);
+
         //Handles playing videos for YouTube Player
         mOnInitializedListener = new YouTubePlayer.OnInitializedListener() {
             @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b)
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer youTubePlayer, boolean b)
             {
-                youTubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
-                youTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
-                    @Override
-                    public void onFullscreen(boolean b) {
-                        fullScreenLayout();
-                    }
-                });
+                //fullScreenLayout();
                 youTubePlayer.cueVideos(addedVideos);
             }
 
@@ -83,41 +96,38 @@ public class PopActivity extends YouTubeBaseActivity {
             }
         });
 
-        //Button closes pop up activity and sends data back
+        /*Button closes pop up activity and sends data back
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                System.out.println(editAddVideo.getText());
                 intent.putExtra("key", editAddVideo.getText().toString());
                 System.out.println(intent.getStringExtra("key"));
                 setResult(RESULT_OK, intent);
                 finish();
             }
         });
+        */
+    }
 
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int width = dm.widthPixels;
-        int height = dm.heightPixels;
-
-        getWindow().setLayout((int)(width*.8), (int)(height*.7));
-
-        WindowManager.LayoutParams params = getWindow().getAttributes();
-        params.gravity = Gravity.CENTER;
-        params.x = 0;
-        params.y = 20;
-
-        getWindow().setAttributes(params);
-
-
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            fullScreenLayout();
+            mYouTubePlayerView.initialize(YouTubeConfig.getApiKey(), mOnInitializedListener);
+        }
     }
 
     private void fullScreenLayout()
     {
-        RelativeLayout.LayoutParams playerParams = (RelativeLayout.LayoutParams) mYouTubePlayerView.getLayoutParams();
-        playerParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-        playerParams.height = RelativeLayout.LayoutParams.MATCH_PARENT;
-
+        System.out.println("Set views gone");
+        linksView.setVisibility(View.GONE);
+        btnPlayVideos.setVisibility(View.GONE);
+        btnAddVideo.setVisibility(View.GONE);
+        editAddVideo.setVisibility(View.GONE);
     }
+
 }

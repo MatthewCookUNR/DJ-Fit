@@ -69,7 +69,6 @@ public class WorkoutOutline extends BaseActivity {
                             if(! selectedMuscles.contains(which))
                             {
                                 selectedMuscles.add(which);
-                                System.out.println("Selected " + which);
                             }
                         }
                         else if(selectedMuscles.contains(which))
@@ -210,7 +209,6 @@ public class WorkoutOutline extends BaseActivity {
         //Add first row with table labels
         newTable.addView(newRow1);
 
-        System.out.println(selectedMuscles.size());
         for(int i = 0; i < selectedMuscles.size(); i++)
         {
             String currentMuscle = muscleList[selectedMuscles.get(i)];
@@ -339,7 +337,7 @@ public class WorkoutOutline extends BaseActivity {
                 if(resultCode == RESULT_OK)
                 {
                     String messageReturn = dataIntent.getStringExtra("key");
-                    btnAddDay.setText(messageReturn);
+                    //btnAddDay.setText(messageReturn);
                 }
         }
     }
