@@ -58,10 +58,10 @@
             android:layout_weight="1"/>
 
         <Button
-            android:id="@+id/btnDeleteVideo"
+            android:id="@+id/btnClearVideos"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Delete Video"
+            android:text="Clear Video"
             android:layout_weight="1" />
     </LinearLayout>
 

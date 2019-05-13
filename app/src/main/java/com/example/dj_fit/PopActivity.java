@@ -1,14 +1,18 @@
 package com.example.dj_fit;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +32,7 @@ public class PopActivity extends YouTubeBaseActivity {
     List<String> addedVideos = new ArrayList<>();
 
     TextView linksView;
-    Button btnSaveVid, btnAddVideo, btnDeleteVideo;
+    Button btnSaveVid, btnAddVideo, btnClearVideos;
     EditText editAddVideo;
     YouTubePlayer mYouTubePlayer;
 
@@ -40,7 +44,7 @@ public class PopActivity extends YouTubeBaseActivity {
         btnSaveVid = findViewById(R.id.btnSaveVid);
         linksView = findViewById(R.id.linksView);
         btnAddVideo = findViewById(R.id.btnAddVideo);
-        btnDeleteVideo = findViewById(R.id.btnDeleteVideo);
+        btnClearVideos = findViewById(R.id.btnClearVideos);
         editAddVideo = findViewById(R.id.editAddVideo);
         mYouTubePlayerView = findViewById(R.id.youtubePlay);
 
@@ -132,6 +136,35 @@ public class PopActivity extends YouTubeBaseActivity {
                 finish();
             }
         });
+
+        btnClearVideos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder askClear = new AlertDialog.Builder(PopActivity.this);
+                askClear.setTitle("Are you sure you wish to clear your saved videos?");
+                askClear.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        addedVideos.clear();
+                        mYouTubePlayer.release();
+                    }
+                });
+                askClear.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                final AlertDialog mDialog = askClear.create();
+                mDialog.show();
+
+                final Button positiveButton = mDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                LinearLayout.LayoutParams positiveParam = (LinearLayout.LayoutParams) positiveButton.getLayoutParams();
+                positiveParam.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                positiveButton.setLayoutParams(positiveParam);
+            }
+        });
     }
 
     @Override
@@ -155,7 +188,7 @@ public class PopActivity extends YouTubeBaseActivity {
         btnAddVideo.setVisibility(View.GONE);
         editAddVideo.setVisibility(View.GONE);
         btnSaveVid.setVisibility(View.GONE);
-        btnDeleteVideo.setVisibility(View.GONE);
+        btnClearVideos.setVisibility(View.GONE);
     }
 
 }
