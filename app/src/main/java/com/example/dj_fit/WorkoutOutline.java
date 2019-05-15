@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class WorkoutOutline extends BaseActivity {
@@ -34,6 +35,7 @@ public class WorkoutOutline extends BaseActivity {
     String [] dayList = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
                          "Saturday", "Sunday"};
     String [] muscleList = {"Chest", "Biceps", "Triceps", "Back", "Shoulders", "Legs", "Core", "Cardio"};
+    boolean [] daysShown = new boolean [dayList.length];
     int dayChecked;
     ArrayList<Integer> selectedMuscles = new ArrayList<>();
     boolean [] musclesChecked;
@@ -52,6 +54,7 @@ public class WorkoutOutline extends BaseActivity {
         btnSaveOutline = findViewById(R.id.btnWorkoutOutline);
         btnAddDay = findViewById(R.id.btnAddDay);
         musclesChecked = new boolean[muscleList.length];
+        Arrays.fill(daysShown, Boolean.FALSE);
 
         //Handles the on click function of adding a day to the workout outline
         btnAddDay.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +102,11 @@ public class WorkoutOutline extends BaseActivity {
                     public void onClick(DialogInterface dialog, int which)
                     {
                         dayChecked = which;
+                        if(daysShown[dayChecked])
+                        {
+                            Toast mToast = Toast.makeText(WorkoutOutline.this, "Day already shown", Toast.LENGTH_SHORT);
+                            mToast.show();
+                        }
                     }
                 });
 
@@ -106,8 +114,9 @@ public class WorkoutOutline extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
+                        daysShown[dayChecked] = true;
                         AlertDialog muscleDialog = muscleBuilder.create();
-                        muscleBuilder.show();
+                        muscleDialog.show();
                     }
                 });
                 dayBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -333,11 +342,9 @@ public class WorkoutOutline extends BaseActivity {
         {
             // This request code is set by startActivityForResult(intent, REQUEST_CODE_1) method.
             case REQUEST_CODE_1:
-                Button btnAddDay = findViewById(R.id.btnAddDay);
                 if(resultCode == RESULT_OK)
                 {
-                    String messageReturn = dataIntent.getStringExtra("key");
-                    //btnAddDay.setText(messageReturn);
+                    ArrayList<String> test = dataIntent.getStringArrayListExtra("videos");
                 }
         }
     }

@@ -130,13 +130,13 @@ public class PopActivity extends YouTubeBaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.putExtra("key", editAddVideo.getText().toString());
-                System.out.println(intent.getStringExtra("key"));
+                intent.putStringArrayListExtra("videos", (ArrayList<String>) addedVideos);
                 setResult(RESULT_OK, intent);
                 finish();
             }
         });
 
+        //Clears all of the added videos
         btnClearVideos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,6 +182,7 @@ public class PopActivity extends YouTubeBaseActivity {
         }
     }
 
+    //Clears the layout of views so that fullscreen on YouTube Player can be shown
     private void fullScreenLayout()
     {
         linksView.setVisibility(View.GONE);
