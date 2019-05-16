@@ -5,16 +5,8 @@ import java.util.ArrayList;
 //Class used to organize data stored in each row of the workout routine table
 public class workoutRow
 {
-    private String muscleType, exercise, minWeight, MaxWeight;
+    private String exercise, minWeight, MaxWeight;
     private ArrayList<String> videoList;
-
-    public String getMuscleType() {
-        return muscleType;
-    }
-
-    public void setMuscleType(String muscleType) {
-        this.muscleType = muscleType;
-    }
 
     public String getExercise() {
         return exercise;
@@ -47,4 +39,5 @@ public class workoutRow
     public void setVideoList(ArrayList<String> videoList) {
         this.videoList = videoList;
     }
+
 }

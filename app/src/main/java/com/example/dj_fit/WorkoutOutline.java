@@ -5,11 +5,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +23,27 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Nullable;
 
 
 public class WorkoutOutline extends BaseActivity {
 
+    private final static String TAG = "WorkoutOutline";
     private int integer = 1;
     private final static int REQUEST_CODE_1 = 1;
     private RelativeLayout container;
@@ -40,6 +57,10 @@ public class WorkoutOutline extends BaseActivity {
     ArrayList<Integer> selectedMuscles = new ArrayList<>();
     boolean [] musclesChecked;
 
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore mDatabase;
+    private FirebaseUser currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,10 +72,16 @@ public class WorkoutOutline extends BaseActivity {
         hrEdit = findViewById(R.id.hrEdit);
         restPeriodEdit = findViewById(R.id.restPeriodEdit);
         repRangeEdit = findViewById(R.id.repRangeEdit);
-        btnSaveOutline = findViewById(R.id.btnWorkoutOutline);
+        btnSaveOutline = findViewById(R.id.btnSaveOutline);
         btnAddDay = findViewById(R.id.btnAddDay);
         musclesChecked = new boolean[muscleList.length];
         Arrays.fill(daysShown, Boolean.FALSE);
+
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseFirestore.getInstance();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        checkIfOutlineExists();
 
         //Handles the on click function of adding a day to the workout outline
         btnAddDay.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +156,6 @@ public class WorkoutOutline extends BaseActivity {
 
                 AlertDialog mDialog = dayBuilder.create();
                 mDialog.show();
-
             }
         });
 
@@ -141,10 +167,69 @@ public class WorkoutOutline extends BaseActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        btnSaveOutline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Map<String, Object> rowMap = new HashMap<>();
+                Map<String, Object> rowMap2 = new HashMap<>();
+                Map<String, Object> muscleMap = new HashMap<>();
+                Map<String, Object> dayMap = new HashMap<>();
+
+
+
+                ArrayList<String> videoTest = new ArrayList<>();
+                videoTest.add("0dsad0asdsa");
+                videoTest.add("scknojoh034");
+
+                workoutRow rowTest = new workoutRow();
+                workoutRow rowTest2 = new workoutRow();
+                rowTest.setExercise("Chest Press");
+                rowTest.setMinWeight("35");
+                rowTest.setMaxWeight("70");
+                rowTest.setVideoList(videoTest);
+
+                rowTest2.setExercise("21 Savage");
+                rowTest2.setMinWeight("40");
+                rowTest2.setMaxWeight("50");
+                rowTest2.setVideoList(videoTest);
+
+                rowMap.put("row1", rowTest);
+                rowMap2.put("row1", rowTest2);
+                muscleMap.put("Chest", rowMap);
+                muscleMap.put("Bicep", rowMap2);
+                dayMap.put("Monday", muscleMap);
+
+
+                String userID = currentUser.getUid();
+                final long start = System.currentTimeMillis();
+
+                mDatabase.collection("users").document(userID).collection("fitnessData")
+                        .document("workoutOutline")
+                        .set(dayMap)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error adding document", e);
+                            }
+                        });
+            }
+        });
     }
 
     void addDayToOutline(String selectedDay, ArrayList<Integer> selectedMuscles)
     {
+        //workoutRow newRowObject;
+        //newTableObject.setDay(selectedDay);
+
         //Creates Textview representing day of a particular workout (Mon-Sun)
         TextView mText = new TextView(WorkoutOutline.this);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -347,6 +432,42 @@ public class WorkoutOutline extends BaseActivity {
                     ArrayList<String> test = dataIntent.getStringArrayListExtra("videos");
                 }
         }
+    }
+
+
+    void populateOutline(Map<String, Object> docData)
+    {
+        System.out.println(docData);
+    }
+
+    private void checkIfOutlineExists()
+    {
+        final long start = System.currentTimeMillis();
+
+        String userID = mAuth.getCurrentUser().getUid();
+        DocumentReference docRef = mDatabase.collection("users").document(userID).collection("fitnessData").document("workoutOutline");
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null)
+                {
+                    Log.w(TAG, "Listen failed", e);
+                }
+
+                if (documentSnapshot != null && documentSnapshot.exists())
+                {
+                    long end = System.currentTimeMillis();
+                    Log.d(TAG, "Current data: " + documentSnapshot.getData());
+                    Log.d(TAG, "Logged at " + (end - start));
+                    populateOutline(documentSnapshot.getData());
+
+                }
+                else
+                {
+                    Log.d (TAG, "Current data: null");
+                }
+            }
+        });
     }
 
 }

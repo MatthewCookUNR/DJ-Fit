@@ -67,9 +67,9 @@ public class PopActivity extends YouTubeBaseActivity {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer youTubePlayer, boolean wasRestored)
             {
+                mYouTubePlayer = youTubePlayer;
                 if(!wasRestored)
                 {
-                    mYouTubePlayer = youTubePlayer;
                     if(!addedVideos.isEmpty())
                     {
                         youTubePlayer.cueVideos(addedVideos);
