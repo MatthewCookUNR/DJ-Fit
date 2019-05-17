@@ -45,7 +45,7 @@ public class WorkoutOutline extends BaseActivity {
 
     private final static String TAG = "WorkoutOutline";
     private int integer = 1;
-    private int rowNum = 1;
+    private int viewNum = 1;
     private final static int REQUEST_CODE_1 = 1;
     private RelativeLayout container;
     private EditText hrEdit, restPeriodEdit, repRangeEdit;
@@ -59,6 +59,7 @@ public class WorkoutOutline extends BaseActivity {
     private boolean [] musclesChecked;
 
     private ArrayList<workoutDay> workoutOutline = new ArrayList<>();
+    private ArrayList<ArrayList<String>> videoViewz = new ArrayList<>();
 
 
     private FirebaseAuth mAuth;
@@ -85,7 +86,7 @@ public class WorkoutOutline extends BaseActivity {
         mDatabase = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        checkIfOutlineExists();
+        //checkIfOutlineExists();
 
         //Handles the on click function of adding a day to the workout outline
         btnAddDay.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +177,8 @@ public class WorkoutOutline extends BaseActivity {
             @Override
             public void onClick(View v)
             {
+                viewVideosToOutline();
+                /*
                 Map<String, Object> rowMap = new HashMap<>();
                 Map<String, Object> rowMap2 = new HashMap<>();
                 Map<String, Object> muscleMap = new HashMap<>();
@@ -223,10 +226,12 @@ public class WorkoutOutline extends BaseActivity {
                                 Log.w(TAG, "Error adding document", e);
                             }
                         });
+            */
             }
         });
     }
 
+    //Adds a new day to the workout outline
     void addDayToOutline(String selectedDay, ArrayList<Integer> selectedMuscles)
     {
         workoutOutline.add(new workoutDay());
@@ -298,18 +303,12 @@ public class WorkoutOutline extends BaseActivity {
         TableLayout.LayoutParams params2 = new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         newTable.setLayoutParams(params2);
 
-
-        //Create second row of table that shows what muscle group is targeted
-
-
         //Add first row with table labels
         newTable.addView(newRow1);
 
         for(int i = 0; i < selectedMuscles.size(); i++)
         {
             String currentMuscle = muscleList[selectedMuscles.get(i)];
-            System.out.println(currentMuscle);
-            System.out.println(workoutOutline.get(workoutOutline.size()-1));
             workoutOutline.get(workoutOutline.size()-1).addMuscleUsed(currentMuscle);
 
             //Add rows to the table
@@ -319,7 +318,6 @@ public class WorkoutOutline extends BaseActivity {
             newTable.addView(createBaseRow(false, paramColumn1, paramColumn2, paramColumn3, paramColumn4));
             newTable.addView(createBaseRow(false, paramColumn1, paramColumn2, paramColumn3, paramColumn4));
             newTable.addView(createBaseRow(false, paramColumn1, paramColumn2, paramColumn3, paramColumn4));
-
         }
 
         newTable.setId(integer);
@@ -331,17 +329,22 @@ public class WorkoutOutline extends BaseActivity {
     //Creates a clickable textview to be used in the workout outline
     TextView createViewButton()
     {
-        TextView viewButton = new TextView(WorkoutOutline.this);
+        final TextView viewButton = new TextView(WorkoutOutline.this);
         viewButton.setText("View");
+        viewButton.setId(viewNum);
+        viewNum++;
         viewButton.setTextSize(14);
         viewButton.isClickable();
         viewButton.setBackgroundResource(R.drawable.edit_border);
         viewButton.setGravity(Gravity.CENTER);
         viewButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent popUp = new Intent(WorkoutOutline.this, PopActivity.class);
-                popUp.putExtra("Link", "I need youtube link");
+                int butID = viewButton.getId();
+                popUp.putExtra("id", butID);
+                popUp.putStringArrayListExtra("videos", videoViewz.get(butID-1));
                 startActivityForResult(popUp, REQUEST_CODE_1);
             }
         });
@@ -414,7 +417,7 @@ public class WorkoutOutline extends BaseActivity {
         maxEdit.setLayoutParams(paramColumn3);
 
         workoutOutline.get(workoutOutline.size()-1).addExercise(exerEdit);
-        workoutOutline.get(workoutOutline.size()-1).addVideoView(viewTarget);
+        videoViewz.add(new ArrayList<String>());
         workoutOutline.get(workoutOutline.size()-1).addMinWeight(minEdit);
         workoutOutline.get(workoutOutline.size()-1).addMaxWeight(maxEdit);
 
@@ -426,6 +429,7 @@ public class WorkoutOutline extends BaseActivity {
         return baseRow;
     }
 
+    //Function handles data received from pop up activity (video list)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent)
     {
@@ -439,17 +443,25 @@ public class WorkoutOutline extends BaseActivity {
             case REQUEST_CODE_1:
                 if(resultCode == RESULT_OK)
                 {
-                    ArrayList<String> test = dataIntent.getStringArrayListExtra("videos");
+                    ArrayList<String> tempVideoList;
+                    tempVideoList = dataIntent.getStringArrayListExtra("videos");
+                    int tempID = dataIntent.getIntExtra("id", 0);
+                    videoViewz.get(tempID-1).addAll(tempVideoList);
+                    System.out.println("Videos to outline " + tempVideoList);
+                    System.out.println("Videos to outline " + videoViewz.get(tempID-1));
                 }
         }
     }
 
 
+    //Function repopulates the page with existing workout outline
     void populateOutline(Map<String, Object> docData)
     {
         System.out.println(docData);
     }
 
+
+    //Checks if workout outline exists and retrieves it for repopulating the page
     private void checkIfOutlineExists()
     {
         final long start = System.currentTimeMillis();
@@ -478,5 +490,40 @@ public class WorkoutOutline extends BaseActivity {
                 }
             }
         });
+    }
+
+    //Function adds videos stored for "View" buttons to the workoutOutline object for use
+    //of storing them on the clouds
+    void viewVideosToOutline()
+    {
+        int i = 0;
+        int j = 1;
+        int muscleNum;
+        System.out.println(videoViewz.size());
+        while(i < workoutOutline.size())
+        {
+            workoutOutline.get(i).clearViewVideosList();
+            muscleNum = workoutOutline.get(i).getMusclesUsed().size();
+            while( j < videoViewz.size()+1 )
+            {
+                if(j % (5*muscleNum) == 0 && j != 0)
+                {
+                    System.out.println("j is " + j);
+                    workoutOutline.get(i).addViewVideos(videoViewz.get(j-1));
+                    i++;
+                    j++;
+                    break;
+                }
+                System.out.println("j is " + j);
+                System.out.println("i is " + i);
+                workoutOutline.get(i).addViewVideos(videoViewz.get(j-1));
+                j++;
+            }
+        }
+
+        for(int p = 0; p < workoutOutline.size(); p++)
+        {
+            System.out.println("Day " + p + " " + workoutOutline.get(p).getViewVideosList());
+        }
     }
 }

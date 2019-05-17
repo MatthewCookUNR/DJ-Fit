@@ -48,6 +48,9 @@ public class PopActivity extends YouTubeBaseActivity {
         editAddVideo = findViewById(R.id.editAddVideo);
         mYouTubePlayerView = findViewById(R.id.youtubePlay);
 
+        addedVideos = getIntent().getStringArrayListExtra("videos");
+        System.out.println("Videos to popup " + addedVideos);
+
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
@@ -130,6 +133,7 @@ public class PopActivity extends YouTubeBaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
+                intent.putExtra("id", getIntent().getIntExtra("id", 0));
                 intent.putStringArrayListExtra("videos", (ArrayList<String>) addedVideos);
                 setResult(RESULT_OK, intent);
                 finish();
