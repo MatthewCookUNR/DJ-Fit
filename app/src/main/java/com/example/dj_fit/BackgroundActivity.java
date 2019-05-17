@@ -105,7 +105,6 @@ public class BackgroundActivity extends BaseActivity {
                 }
             }
         });
-
     }
 
     private void populateBackground(Map<String, Object> docData)

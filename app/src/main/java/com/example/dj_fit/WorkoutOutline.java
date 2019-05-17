@@ -45,17 +45,21 @@ public class WorkoutOutline extends BaseActivity {
 
     private final static String TAG = "WorkoutOutline";
     private int integer = 1;
+    private int rowNum = 1;
     private final static int REQUEST_CODE_1 = 1;
     private RelativeLayout container;
     private EditText hrEdit, restPeriodEdit, repRangeEdit;
     private Button btnAddDay, btnSaveOutline;
-    String [] dayList = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+    private String [] dayList = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
                          "Saturday", "Sunday"};
-    String [] muscleList = {"Chest", "Biceps", "Triceps", "Back", "Shoulders", "Legs", "Core", "Cardio"};
-    boolean [] daysShown = new boolean [dayList.length];
-    int dayChecked;
-    ArrayList<Integer> selectedMuscles = new ArrayList<>();
-    boolean [] musclesChecked;
+    private String [] muscleList = {"Chest", "Biceps", "Triceps", "Back", "Shoulders", "Legs", "Core", "Cardio"};
+    private boolean [] daysShown = new boolean [dayList.length];
+    private int dayChecked;
+    private ArrayList<Integer> selectedMuscles = new ArrayList<>();
+    private boolean [] musclesChecked;
+
+    private ArrayList<workoutDay> workoutOutline = new ArrayList<>();
+
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
@@ -177,8 +181,6 @@ public class WorkoutOutline extends BaseActivity {
                 Map<String, Object> muscleMap = new HashMap<>();
                 Map<String, Object> dayMap = new HashMap<>();
 
-
-
                 ArrayList<String> videoTest = new ArrayList<>();
                 videoTest.add("0dsad0asdsa");
                 videoTest.add("scknojoh034");
@@ -227,8 +229,8 @@ public class WorkoutOutline extends BaseActivity {
 
     void addDayToOutline(String selectedDay, ArrayList<Integer> selectedMuscles)
     {
-        //workoutRow newRowObject;
-        //newTableObject.setDay(selectedDay);
+        workoutOutline.add(new workoutDay());
+        workoutOutline.get(workoutOutline.size()-1).setDay(selectedDay);
 
         //Creates Textview representing day of a particular workout (Mon-Sun)
         TextView mText = new TextView(WorkoutOutline.this);
@@ -306,6 +308,9 @@ public class WorkoutOutline extends BaseActivity {
         for(int i = 0; i < selectedMuscles.size(); i++)
         {
             String currentMuscle = muscleList[selectedMuscles.get(i)];
+            System.out.println(currentMuscle);
+            System.out.println(workoutOutline.get(workoutOutline.size()-1));
+            workoutOutline.get(workoutOutline.size()-1).addMuscleUsed(currentMuscle);
 
             //Add rows to the table
             newTable.addView(createMuscleTypeRow(currentMuscle));
@@ -370,7 +375,7 @@ public class WorkoutOutline extends BaseActivity {
         baseRow.setLayoutParams(params);
 
         EditText exerEdit = new EditText(WorkoutOutline.this);
-        if(warmUp == true)
+        if(warmUp)
         {
             exerEdit.setHint("Exercise name \n(Warm up)");
         }
@@ -407,6 +412,11 @@ public class WorkoutOutline extends BaseActivity {
         maxEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
         maxEdit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         maxEdit.setLayoutParams(paramColumn3);
+
+        workoutOutline.get(workoutOutline.size()-1).addExercise(exerEdit);
+        workoutOutline.get(workoutOutline.size()-1).addVideoView(viewTarget);
+        workoutOutline.get(workoutOutline.size()-1).addMinWeight(minEdit);
+        workoutOutline.get(workoutOutline.size()-1).addMaxWeight(maxEdit);
 
         baseRow.addView(exerEdit);
         baseRow.addView(viewTarget);
@@ -469,5 +479,4 @@ public class WorkoutOutline extends BaseActivity {
             }
         });
     }
-
 }
