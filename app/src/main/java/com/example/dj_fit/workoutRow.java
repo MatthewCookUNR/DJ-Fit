@@ -5,8 +5,20 @@ import java.util.ArrayList;
 //Class used to organize data stored in each row of the workout routine table
 public class workoutRow
 {
-    private String exercise, minWeight, MaxWeight;
+    private String exercise, minWeight, maxWeight;
     private ArrayList<String> videoList;
+
+    public workoutRow()
+    {
+
+    }
+
+    public workoutRow(workoutRow row) {
+        this.exercise = row.exercise;
+        this.minWeight = row.minWeight;
+        this.maxWeight = row.maxWeight;
+        this.videoList = row.videoList;
+    }
 
     public String getExercise() {
         return exercise;
@@ -25,11 +37,11 @@ public class workoutRow
     }
 
     public String getMaxWeight() {
-        return MaxWeight;
+        return maxWeight;
     }
 
     public void setMaxWeight(String maxWeight) {
-        MaxWeight = maxWeight;
+        maxWeight = maxWeight;
     }
 
     public ArrayList<String> getVideoList() {

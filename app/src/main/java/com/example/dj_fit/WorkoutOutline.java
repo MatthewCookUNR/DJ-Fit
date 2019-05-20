@@ -48,7 +48,7 @@ public class WorkoutOutline extends BaseActivity {
     private int viewNum = 1;
     private final static int REQUEST_CODE_1 = 1;
     private RelativeLayout container;
-    private EditText hrEdit, restPeriodEdit, repRangeEdit;
+    private EditText hrEdit, restPeriodEdit, repRangeEdit, setsEdit;
     private Button btnAddDay, btnSaveOutline;
     private String [] dayList = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
                          "Saturday", "Sunday"};
@@ -77,6 +77,7 @@ public class WorkoutOutline extends BaseActivity {
         hrEdit = findViewById(R.id.hrEdit);
         restPeriodEdit = findViewById(R.id.restPeriodEdit);
         repRangeEdit = findViewById(R.id.repRangeEdit);
+        setsEdit = findViewById(R.id.setsEdit);
         btnSaveOutline = findViewById(R.id.btnSaveOutline);
         btnAddDay = findViewById(R.id.btnAddDay);
         musclesChecked = new boolean[muscleList.length];
@@ -173,46 +174,74 @@ public class WorkoutOutline extends BaseActivity {
             }
         });
 
+        //Button saves workout outline to the Firestore database
         btnSaveOutline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
+
+                //Variables needed
+                String heartRate, restPeriod, repRange, numSets;
+                workoutRow tempRow = new workoutRow();
+
+                //Variables set that are same for each workout day
+                heartRate = hrEdit.getText().toString();
+                restPeriod = restPeriodEdit.getText().toString();
+                repRange = repRangeEdit.getText().toString();
+                numSets = setsEdit.getText().toString();
+
+                //Organizes view videos for storage
                 viewVideosToOutline();
-                /*
+
+                //Maps used for storage on
                 Map<String, Object> rowMap = new HashMap<>();
-                Map<String, Object> rowMap2 = new HashMap<>();
                 Map<String, Object> muscleMap = new HashMap<>();
                 Map<String, Object> dayMap = new HashMap<>();
+                Map<String, Object> workoutOutlineMap = new HashMap<>();
 
-                ArrayList<String> videoTest = new ArrayList<>();
-                videoTest.add("0dsad0asdsa");
-                videoTest.add("scknojoh034");
+                //Puts shared variables in outline
+                workoutOutlineMap.put("heartRate", heartRate);
+                workoutOutlineMap.put("restPeriod", restPeriod);
+                workoutOutlineMap.put("repRange", repRange);
+                workoutOutlineMap.put("numSets", numSets);
 
-                workoutRow rowTest = new workoutRow();
-                workoutRow rowTest2 = new workoutRow();
-                rowTest.setExercise("Chest Press");
-                rowTest.setMinWeight("35");
-                rowTest.setMaxWeight("70");
-                rowTest.setVideoList(videoTest);
+                //Handles adding all of the workout days into a organized workout outline map
+                int rowNum = 1;
+                int muscleNum = 0;
+                for(int i = 0; i < workoutOutline.size(); i++)
+                {
+                    for (int j = 1; j < workoutOutline.get(i).getExercise().size()+1; j++)
+                    {
+                        tempRow.setExercise(workoutOutline.get(i).getExercise().get(j-1).getText().toString());
+                        tempRow.setMinWeight(workoutOutline.get(i).getMinWeight().get(j-1).getText().toString());
+                        tempRow.setMaxWeight(workoutOutline.get(i).getMaxWeight().get(j-1).getText().toString());
+                        tempRow.setVideoList(workoutOutline.get(i).getViewVideosList().get(j-1));
+                        rowMap.put("row" + rowNum, new workoutRow(tempRow));
+                        rowNum++;
 
-                rowTest2.setExercise("21 Savage");
-                rowTest2.setMinWeight("40");
-                rowTest2.setMaxWeight("50");
-                rowTest2.setVideoList(videoTest);
+                        //Mod 5 is used since each muscle group has a max of 5 exercises
+                        if(j % 5 == 0)
+                        {
+                            rowMap.put("order", muscleNum + 1);
+                            muscleMap.put(workoutOutline.get(i).getMusclesUsed().get(muscleNum), new HashMap<>(rowMap));
+                            rowMap.clear();
+                            muscleNum++;
+                            rowNum = 1;
+                        }
+                    }
+                    dayMap.put(workoutOutline.get(i).getDay(), new HashMap<>(muscleMap));
+                    muscleMap.clear();
+                    muscleNum = 0;
+                }
+                workoutOutlineMap.put("Workout", dayMap);
 
-                rowMap.put("row1", rowTest);
-                rowMap2.put("row1", rowTest2);
-                muscleMap.put("Chest", rowMap);
-                muscleMap.put("Bicep", rowMap2);
-                dayMap.put("Monday", muscleMap);
-
-
+                //Last part of function that puts workout outline data onto the cloud database
                 String userID = currentUser.getUid();
                 final long start = System.currentTimeMillis();
 
                 mDatabase.collection("users").document(userID).collection("fitnessData")
                         .document("workoutOutline")
-                        .set(dayMap)
+                        .set(workoutOutlineMap)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -226,7 +255,6 @@ public class WorkoutOutline extends BaseActivity {
                                 Log.w(TAG, "Error adding document", e);
                             }
                         });
-            */
             }
         });
     }
@@ -499,31 +527,24 @@ public class WorkoutOutline extends BaseActivity {
         int i = 0;
         int j = 1;
         int muscleNum;
-        System.out.println(videoViewz.size());
         while(i < workoutOutline.size())
         {
             workoutOutline.get(i).clearViewVideosList();
             muscleNum = workoutOutline.get(i).getMusclesUsed().size();
             while( j < videoViewz.size()+1 )
             {
+                //Loop uses mod 5 to distinguish between muscle groups since each group has 5
+                //exercises possible
                 if(j % (5*muscleNum) == 0 && j != 0)
                 {
-                    System.out.println("j is " + j);
                     workoutOutline.get(i).addViewVideos(videoViewz.get(j-1));
                     i++;
                     j++;
                     break;
                 }
-                System.out.println("j is " + j);
-                System.out.println("i is " + i);
                 workoutOutline.get(i).addViewVideos(videoViewz.get(j-1));
                 j++;
             }
-        }
-
-        for(int p = 0; p < workoutOutline.size(); p++)
-        {
-            System.out.println("Day " + p + " " + workoutOutline.get(p).getViewVideosList());
         }
     }
 }
