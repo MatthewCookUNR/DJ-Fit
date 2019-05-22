@@ -41,7 +41,7 @@ public class workoutRow
     }
 
     public void setMaxWeight(String maxWeight) {
-        maxWeight = maxWeight;
+        this.maxWeight = maxWeight;
     }
 
     public ArrayList<String> getVideoList() {

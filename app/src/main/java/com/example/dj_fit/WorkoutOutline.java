@@ -521,7 +521,7 @@ public class WorkoutOutline extends BaseActivity {
                 Map.Entry pair = (Map.Entry) it.next();
                 tempDay = pair.getKey().toString();
 
-                //Iterate through muscle groups in a day (includes day order)
+                //Iterate through muscle groups in each day (includes day order)
                 it2 = ((HashMap) ((HashMap)docData.get("Workout")).get(pair.getKey())).entrySet().iterator();
                 while(it2.hasNext())
                 {
@@ -552,19 +552,41 @@ public class WorkoutOutline extends BaseActivity {
                             {
 
                             }
-                            it3.remove();
                         }
                     }
-                    it2.remove();
                 }
                 tempMuscles.set(dayIndex, new ArrayList<>(tempMuscleOneDay));
-                it.remove();
             }
         }
 
+        int t = 0;
+        int viewIndex = 0;
+        int outlineIndex = 0;
+        String exercise, minWeight, maxWeight;
+        ArrayList<String> viewVids;
         while(tempDays.get(p) != null)
         {
             addDayToOutline(tempDays.get(p), convertMuscles(tempMuscles.get(p)));
+            while( tempMuscles.get(t) != null)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    exercise = ((HashMap) ((HashMap) ((HashMap) ((HashMap) docData.get("Workout")).get(tempDays.get(p))).get(tempMuscles.get(p).get(t))).get("row" + (i + 1))).get("exercise").toString();
+                    minWeight = ((HashMap) ((HashMap) ((HashMap) ((HashMap) docData.get("Workout")).get(tempDays.get(p))).get(tempMuscles.get(p).get(t))).get("row" + (i + 1))).get("minWeight").toString();
+                    maxWeight = ((HashMap) ((HashMap) ((HashMap) ((HashMap) docData.get("Workout")).get(tempDays.get(p))).get(tempMuscles.get(p).get(t))).get("row" + (i + 1))).get("maxWeight").toString();
+                    viewVids = (ArrayList<String>) (((HashMap) ((HashMap) ((HashMap) ((HashMap) docData.get("Workout")).get(tempDays.get(p))).get(tempMuscles.get(p).get(t))).get("row" + (i + 1))).get("videoList"));
+                    videoViewz.set(viewIndex, viewVids);
+                    viewIndex++;
+
+                    workoutOutline.get(p).getExercise().get(outlineIndex).setText(exercise);
+                    workoutOutline.get(p).getMinWeight().get(outlineIndex).setText(minWeight);
+                    workoutOutline.get(p).getMaxWeight().get(outlineIndex).setText(maxWeight);
+                    outlineIndex++;
+                }
+                t++;
+            }
+            t = 0;
+            outlineIndex = 0;
             p++;
         }
     }
@@ -591,7 +613,8 @@ public class WorkoutOutline extends BaseActivity {
                     Log.d(TAG, "Current data: " + documentSnapshot.getData());
                     Log.d(TAG, "Logged at " + (end - start));
                     populateOutline(documentSnapshot.getData());
-
+                    end = System.currentTimeMillis();
+                    Log.d(TAG, "Populate Logged at " + (end - start));
                 }
                 else
                 {
