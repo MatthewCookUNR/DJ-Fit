@@ -521,7 +521,7 @@ public class WorkoutOutline extends BaseActivity {
                 Map.Entry pair = (Map.Entry) it.next();
                 tempDay = pair.getKey().toString();
 
-                //Iterate through muscle groups in each day (includes day order)
+                //Iterate through muscle groups in a day (includes day order)
                 it2 = ((HashMap) ((HashMap)docData.get("Workout")).get(pair.getKey())).entrySet().iterator();
                 while(it2.hasNext())
                 {
@@ -546,7 +546,7 @@ public class WorkoutOutline extends BaseActivity {
                             //Check to see if current key is for muscle order
                             if(pair3.getKey().toString().equals("order"))
                             {
-                                tempMuscleOneDay.set(dayIndex, tempMuscle);
+                                tempMuscleOneDay.set(Integer.parseInt(pair3.getValue().toString())-1, tempMuscle);
                             }
                             else
                             {
@@ -567,8 +567,6 @@ public class WorkoutOutline extends BaseActivity {
             addDayToOutline(tempDays.get(p), convertMuscles(tempMuscles.get(p)));
             p++;
         }
-
-
     }
 
 
@@ -593,8 +591,6 @@ public class WorkoutOutline extends BaseActivity {
                     Log.d(TAG, "Current data: " + documentSnapshot.getData());
                     Log.d(TAG, "Logged at " + (end - start));
                     populateOutline(documentSnapshot.getData());
-                    end = System.currentTimeMillis();
-                    Log.d(TAG, "Populate Logged at " + (end - start));
 
                 }
                 else
