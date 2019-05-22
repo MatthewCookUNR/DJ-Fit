@@ -36,6 +36,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -87,7 +88,7 @@ public class WorkoutOutline extends BaseActivity {
         mDatabase = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        //checkIfOutlineExists();
+        checkIfOutlineExists();
 
         //Handles the on click function of adding a day to the workout outline
         btnAddDay.setOnClickListener(new View.OnClickListener() {
@@ -206,6 +207,7 @@ public class WorkoutOutline extends BaseActivity {
                 workoutOutlineMap.put("numSets", numSets);
 
                 //Handles adding all of the workout days into a organized workout outline map
+                int dayOrder = 1;
                 int rowNum = 1;
                 int muscleNum = 0;
                 for(int i = 0; i < workoutOutline.size(); i++)
@@ -224,12 +226,14 @@ public class WorkoutOutline extends BaseActivity {
                         {
                             rowMap.put("order", muscleNum + 1);
                             muscleMap.put(workoutOutline.get(i).getMusclesUsed().get(muscleNum), new HashMap<>(rowMap));
+                            muscleMap.put("dayOrder", dayOrder );
                             rowMap.clear();
                             muscleNum++;
                             rowNum = 1;
                         }
                     }
                     dayMap.put(workoutOutline.get(i).getDay(), new HashMap<>(muscleMap));
+                    dayOrder++;
                     muscleMap.clear();
                     muscleNum = 0;
                 }
@@ -485,12 +489,91 @@ public class WorkoutOutline extends BaseActivity {
     //Function repopulates the page with existing workout outline
     void populateOutline(Map<String, Object> docData)
     {
-        System.out.println(docData);
+        //Puts shared variables in outline
+        hrEdit.setText(docData.get("heartRate").toString());
+        setsEdit.setText(docData.get("numSets").toString());
+        repRangeEdit.setText(docData.get("repRange").toString());
+        restPeriodEdit.setText(docData.get("restPeriod").toString());
+
+        ArrayList<String> tempMuscleOneDay = new ArrayList<>();
+        ArrayList<ArrayList<String>>  tempMuscles = new ArrayList<>();
+        ArrayList<String> tempDays = new ArrayList<>();
+
+        for(int i = 0; i < 10; i++)
+        {
+            tempDays.add(null);
+            tempMuscles.add(null);
+            tempMuscleOneDay.add(null);
+        }
+
+        int dayIndex = 0;
+        int p = 0;
+        Iterator it, it2, it3;
+        String tempDay;
+        String tempMuscle;
+
+        if (docData.get("Workout") != null);
+        {
+            //Iterate through each day
+            it = ((HashMap)docData.get("Workout")).entrySet().iterator();
+            while (it.hasNext())
+            {
+                Map.Entry pair = (Map.Entry) it.next();
+                tempDay = pair.getKey().toString();
+
+                //Iterate through muscle groups in each day (includes day order)
+                it2 = ((HashMap) ((HashMap)docData.get("Workout")).get(pair.getKey())).entrySet().iterator();
+                while(it2.hasNext())
+                {
+                    Map.Entry pair2 = (Map.Entry) it2.next();
+
+                    //Check to see if current key is for day order
+                    if(pair2.getKey().toString().equals("dayOrder"))
+                    {
+                        dayIndex = Integer.parseInt(pair2.getValue().toString())-1;
+                        tempDays.set(Integer.parseInt(pair2.getValue().toString())-1, tempDay);
+                    }
+                    else
+                    {
+                        tempMuscle = pair2.getKey().toString();
+                        it3 = ((HashMap) ((HashMap) ((HashMap) docData.get("Workout")).get(pair.getKey())).get(pair2.getKey())).entrySet().iterator();
+
+                        //Iterate through the inside of muscle groups (rows including order of muscle groups)
+                        while (it3.hasNext())
+                        {
+                            Map.Entry pair3 = (Map.Entry) it3.next();
+
+                            //Check to see if current key is for muscle order
+                            if(pair3.getKey().toString().equals("order"))
+                            {
+                                tempMuscleOneDay.set(dayIndex, tempMuscle);
+                            }
+                            else
+                            {
+
+                            }
+                            it3.remove();
+                        }
+                    }
+                    it2.remove();
+                }
+                tempMuscles.set(dayIndex, new ArrayList<>(tempMuscleOneDay));
+                it.remove();
+            }
+        }
+
+        while(tempDays.get(p) != null)
+        {
+            addDayToOutline(tempDays.get(p), convertMuscles(tempMuscles.get(p)));
+            p++;
+        }
+
+
     }
 
 
     //Checks if workout outline exists and retrieves it for repopulating the page
-    private void checkIfOutlineExists()
+    void checkIfOutlineExists()
     {
         final long start = System.currentTimeMillis();
 
@@ -510,6 +593,8 @@ public class WorkoutOutline extends BaseActivity {
                     Log.d(TAG, "Current data: " + documentSnapshot.getData());
                     Log.d(TAG, "Logged at " + (end - start));
                     populateOutline(documentSnapshot.getData());
+                    end = System.currentTimeMillis();
+                    Log.d(TAG, "Populate Logged at " + (end - start));
 
                 }
                 else
@@ -547,4 +632,26 @@ public class WorkoutOutline extends BaseActivity {
             }
         }
     }
+
+    //Function finds which integer in muscleList correlates with muscle in given array
+    //Note: Function is used for populating existing outline
+    ArrayList<Integer> convertMuscles(ArrayList<String> musclesArray)
+    {
+        ArrayList<Integer> intMuscles = new ArrayList<>();
+        int i = 0;
+        while ( musclesArray.get(i) != null)
+        {
+            for(int z = 0; z < muscleList.length; z++)
+            {
+                if(muscleList[z].equals(musclesArray.get(i)))
+                {
+                    intMuscles.add(z);
+                    i++;
+                }
+            }
+        }
+        return intMuscles;
+    }
+
+
 }
