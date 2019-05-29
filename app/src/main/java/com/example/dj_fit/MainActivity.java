@@ -27,8 +27,7 @@ public class MainActivity extends BaseActivity {
         btnBackground = findViewById(R.id.btnBackground);
         btnWorkoutOutline = findViewById(R.id.btnWorkoutOutline);
 
-        //Initializes Firebase variables
-        mAuth = FirebaseAuth.getInstance();
+
 
         btnBackground.setOnClickListener(new View.OnClickListener() {
             @Override

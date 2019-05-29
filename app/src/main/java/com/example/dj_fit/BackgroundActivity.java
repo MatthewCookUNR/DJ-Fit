@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -81,7 +80,6 @@ public class BackgroundActivity extends BaseActivity {
     private void checkIfBackgroundExists()
     {
         final long start = System.currentTimeMillis();
-
         String userID = mAuth.getCurrentUser().getUid();
         DocumentReference docRef = mDatabase.collection("users").document(userID).collection("fitnessData").document("backgroundDoc");
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {

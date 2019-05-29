@@ -82,7 +82,7 @@ public class WorkoutOutline extends BaseActivity {
         btnSaveOutline = findViewById(R.id.btnSaveOutline);
         btnAddDay = findViewById(R.id.btnAddDay);
         musclesChecked = new boolean[muscleList.length];
-        Arrays.fill(daysShown, Boolean.FALSE);
+        Arrays.fill(daysShown, false);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
@@ -94,75 +94,7 @@ public class WorkoutOutline extends BaseActivity {
         btnAddDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //Alert asks user to select what muscle group(s) they wish to work out on chosen day
-                final AlertDialog.Builder muscleBuilder = new AlertDialog.Builder(WorkoutOutline.this);
-                muscleBuilder.setTitle("Select what muscle group(s) will be targeted");
-                muscleBuilder.setMultiChoiceItems(muscleList, musclesChecked, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        if(isChecked)
-                        {
-                            if(! selectedMuscles.contains(which))
-                            {
-                                selectedMuscles.add(which);
-                            }
-                        }
-                        else if(selectedMuscles.contains(which))
-                        {
-                            selectedMuscles.remove(selectedMuscles.indexOf(which));
-                        }
-                    }
-                });
-                muscleBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        addDayToOutline(dayList[dayChecked], selectedMuscles);
-                    }
-                });
-                muscleBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-                //Alert asks user what day they would like to add to the workout outline
-                AlertDialog.Builder dayBuilder = new AlertDialog.Builder(WorkoutOutline.this);
-                dayBuilder.setTitle("Select what day the workout will be on");
-                dayBuilder.setSingleChoiceItems(dayList, dayChecked, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dayChecked = which;
-                        if(daysShown[dayChecked])
-                        {
-                            Toast mToast = Toast.makeText(WorkoutOutline.this, "Day already shown", Toast.LENGTH_SHORT);
-                            mToast.show();
-                        }
-                    }
-                });
-
-                dayBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        daysShown[dayChecked] = true;
-                        AlertDialog muscleDialog = muscleBuilder.create();
-                        muscleDialog.show();
-                    }
-                });
-                dayBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-
-                AlertDialog mDialog = dayBuilder.create();
-                mDialog.show();
+                showAddDayAlert();
             }
         });
 
@@ -479,8 +411,6 @@ public class WorkoutOutline extends BaseActivity {
                     tempVideoList = dataIntent.getStringArrayListExtra("videos");
                     int tempID = dataIntent.getIntExtra("id", 0);
                     videoViewz.get(tempID-1).addAll(tempVideoList);
-                    System.out.println("Videos to outline " + tempVideoList);
-                    System.out.println("Videos to outline " + videoViewz.get(tempID-1));
                 }
         }
     }
@@ -520,6 +450,7 @@ public class WorkoutOutline extends BaseActivity {
             {
                 Map.Entry pair = (Map.Entry) it.next();
                 tempDay = pair.getKey().toString();
+                checkDay(tempDay);
 
                 //Iterate through muscle groups in each day (includes day order)
                 it2 = ((HashMap) ((HashMap)docData.get("Workout")).get(pair.getKey())).entrySet().iterator();
@@ -591,7 +522,6 @@ public class WorkoutOutline extends BaseActivity {
         }
     }
 
-
     //Checks if workout outline exists and retrieves it for repopulating the page
     void checkIfOutlineExists()
     {
@@ -624,6 +554,83 @@ public class WorkoutOutline extends BaseActivity {
         });
     }
 
+    void showAddDayAlert()
+    {
+        //Alert asks user to select what muscle group(s) they wish to work out on chosen day
+        final AlertDialog.Builder muscleBuilder = new AlertDialog.Builder(WorkoutOutline.this);
+        muscleBuilder.setTitle("Select what muscle group(s) will be targeted");
+        muscleBuilder.setMultiChoiceItems(muscleList, musclesChecked, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                if(isChecked)
+                {
+                    if(! selectedMuscles.contains(which))
+                    {
+                        selectedMuscles.add(which);
+                    }
+                }
+                else if(selectedMuscles.contains(which))
+                {
+                    selectedMuscles.remove(selectedMuscles.indexOf(which));
+                }
+            }
+        });
+        muscleBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                addDayToOutline(dayList[dayChecked], selectedMuscles);
+            }
+        });
+        muscleBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        //Alert asks user what day they would like to add to the workout outline
+        AlertDialog.Builder dayBuilder = new AlertDialog.Builder(WorkoutOutline.this);
+        dayBuilder.setTitle("Select what day the workout will be on");
+        dayBuilder.setSingleChoiceItems(dayList, dayChecked, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dayChecked = which;
+            }
+        });
+
+        dayBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                if(daysShown[dayChecked])
+                {
+                    Toast mToast = Toast.makeText(WorkoutOutline.this, "Day already shown", Toast.LENGTH_SHORT);
+                    mToast.show();
+                    showAddDayAlert();
+                }
+                else
+                {
+                    daysShown[dayChecked] = true;
+                    AlertDialog muscleDialog = muscleBuilder.create();
+                    muscleDialog.show();
+                }
+            }
+        });
+        dayBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+
+        AlertDialog mDialog = dayBuilder.create();
+        mDialog.show();
+    }
+
+
     //Function adds videos stored for "View" buttons to the workoutOutline object for use
     //of storing them on the clouds
     void viewVideosToOutline()
@@ -648,6 +655,19 @@ public class WorkoutOutline extends BaseActivity {
                 }
                 workoutOutline.get(i).addViewVideos(videoViewz.get(j-1));
                 j++;
+            }
+        }
+    }
+
+    //Function finds given day in list of days and marks it as in outline to avoid duplicate days
+    void checkDay(String day)
+    {
+        for(int p = 0; p < dayList.length; p++)
+        {
+            if(dayList[p].equals(day))
+            {
+                daysShown[p] = true;
+                break;
             }
         }
     }
