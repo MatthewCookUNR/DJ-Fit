@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends BaseActivity {
 
     //Variables
-    private FirebaseAuth mAuth;
     private Button btnBackground, btnWorkoutOutline;
 
     @Override

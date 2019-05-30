@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ScrollView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,6 +36,8 @@ public class BackgroundActivity extends BaseActivity {
                      availabilityEdit, additionalEdit;
 
     private Button btnSubmit;
+    private ScrollView backgroundView;
+    private ImageView splashImage;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
     private FirebaseUser currentUser;
@@ -51,6 +55,8 @@ public class BackgroundActivity extends BaseActivity {
         availabilityEdit = findViewById(R.id.availabilityEdit);
         additionalEdit = findViewById(R.id.additionalEdit);
         btnSubmit = findViewById(R.id.btnSubmit);
+        backgroundView = findViewById(R.id.backgroundView);
+        splashImage = findViewById(R.id.splashImage);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
@@ -107,6 +113,8 @@ public class BackgroundActivity extends BaseActivity {
 
     private void populateBackground(Map<String, Object> docData)
     {
+        splashImage.setVisibility(View.GONE);
+        backgroundView.setVisibility(View.VISIBLE);
         currentFitEdit.setText(docData.get("currentFitProgram").toString());
         medicalEdit.setText(docData.get("medicalHist").toString());
         goalEdit.setText(docData.get("goals").toString());
