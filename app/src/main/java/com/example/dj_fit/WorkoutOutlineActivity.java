@@ -24,8 +24,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -33,6 +35,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.MetadataChanges;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -576,7 +579,29 @@ public class WorkoutOutlineActivity extends BaseActivity {
 
         String userID = mAuth.getCurrentUser().getUid();
         DocumentReference docRef = mDatabase.collection("users").document(userID).collection("fitnessData").document("workoutOutline");
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        populateOutline(document.getData());
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
+        /*
+        final long start = System.currentTimeMillis();
+
+        String userID = mAuth.getCurrentUser().getUid();
+        DocumentReference docRef = mDatabase.collection("users").document(userID).collection("fitnessData").document("workoutOutline");
+        docRef.addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 if (e != null)
@@ -600,6 +625,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
                 }
             }
         });
+        */
     }
 
     //Function handles the popup alert that appears after clicking the "Add Day to Routine" button
