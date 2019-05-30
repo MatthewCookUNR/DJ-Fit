@@ -146,15 +146,19 @@ public class WorkoutOutlineActivity extends BaseActivity {
                 int muscleNum = 0;
                 for(int i = 0; i < workoutOutline.size(); i++)
                 {
+                    //System.out.println("Day: " + workoutOutline.get(i).getDay());
+                    //System.out.println("Exercise num is: " + workoutOutline.get(i).getExercise().size());
+                    //System.out.println("Videolist num is: " + workoutOutline.get(i).getViewVideosList().size());
                     for (int j = 1; j < workoutOutline.get(i).getExercise().size()+1; j++)
                     {
+                        //System.out.println("i is:" + i);
+                        //System.out.println("j is: " + j);
                         tempRow.setExercise(workoutOutline.get(i).getExercise().get(j-1).getText().toString());
                         tempRow.setMinWeight(workoutOutline.get(i).getMinWeight().get(j-1).getText().toString());
                         tempRow.setMaxWeight(workoutOutline.get(i).getMaxWeight().get(j-1).getText().toString());
                         tempRow.setVideoList(workoutOutline.get(i).getViewVideosList().get(j-1));
                         rowMap.put("row" + rowNum, new workoutRow(tempRow));
                         rowNum++;
-
                         //Mod 5 is used since each muscle group has a max of 5 exercises
                         if(j % 5 == 0)
                         {
@@ -171,7 +175,8 @@ public class WorkoutOutlineActivity extends BaseActivity {
                     muscleMap.clear();
                     muscleNum = 0;
                 }
-                workoutOutlineMap.put("Workout", dayMap);
+                System.out.println(dayMap);
+                //workoutOutlineMap.put("Workout", dayMap);
 
                 //Last part of function that puts workout outline data onto the cloud database
                 String userID = currentUser.getUid();
@@ -716,31 +721,39 @@ public class WorkoutOutlineActivity extends BaseActivity {
 
 
     //Function adds videos stored for "View" buttons to the workoutOutline object for use
-    //of storing them on the clouds
+    //of storing them on the cloud
     void viewVideosToOutline()
     {
         int i = 0;
         int j = 1;
+        int mod = 1;
         int muscleNum;
         while(i < workoutOutline.size())
         {
             workoutOutline.get(i).clearViewVideosList();
             muscleNum = workoutOutline.get(i).getMusclesUsed().size();
+            //System.out.println("Muscle num is: " + muscleNum);
             while( j < videoViewz.size()+1 )
             {
                 //Loop uses mod 5 to distinguish between muscle groups since each group has 5
                 //exercises possible
-                if(j % (5*muscleNum) == 0 && j != 0)
+                if(mod % (5*muscleNum) == 0 && j != 0)
                 {
+                    //System.out.println("j during break: " + j);
+                    //System.out.println("mod during break" + mod);
                     workoutOutline.get(i).addViewVideos(videoViewz.get(j-1));
                     i++;
                     j++;
+                    mod++;
                     break;
                 }
                 workoutOutline.get(i).addViewVideos(videoViewz.get(j-1));
+                mod++;
                 j++;
             }
+            mod = 1;
         }
+        //System.out.println("Final j is: " + j);
     }
 
     //Function finds given day in list of days and marks it as in outline to avoid duplicate days

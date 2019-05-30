@@ -151,11 +151,11 @@ public class workoutDay
             exercise.get(i).setVisibility(View.GONE);
             minWeight.get(i).setVisibility(View.GONE);
             maxWeight.get(i).setVisibility(View.GONE);
-            exerTitle.setVisibility(View.GONE);
-            minTitle.setVisibility(View.GONE);
-            maxTitle.setVisibility(View.GONE);
-            viewTitle.setVisibility(View.GONE);
         }
+        exerTitle.setVisibility(View.GONE);
+        minTitle.setVisibility(View.GONE);
+        maxTitle.setVisibility(View.GONE);
+        viewTitle.setVisibility(View.GONE);
         dayView.setVisibility(View.GONE);
         myTable.setVisibility(View.GONE);
     }
