@@ -43,15 +43,15 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 
-public class WorkoutOutline extends BaseActivity {
+public class WorkoutOutlineActivity extends BaseActivity {
 
-    private final static String TAG = "WorkoutOutline";
+    private final static String TAG = "WorkoutOutlineActivity";
     private int integer = 1;
     private int viewNum = 1;
     private final static int REQUEST_CODE_1 = 1;
     private RelativeLayout container;
     private EditText hrEdit, restPeriodEdit, repRangeEdit, setsEdit;
-    private Button btnAddDay, btnSaveOutline;
+    private Button btnAddDay, btnSaveOutline, btnRemoveDay;
     private ImageView splashImage;
     private String [] dayList = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
                          "Saturday", "Sunday"};
@@ -83,6 +83,7 @@ public class WorkoutOutline extends BaseActivity {
         setsEdit = findViewById(R.id.setsEdit);
         btnSaveOutline = findViewById(R.id.btnSaveOutline);
         btnAddDay = findViewById(R.id.btnAddDay);
+        btnRemoveDay = findViewById(R.id.btnRemoveDay);
         splashImage = findViewById(R.id.splashImage);
         musclesChecked = new boolean[muscleList.length];
         Arrays.fill(daysShown, false);
@@ -101,12 +102,10 @@ public class WorkoutOutline extends BaseActivity {
             }
         });
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        btnRemoveDay.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                showRemoveDayAlert();
             }
         });
 
@@ -196,6 +195,16 @@ public class WorkoutOutline extends BaseActivity {
                         });
             }
         });
+
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
     }
 
     //Adds a new day to the workout outline
@@ -205,7 +214,7 @@ public class WorkoutOutline extends BaseActivity {
         workoutOutline.get(workoutOutline.size()-1).setDay(selectedDay);
 
         //Creates Textview representing day of a particular workout (Mon-Sun)
-        TextView mText = new TextView(WorkoutOutline.this);
+        TextView mText = new TextView(WorkoutOutlineActivity.this);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.topMargin = 85;
         if(integer > 1)
@@ -215,51 +224,57 @@ public class WorkoutOutline extends BaseActivity {
         }
         mText.setId(integer);
         mText.setText(selectedDay);
-        mText.setTextAppearance(WorkoutOutline.this, android.R.style.TextAppearance_Large);
+        mText.setTextAppearance(WorkoutOutlineActivity.this, android.R.style.TextAppearance_Large);
         mText.setTextSize(30);
         mText.setGravity(Gravity.CENTER);
         mText.setLayoutParams(params);
+        workoutOutline.get(workoutOutline.size()-1).setDayView(mText);
         container.addView(mText);
         integer++;
 
         //Creates a table to outline workout
-        TableLayout newTable = new TableLayout(WorkoutOutline.this);
-        TableRow newRow1 = new TableRow(WorkoutOutline.this);
-        TableRow newRow2 = new TableRow(WorkoutOutline.this);
+        TableLayout newTable = new TableLayout(WorkoutOutlineActivity.this);
+        TableRow newRow1 = new TableRow(WorkoutOutlineActivity.this);
 
 
         //Creates first row that defines what is in each column
-        TextView exerTitle = new TextView(WorkoutOutline.this);
+        TextView exerTitle = new TextView(WorkoutOutlineActivity.this);
         exerTitle.setGravity(Gravity.CENTER);
         exerTitle.setTextSize(10);
         exerTitle.setText("Exercise");
         TableRow.LayoutParams paramColumn1 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, .60f);
         exerTitle.setLayoutParams(paramColumn1);
+        workoutOutline.get(workoutOutline.size()-1).setExerTitle(exerTitle);
 
-        TextView targetTitle = new TextView(WorkoutOutline.this);
-        targetTitle.setGravity(Gravity.CENTER);
-        targetTitle.setTextSize(10);
-        targetTitle.setText("Videos");
+        TextView viewTitle = new TextView(WorkoutOutlineActivity.this);
+        viewTitle.setGravity(Gravity.CENTER);
+        viewTitle.setTextSize(10);
+        viewTitle.setText("Videos");
         TableRow.LayoutParams paramColumn2 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.MATCH_PARENT, .20f);
-        targetTitle.setLayoutParams(paramColumn2);
+        viewTitle.setLayoutParams(paramColumn2);
+        workoutOutline.get(workoutOutline.size()-1).setViewTitle(viewTitle);
 
-        TextView minTitle = new TextView(WorkoutOutline.this);
+        TextView minTitle = new TextView(WorkoutOutlineActivity.this);
         minTitle.setGravity(Gravity.CENTER);
         minTitle.setTextSize(10);
         minTitle.setText("Min Weight");
         TableRow.LayoutParams paramColumn3 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.MATCH_PARENT, .1f);
         minTitle.setLayoutParams(paramColumn3);
+        workoutOutline.get(workoutOutline.size()-1).setMinTitle(minTitle);
 
-        TextView maxTitle = new TextView(WorkoutOutline.this);
+
+        TextView maxTitle = new TextView(WorkoutOutlineActivity.this);
         maxTitle.setGravity(Gravity.CENTER);
         maxTitle.setTextSize(10);
         maxTitle.setText("Max Weight");
         TableRow.LayoutParams paramColumn4 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.MATCH_PARENT, .1f);
         maxTitle.setLayoutParams(paramColumn4);
+        workoutOutline.get(workoutOutline.size()-1).setMaxTitle(maxTitle);
+
 
         //Adds elements of first row
         newRow1.addView(exerTitle);
-        newRow1.addView(targetTitle);
+        newRow1.addView(viewTitle);
         newRow1.addView(minTitle);
         newRow1.addView(maxTitle);
 
@@ -289,6 +304,7 @@ public class WorkoutOutline extends BaseActivity {
 
         newTable.setId(integer);
         integer++;
+        workoutOutline.get(workoutOutline.size()-1).setMyTable(newTable);
         //Create the table on screen
         container.addView(newTable, paramsR);
     }
@@ -296,7 +312,7 @@ public class WorkoutOutline extends BaseActivity {
     //Creates a clickable textview to be used in the workout outline
     TextView createViewButton()
     {
-        final TextView viewButton = new TextView(WorkoutOutline.this);
+        final TextView viewButton = new TextView(WorkoutOutlineActivity.this);
         viewButton.setText("View");
         viewButton.setId(viewNum);
         viewNum++;
@@ -308,7 +324,7 @@ public class WorkoutOutline extends BaseActivity {
             @Override
             public void onClick(View v)
             {
-                Intent popUp = new Intent(WorkoutOutline.this, PopActivity.class);
+                Intent popUp = new Intent(WorkoutOutlineActivity.this, PopActivity.class);
                 int butID = viewButton.getId();
                 popUp.putExtra("id", butID);
                 popUp.putStringArrayListExtra("videos", videoViewz.get(butID-1));
@@ -321,9 +337,8 @@ public class WorkoutOutline extends BaseActivity {
     //Returns table row that describes the muscle group hit by the following exercises
     TableRow createMuscleTypeRow(String selectedMuscle)
     {
-        TableRow muscleRow = new TableRow(WorkoutOutline.this);
-
-        TextView exerType = new TextView(WorkoutOutline.this);
+        TableRow muscleRow = new TableRow(WorkoutOutlineActivity.this);
+        TextView exerType = new TextView(WorkoutOutlineActivity.this);
         exerType.setTextSize(18);
         exerType.setText(selectedMuscle);
         exerType.setBackgroundResource(R.drawable.edit_border);
@@ -339,12 +354,12 @@ public class WorkoutOutline extends BaseActivity {
     TableRow createBaseRow(boolean warmUp, TableRow.LayoutParams paramColumn1, TableRow.LayoutParams paramColumn2,
                            TableRow.LayoutParams paramColumn3, TableRow.LayoutParams paramColumn4)
     {
-        TableRow baseRow = new TableRow(WorkoutOutline.this);
+        TableRow baseRow = new TableRow(WorkoutOutlineActivity.this);
         TableRow.LayoutParams params = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         baseRow.setLayoutParams(params);
 
-        EditText exerEdit = new EditText(WorkoutOutline.this);
+        EditText exerEdit = new EditText(WorkoutOutlineActivity.this);
         if(warmUp)
         {
             exerEdit.setHint("Exercise name \n(Warm up)");
@@ -365,7 +380,7 @@ public class WorkoutOutline extends BaseActivity {
         TextView viewTarget = createViewButton();
         viewTarget.setLayoutParams(paramColumn2);
 
-        EditText minEdit = new EditText(WorkoutOutline.this);
+        EditText minEdit = new EditText(WorkoutOutlineActivity.this);
         minEdit.setHint("#");
         minEdit.setTextSize(14);
         minEdit.setGravity(Gravity.CENTER);
@@ -374,7 +389,7 @@ public class WorkoutOutline extends BaseActivity {
         minEdit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         minEdit.setLayoutParams(paramColumn3);
 
-        EditText maxEdit = new EditText(WorkoutOutline.this);
+        EditText maxEdit = new EditText(WorkoutOutlineActivity.this);
         maxEdit.setHint("#");
         maxEdit.setTextSize(14);
         maxEdit.setGravity(Gravity.CENTER);
@@ -418,6 +433,22 @@ public class WorkoutOutline extends BaseActivity {
         }
     }
 
+    void removeDayFromOutline(String day)
+    {
+        int index = 0;
+        for(int i = 0; i < workoutOutline.size(); i++)
+        {
+            if(workoutOutline.get(i).getDay().equals(day))
+            {
+                index = i;
+                System.out.println(i);
+                break;
+            }
+        }
+        workoutOutline.get(index).destroyViews();
+        workoutOutline.remove(index);
+    }
+
 
     //Function repopulates the page with existing workout outline
     void populateOutline(Map<String, Object> docData)
@@ -445,6 +476,7 @@ public class WorkoutOutline extends BaseActivity {
         String tempDay;
         String tempMuscle;
 
+        //Section of function organizes the data in the correct order
         if (docData.get("Workout") != null);
         {
             //Iterate through each day
@@ -490,18 +522,22 @@ public class WorkoutOutline extends BaseActivity {
         }
 
         splashImage.setVisibility(View.GONE);
-        btnAddDay.setVisibility(View.VISIBLE);
 
+        //Section of function creates outline and sets data to correct spots in the generated outline
         int t = 0;
         int viewIndex = 0;
         int outlineIndex = 0;
         String exercise, minWeight, maxWeight;
         ArrayList<String> viewVids;
+
+        //p is index of list of days
         while(tempDays.get(p) != null)
         {
             addDayToOutline(tempDays.get(p), convertMuscles(tempMuscles.get(p)));
-            while( tempMuscles.get(t) != null)
+            //t is index of list of muscles
+            while( tempMuscles.get(p).get(t) != null)
             {
+                //i is for the number of rows for each muscle group
                 for (int i = 0; i < 5; i++)
                 {
                     exercise = ((HashMap) ((HashMap) ((HashMap) ((HashMap) docData.get("Workout")).get(tempDays.get(p))).get(tempMuscles.get(p).get(t))).get("row" + (i + 1))).get("exercise").toString();
@@ -551,6 +587,7 @@ public class WorkoutOutline extends BaseActivity {
                 else
                 {
                     Log.d (TAG, "Current data: null");
+                    splashImage.setVisibility(View.GONE);
                 }
             }
         });
@@ -560,7 +597,7 @@ public class WorkoutOutline extends BaseActivity {
     void showAddDayAlert()
     {
         //Alert asks user to select what muscle group(s) they wish to work out on chosen day
-        final AlertDialog.Builder muscleBuilder = new AlertDialog.Builder(WorkoutOutline.this);
+        final AlertDialog.Builder muscleBuilder = new AlertDialog.Builder(WorkoutOutlineActivity.this);
         muscleBuilder.setTitle("Select what muscle group(s) will be targeted");
         muscleBuilder.setMultiChoiceItems(muscleList, musclesChecked, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
@@ -593,7 +630,7 @@ public class WorkoutOutline extends BaseActivity {
         });
 
         //Alert asks user what day they would like to add to the workout outline
-        AlertDialog.Builder dayBuilder = new AlertDialog.Builder(WorkoutOutline.this);
+        AlertDialog.Builder dayBuilder = new AlertDialog.Builder(WorkoutOutlineActivity.this);
         dayBuilder.setTitle("Select what day the workout will be on");
         dayBuilder.setSingleChoiceItems(dayList, dayChecked, new DialogInterface.OnClickListener() {
             @Override
@@ -609,7 +646,7 @@ public class WorkoutOutline extends BaseActivity {
             {
                 if(daysShown[dayChecked])
                 {
-                    Toast mToast = Toast.makeText(WorkoutOutline.this, "Day already shown", Toast.LENGTH_SHORT);
+                    Toast mToast = Toast.makeText(WorkoutOutlineActivity.this, "Day already shown", Toast.LENGTH_SHORT);
                     mToast.show();
                     showAddDayAlert();
                 }
@@ -618,6 +655,50 @@ public class WorkoutOutline extends BaseActivity {
                     daysShown[dayChecked] = true;
                     AlertDialog muscleDialog = muscleBuilder.create();
                     muscleDialog.show();
+                }
+            }
+        });
+        dayBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+
+        AlertDialog mDialog = dayBuilder.create();
+        mDialog.show();
+    }
+
+    //Function handles the popup alert that appears after clicking the "Add Day to Routine" button
+    void showRemoveDayAlert()
+    {
+        //Alert asks user what day they would like to remove from the workout outline
+        AlertDialog.Builder dayBuilder = new AlertDialog.Builder(WorkoutOutlineActivity.this);
+        dayBuilder.setTitle("Select what day you'd like to remove");
+        dayBuilder.setSingleChoiceItems(dayList, dayChecked, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dayChecked = which;
+            }
+        });
+
+        dayBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                if(daysShown[dayChecked])
+                {
+                    daysShown[dayChecked] = false;
+                    removeDayFromOutline(dayList[dayChecked]);
+                }
+                else
+                {
+                    Toast mToast = Toast.makeText(WorkoutOutlineActivity.this, "Day is not in the outline", Toast.LENGTH_SHORT);
+                    mToast.show();
+                    showRemoveDayAlert();
+
                 }
             }
         });

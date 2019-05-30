@@ -8,8 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 public class MainActivity extends BaseActivity {
 
     //Variables
@@ -39,7 +37,7 @@ public class MainActivity extends BaseActivity {
         btnWorkoutOutline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent workoutOutlineAct = new Intent(MainActivity.this, WorkoutOutline.class);
+                Intent workoutOutlineAct = new Intent(MainActivity.this, WorkoutOutlineActivity.class);
                 startActivity(workoutOutlineAct);
             }
         });

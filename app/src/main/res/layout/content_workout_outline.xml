@@ -7,7 +7,7 @@
             android:layout_height="match_parent"
             android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:context=".WorkoutOutline"
+            tools:context=".WorkoutOutlineActivity"
             tools:showIn="@layout/activity_workout_outline"
             android:id="@+id/activity_workout_outline">
 
@@ -34,14 +34,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/btnAddDay"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="113dp"
-            android:visibility="invisible"
-            android:text="Add Day to Routine"
-            android:textAppearance="@android:style/TextAppearance.Large" />
+            android:layout_below="@+id/editAddVideo"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnAddDay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="113dp"
+                android:text="Add Day"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:visibility="visible"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/btnRemoveDay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="113dp"
+                android:text="Remove Day"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:visibility="visible"
+                android:layout_weight="1"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/repRangeText"

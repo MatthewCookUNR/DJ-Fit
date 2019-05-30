@@ -106,6 +106,8 @@ public class BackgroundActivity extends BaseActivity {
                 else
                 {
                     Log.d (TAG, "Current data: null");
+                    splashImage.setVisibility(View.GONE);
+                    backgroundView.setVisibility(View.VISIBLE);
                 }
             }
         });

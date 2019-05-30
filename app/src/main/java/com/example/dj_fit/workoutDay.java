@@ -1,6 +1,8 @@
 package com.example.dj_fit;
 
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -8,6 +10,8 @@ import java.util.ArrayList;
 public class workoutDay
 {
     private String day;
+    private TextView exerTitle, viewTitle, minTitle, maxTitle, dayView;
+    TableLayout myTable;
     private ArrayList<String> muscleUsed = new ArrayList<>();
     private ArrayList<EditText> exercise = new ArrayList<>();
     private ArrayList<EditText> minWeight = new ArrayList<>();
@@ -81,6 +85,54 @@ public class workoutDay
         this.viewVideosList = viewVideosList;
     }
 
+    public TextView getExerTitle() {
+        return exerTitle;
+    }
+
+    public void setExerTitle(TextView exerTitle) {
+        this.exerTitle = exerTitle;
+    }
+
+    public TextView getViewTitle() {
+        return viewTitle;
+    }
+
+    public void setViewTitle(TextView viewTitle) {
+        this.viewTitle = viewTitle;
+    }
+
+    public TextView getMinTitle() {
+        return minTitle;
+    }
+
+    public void setMinTitle(TextView minTitle) {
+        this.minTitle = minTitle;
+    }
+
+    public TextView getMaxTitle() {
+        return maxTitle;
+    }
+
+    public void setMaxTitle(TextView maxTitle) {
+        this.maxTitle = maxTitle;
+    }
+
+    public TableLayout getMyTable() {
+        return myTable;
+    }
+
+    public void setMyTable(TableLayout myTable) {
+        this.myTable = myTable;
+    }
+
+    public TextView getDayView() {
+        return dayView;
+    }
+
+    public void setDayView(TextView dayView) {
+        this.dayView = dayView;
+    }
+
     public void clearViewVideosList()
     {
         this.viewVideosList.clear();
@@ -89,5 +141,22 @@ public class workoutDay
     public void addViewVideos (ArrayList<String> viewVideos)
     {
         this.viewVideosList.add(viewVideos);
+    }
+
+    public void destroyViews()
+    {
+
+        for(int i = 0; i < exercise.size(); i++)
+        {
+            exercise.get(i).setVisibility(View.GONE);
+            minWeight.get(i).setVisibility(View.GONE);
+            maxWeight.get(i).setVisibility(View.GONE);
+            exerTitle.setVisibility(View.GONE);
+            minTitle.setVisibility(View.GONE);
+            maxTitle.setVisibility(View.GONE);
+            viewTitle.setVisibility(View.GONE);
+        }
+        dayView.setVisibility(View.GONE);
+        myTable.setVisibility(View.GONE);
     }
 }

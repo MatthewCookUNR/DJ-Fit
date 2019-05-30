@@ -15,7 +15,7 @@
             android:name=".PopActivity"
             android:theme="@style/AppTheme.PopMe" />
         <activity
-            android:name=".WorkoutOutline"
+            android:name=".WorkoutOutlineActivity"
             android:label="@string/title_activity_workout_outline"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
