@@ -12,10 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SplashActivity"
-            android:label="@string/title_activity_splash"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity
             android:name=".PopActivity"
             android:theme="@style/AppTheme.PopMe" />
         <activity

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -51,6 +52,7 @@ public class WorkoutOutline extends BaseActivity {
     private RelativeLayout container;
     private EditText hrEdit, restPeriodEdit, repRangeEdit, setsEdit;
     private Button btnAddDay, btnSaveOutline;
+    private ImageView splashImage;
     private String [] dayList = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
                          "Saturday", "Sunday"};
     private String [] muscleList = {"Chest", "Biceps", "Triceps", "Back", "Shoulders", "Legs", "Core", "Cardio"};
@@ -81,6 +83,7 @@ public class WorkoutOutline extends BaseActivity {
         setsEdit = findViewById(R.id.setsEdit);
         btnSaveOutline = findViewById(R.id.btnSaveOutline);
         btnAddDay = findViewById(R.id.btnAddDay);
+        splashImage = findViewById(R.id.splashImage);
         musclesChecked = new boolean[muscleList.length];
         Arrays.fill(daysShown, false);
 
@@ -479,16 +482,15 @@ public class WorkoutOutline extends BaseActivity {
                             {
                                 tempMuscleOneDay.set(Integer.parseInt(pair3.getValue().toString())-1, tempMuscle);
                             }
-                            else
-                            {
-
-                            }
                         }
                     }
                 }
                 tempMuscles.set(dayIndex, new ArrayList<>(tempMuscleOneDay));
             }
         }
+
+        splashImage.setVisibility(View.GONE);
+        btnAddDay.setVisibility(View.VISIBLE);
 
         int t = 0;
         int viewIndex = 0;
@@ -554,6 +556,7 @@ public class WorkoutOutline extends BaseActivity {
         });
     }
 
+    //Function handles the popup alert that appears after clicking the "Add Day to Routine" button
     void showAddDayAlert()
     {
         //Alert asks user to select what muscle group(s) they wish to work out on chosen day
@@ -691,6 +694,4 @@ public class WorkoutOutline extends BaseActivity {
         }
         return intMuscles;
     }
-
-
 }

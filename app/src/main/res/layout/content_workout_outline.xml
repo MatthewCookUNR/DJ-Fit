@@ -27,6 +27,8 @@
             android:textAppearance="@android:style/TextAppearance.Large" />
 
 
+
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -39,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="113dp"
+            android:visibility="invisible"
             android:text="Add Day to Routine"
             android:textAppearance="@android:style/TextAppearance.Large" />
 
@@ -154,6 +157,14 @@
             android:ems="10"
             android:gravity="center_horizontal"
             android:inputType="textPersonName" />
+
+        <ImageView
+            android:id="@+id/splashImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/splash_port_xhdpi" />
 
     </RelativeLayout>
 
