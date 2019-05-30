@@ -175,8 +175,8 @@ public class WorkoutOutlineActivity extends BaseActivity {
                     muscleMap.clear();
                     muscleNum = 0;
                 }
-                System.out.println(dayMap);
-                //workoutOutlineMap.put("Workout", dayMap);
+                //System.out.println(dayMap);
+                workoutOutlineMap.put("Workout", dayMap);
 
                 //Last part of function that puts workout outline data onto the cloud database
                 String userID = currentUser.getUid();
@@ -468,7 +468,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
         ArrayList<ArrayList<String>>  tempMuscles = new ArrayList<>();
         ArrayList<String> tempDays = new ArrayList<>();
 
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 8; i++)
         {
             tempDays.add(null);
             tempMuscles.add(null);
@@ -523,6 +523,10 @@ public class WorkoutOutlineActivity extends BaseActivity {
                     }
                 }
                 tempMuscles.set(dayIndex, new ArrayList<>(tempMuscleOneDay));
+                for(int i = 0; i < 8; i++)
+                {
+                    tempMuscleOneDay.set(i, null);
+                }
             }
         }
 
