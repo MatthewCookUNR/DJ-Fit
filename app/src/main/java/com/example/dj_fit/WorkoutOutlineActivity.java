@@ -585,8 +585,12 @@ public class WorkoutOutlineActivity extends BaseActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        long end = System.currentTimeMillis();
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        Log.d(TAG, "Logged at " + (end - start));
                         populateOutline(document.getData());
+                        end = System.currentTimeMillis();
+                        Log.d(TAG, "Populate Logged at " + (end - start));
                     } else {
                         Log.d(TAG, "No such document");
                     }
