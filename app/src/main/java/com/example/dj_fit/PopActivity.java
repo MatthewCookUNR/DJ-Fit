@@ -135,6 +135,7 @@ public class PopActivity extends YouTubeBaseActivity {
                 Intent intent = new Intent();
                 intent.putExtra("id", getIntent().getIntExtra("id", 0));
                 intent.putStringArrayListExtra("videos", (ArrayList<String>) addedVideos);
+                System.out.println("Video list in popup: " + addedVideos );
                 setResult(RESULT_OK, intent);
                 finish();
             }

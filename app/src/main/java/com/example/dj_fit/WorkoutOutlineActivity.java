@@ -213,6 +213,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
     //Adds a new day to the workout outline
     void addDayToOutline(String selectedDay, ArrayList<Integer> selectedMuscles)
     {
+
         workoutOutline.add(new workoutDay());
         workoutOutline.get(workoutOutline.size()-1).setDay(selectedDay);
 
@@ -431,6 +432,8 @@ public class WorkoutOutlineActivity extends BaseActivity {
                     ArrayList<String> tempVideoList;
                     tempVideoList = dataIntent.getStringArrayListExtra("videos");
                     int tempID = dataIntent.getIntExtra("id", 0);
+                    System.out.println("Video list in main: " + tempVideoList);
+                    videoViewz.get(tempID-1).clear();
                     videoViewz.get(tempID-1).addAll(tempVideoList);
                 }
         }

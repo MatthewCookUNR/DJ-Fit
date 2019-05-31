@@ -76,12 +76,25 @@
         android:textAppearance="@android:style/TextAppearance.Large" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/iconImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/welcomeText"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/icon_ic_launcher_round" />
+
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/emailText"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/splash_port_hdpi" />
+        android:layout_centerHorizontal="true"
+        android:text="Welcome to DJ Fit"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
