@@ -15,7 +15,6 @@ import android.widget.ScrollView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -40,7 +39,6 @@ public class BackgroundActivity extends BaseActivity {
     private ImageView splashImage;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
-    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +58,6 @@ public class BackgroundActivity extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
         checkIfBackgroundExists();
 
 
