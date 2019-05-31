@@ -1,5 +1,6 @@
 package com.example.dj_fit;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,7 +17,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,10 +24,8 @@ public class LoginActivity extends AppCompatActivity {
 
     //Variables
     private FirebaseAuth mAuth;
-    private FirebaseFirestore mDatabase;
-    private FirebaseUser currentUser;
     private EditText emailText, passwordText;
-    private Button btnSignIn, btnSignOut, btnCreateAccount;
+    private Button btnSignIn, btnCreateAccount;
 
 
     @Override
@@ -41,13 +39,10 @@ public class LoginActivity extends AppCompatActivity {
         emailText = findViewById(R.id.emailText);
         passwordText = findViewById(R.id.passwordText);
         btnSignIn = findViewById(R.id.btnSignIn);
-        btnSignOut = findViewById(R.id.btnSignOut);
         btnCreateAccount = findViewById(R.id.btnCreateAccount);
 
         //Initializing Firebase variables
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseFirestore.getInstance();
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //Button signs the user into the application if they have a existing account
         btnSignIn.setOnClickListener(new View.OnClickListener(){
@@ -74,7 +69,6 @@ public class LoginActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "signInWithEmail:success");
-                                        currentUser = mAuth.getCurrentUser();
                                         Toast.makeText(LoginActivity.this, "Successfully signed in",
                                                 Toast.LENGTH_SHORT).show();
                                         userSignedIn();
@@ -94,17 +88,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Please enter a email and password.",
                             Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
-
-
-        //Button logs user out of the application
-        btnSignOut.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v)
-            {
-                mAuth.signOut();
-                Toast.makeText(LoginActivity.this, "User has signed out", Toast.LENGTH_SHORT).show();
             }
         });
 

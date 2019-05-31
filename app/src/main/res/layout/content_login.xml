@@ -14,6 +14,7 @@
             android:ems="10"
             android:hint="Email"
             android:inputType="textEmailAddress"
+            android:layout_above="@+id/passwordText"
             android:maxLines="1"
             android:textAppearance="@android:style/TextAppearance.Large" />
 
@@ -21,7 +22,7 @@
             android:id="@+id/passwordText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/emailText"
+            android:layout_above="@+id/btnSignIn"
             android:ems="10"
             android:hint="Password"
             android:inputType="textPassword"
@@ -32,16 +33,8 @@
         android:id="@+id/btnSignIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/passwordText"
+        android:layout_above="@+id/btnCreateAccount"
         android:text="Sign In"
-        android:textAppearance="@android:style/TextAppearance.Large" />
-
-    <Button
-        android:id="@+id/btnSignOut"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btnSignIn"
-        android:text="Sign Out"
         android:textAppearance="@android:style/TextAppearance.Large" />
 
     <Button
@@ -52,5 +45,14 @@
         android:layout_marginBottom="25dp"
         android:text="Create New DJ-FIT Account"
         android:textAppearance="@android:style/TextAppearance.Large" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/emailText"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/splash_port_hdpi" />
 
 </RelativeLayout>
