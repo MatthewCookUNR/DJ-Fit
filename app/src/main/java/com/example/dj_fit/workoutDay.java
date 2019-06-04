@@ -11,7 +11,8 @@ public class workoutDay
 {
     private String day;
     private TextView exerTitle, viewTitle, minTitle, maxTitle, dayView;
-    TableLayout myTable;
+    private TableLayout myTable;
+    private int dayOrderIndex;
     private ArrayList<String> muscleUsed = new ArrayList<>();
     private ArrayList<EditText> exercise = new ArrayList<>();
     private ArrayList<EditText> minWeight = new ArrayList<>();
@@ -131,6 +132,14 @@ public class workoutDay
 
     public void setDayView(TextView dayView) {
         this.dayView = dayView;
+    }
+
+    public int getDayOrderIndex() {
+        return dayOrderIndex;
+    }
+
+    public void setDayOrderIndex(int dayOrderIndex) {
+        this.dayOrderIndex = dayOrderIndex;
     }
 
     public void clearViewVideosList()

@@ -213,9 +213,58 @@ public class WorkoutOutlineActivity extends BaseActivity {
     //Adds a new day to the workout outline
     void addDayToOutline(String selectedDay, ArrayList<Integer> selectedMuscles)
     {
+        //Find where the day is in order of days
+        int selectedIndex = 0;
+        int insertIndex = 0;
 
-        workoutOutline.add(new workoutDay());
-        workoutOutline.get(workoutOutline.size()-1).setDay(selectedDay);
+        for (int i = 0; i < dayList.length; i++)
+        {
+            if(selectedDay.equals(dayList[i]))
+            {
+                selectedIndex = i;
+            }
+        }
+
+        //Finds index for where day will be added in current layout
+        for(int z = 0; z < workoutOutline.size(); z++)
+        {
+            if(workoutOutline.get(z).getDayOrderIndex() < selectedIndex)
+            {
+                //Case 1: Add to end of outline
+                if(z == workoutOutline.size()-1)
+                {
+                    insertIndex = z+1;
+                    break;
+                }
+                //Case 2: Add after current day but before the following day
+                else if (workoutOutline.get(z+1).getDayOrderIndex() > selectedIndex )
+                {
+                    insertIndex = z+1;
+                    break;
+                }
+                //If neither pass, move to next day to check
+            }
+            //Case 3: Add before the entire list
+            if(workoutOutline.get(z).getDayOrderIndex() > selectedIndex)
+            {
+                insertIndex = z;
+                break;
+            }
+        }
+
+        //Add new day to end of outline if it is the last day
+        //Otherwise, insert in correct spot
+        if(workoutOutline.size() == insertIndex)
+        {
+            workoutOutline.add(new workoutDay());
+        }
+        else
+        {
+            workoutOutline.add(insertIndex, new workoutDay());
+        }
+
+        workoutOutline.get(insertIndex).setDay(selectedDay);
+        workoutOutline.get(insertIndex).setDayOrderIndex(selectedIndex);
 
         //Creates Textview representing day of a particular workout (Mon-Sun)
         TextView mText = new TextView(WorkoutOutlineActivity.this);
@@ -232,7 +281,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
         mText.setTextSize(30);
         mText.setGravity(Gravity.CENTER);
         mText.setLayoutParams(params);
-        workoutOutline.get(workoutOutline.size()-1).setDayView(mText);
+        workoutOutline.get(insertIndex).setDayView(mText);
         container.addView(mText);
         integer++;
 
@@ -248,7 +297,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
         exerTitle.setText("Exercise");
         TableRow.LayoutParams paramColumn1 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, .60f);
         exerTitle.setLayoutParams(paramColumn1);
-        workoutOutline.get(workoutOutline.size()-1).setExerTitle(exerTitle);
+        workoutOutline.get(insertIndex).setExerTitle(exerTitle);
 
         TextView viewTitle = new TextView(WorkoutOutlineActivity.this);
         viewTitle.setGravity(Gravity.CENTER);
@@ -256,7 +305,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
         viewTitle.setText("Videos");
         TableRow.LayoutParams paramColumn2 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.MATCH_PARENT, .20f);
         viewTitle.setLayoutParams(paramColumn2);
-        workoutOutline.get(workoutOutline.size()-1).setViewTitle(viewTitle);
+        workoutOutline.get(insertIndex).setViewTitle(viewTitle);
 
         TextView minTitle = new TextView(WorkoutOutlineActivity.this);
         minTitle.setGravity(Gravity.CENTER);
@@ -264,7 +313,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
         minTitle.setText("Min Weight");
         TableRow.LayoutParams paramColumn3 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.MATCH_PARENT, .1f);
         minTitle.setLayoutParams(paramColumn3);
-        workoutOutline.get(workoutOutline.size()-1).setMinTitle(minTitle);
+        workoutOutline.get(insertIndex).setMinTitle(minTitle);
 
 
         TextView maxTitle = new TextView(WorkoutOutlineActivity.this);
@@ -273,7 +322,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
         maxTitle.setText("Max Weight");
         TableRow.LayoutParams paramColumn4 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.MATCH_PARENT, .1f);
         maxTitle.setLayoutParams(paramColumn4);
-        workoutOutline.get(workoutOutline.size()-1).setMaxTitle(maxTitle);
+        workoutOutline.get(insertIndex).setMaxTitle(maxTitle);
 
 
         //Adds elements of first row
@@ -295,22 +344,30 @@ public class WorkoutOutlineActivity extends BaseActivity {
         for(int i = 0; i < selectedMuscles.size(); i++)
         {
             String currentMuscle = muscleList[selectedMuscles.get(i)];
-            workoutOutline.get(workoutOutline.size()-1).addMuscleUsed(currentMuscle);
+            workoutOutline.get(insertIndex).addMuscleUsed(currentMuscle);
 
             //Add rows to the table
             newTable.addView(createMuscleTypeRow(currentMuscle));
-            newTable.addView(createBaseRow(true, paramColumn1, paramColumn2, paramColumn3, paramColumn4));
-            newTable.addView(createBaseRow(false, paramColumn1, paramColumn2, paramColumn3, paramColumn4));
-            newTable.addView(createBaseRow(false, paramColumn1, paramColumn2, paramColumn3, paramColumn4));
-            newTable.addView(createBaseRow(false, paramColumn1, paramColumn2, paramColumn3, paramColumn4));
-            newTable.addView(createBaseRow(false, paramColumn1, paramColumn2, paramColumn3, paramColumn4));
+            newTable.addView(createBaseRow(insertIndex, true, paramColumn1, paramColumn2, paramColumn3));
+            newTable.addView(createBaseRow(insertIndex, false, paramColumn1, paramColumn2, paramColumn3));
+            newTable.addView(createBaseRow(insertIndex, false, paramColumn1, paramColumn2, paramColumn3));
+            newTable.addView(createBaseRow(insertIndex,false, paramColumn1, paramColumn2, paramColumn3));
+            newTable.addView(createBaseRow(insertIndex,false, paramColumn1, paramColumn2, paramColumn3));
         }
 
         newTable.setId(integer);
         integer++;
-        workoutOutline.get(workoutOutline.size()-1).setMyTable(newTable);
+        workoutOutline.get(insertIndex).setMyTable(newTable);
         //Create the table on screen
-        container.addView(newTable, paramsR);
+
+        if(insertIndex != workoutOutline.size()-1)
+        {
+            remakeLayouts(insertIndex);
+        }
+        else
+        {
+            container.addView(newTable, paramsR);
+        }
     }
 
     //Creates a clickable textview to be used in the workout outline
@@ -355,8 +412,8 @@ public class WorkoutOutlineActivity extends BaseActivity {
     }
 
     //Function returns a new row for the workout outline to be put in a table
-    TableRow createBaseRow(boolean warmUp, TableRow.LayoutParams paramColumn1, TableRow.LayoutParams paramColumn2,
-                           TableRow.LayoutParams paramColumn3, TableRow.LayoutParams paramColumn4)
+    TableRow createBaseRow(int insertIndex, boolean warmUp, TableRow.LayoutParams paramColumn1, TableRow.LayoutParams paramColumn2,
+                           TableRow.LayoutParams paramColumn3)
     {
         TableRow baseRow = new TableRow(WorkoutOutlineActivity.this);
         TableRow.LayoutParams params = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -402,10 +459,10 @@ public class WorkoutOutlineActivity extends BaseActivity {
         maxEdit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         maxEdit.setLayoutParams(paramColumn3);
 
-        workoutOutline.get(workoutOutline.size()-1).addExercise(exerEdit);
-        videoViewz.add(new ArrayList<String>());
-        workoutOutline.get(workoutOutline.size()-1).addMinWeight(minEdit);
-        workoutOutline.get(workoutOutline.size()-1).addMaxWeight(maxEdit);
+        workoutOutline.get(insertIndex).addExercise(exerEdit);
+        videoViewz.add(insertIndex, new ArrayList<String>());
+        workoutOutline.get(insertIndex).addMinWeight(minEdit);
+        workoutOutline.get(insertIndex).addMaxWeight(maxEdit);
 
         baseRow.addView(exerEdit);
         baseRow.addView(viewTarget);
@@ -751,6 +808,81 @@ public class WorkoutOutlineActivity extends BaseActivity {
         mDialog.show();
     }
 
+    //Function remakes the layout when a new day is inserting in the outline
+    //Puts the day in the correct spot and then shifts the rest down
+    void remakeLayouts(int insertIndex)
+    {
+        //First section inserts the new day into correct spot
+        int titleIndex, tableIndex;
+        int zIndex = insertIndex+1;
+        titleIndex = workoutOutline.get(insertIndex+1).getDayView().getId();
+        tableIndex = workoutOutline.get(insertIndex+1).getMyTable().getId();
+        container.removeView(workoutOutline.get(insertIndex).getDayView());
+        container.removeView(workoutOutline.get(insertIndex).getMyTable());
+        workoutOutline.get(insertIndex).getDayView().setId(titleIndex);
+        workoutOutline.get(insertIndex).getMyTable().setId(tableIndex);
+
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.topMargin = 85;
+        params.addRule(RelativeLayout.BELOW, titleIndex-1);
+        container.addView(workoutOutline.get(insertIndex).getDayView(), params);
+
+        RelativeLayout.LayoutParams paramsT = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        paramsT.topMargin = 85;
+        paramsT.addRule(RelativeLayout.BELOW, titleIndex);
+        container.addView(workoutOutline.get(insertIndex).getMyTable(), paramsT);
+        //System.out.println( "Day indexN: " + workoutOutline.get(insertIndex).getDayView().getId());
+        //System.out.println( "Table indexN: " + workoutOutline.get(insertIndex).getMyTable().getId());
+
+        //This loop shifts the IDs of the layout elements by 1 and recreates them
+        while(zIndex < workoutOutline.size()-1)
+        {
+            params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            paramsT = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            titleIndex = (workoutOutline.get(zIndex+1).getDayView().getId());
+            tableIndex = (workoutOutline.get(zIndex+1).getMyTable().getId());
+            container.removeView(workoutOutline.get(zIndex).getDayView());
+            container.removeView(workoutOutline.get(zIndex).getMyTable());
+            workoutOutline.get(zIndex).getDayView().setId(titleIndex);
+            workoutOutline.get(zIndex).getMyTable().setId(tableIndex);
+
+            //System.out.println( "Day index: " + workoutOutline.get(zIndex).getDayView().getId());
+            //System.out.println( "Table index: " + workoutOutline.get(zIndex).getMyTable().getId());
+
+            params.topMargin = 85;
+            params.addRule(RelativeLayout.BELOW, titleIndex-1);
+            container.addView(workoutOutline.get(zIndex).getDayView(), params);
+
+            paramsT.topMargin = 85;
+            paramsT.addRule(RelativeLayout.BELOW, titleIndex);
+            container.addView(workoutOutline.get(zIndex).getMyTable(), paramsT);
+            zIndex++;
+        }
+
+        //Last part of function sets the final day in the outline to the end based off of current global id integer
+        params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        paramsT = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        titleIndex = integer-2;
+        tableIndex = integer-1;
+        container.removeView(workoutOutline.get(zIndex).getDayView());
+        container.removeView(workoutOutline.get(zIndex).getMyTable());
+        workoutOutline.get(zIndex).getDayView().setId(titleIndex);
+        workoutOutline.get(zIndex).getMyTable().setId(tableIndex);
+
+        //System.out.println( "Day indexz: " + workoutOutline.get(zIndex).getDayView().getId());
+        //System.out.println( "Table indexz: " + workoutOutline.get(zIndex).getMyTable().getId());
+
+        params.topMargin = 85;
+        params.addRule(RelativeLayout.BELOW, titleIndex-1);
+        container.addView(workoutOutline.get(zIndex).getDayView(), params);
+
+        paramsT.topMargin = 85;
+        paramsT.addRule(RelativeLayout.BELOW, titleIndex);
+        container.addView(workoutOutline.get(zIndex).getMyTable(), paramsT);
+    }
 
     //Function adds videos stored for "View" buttons to the workoutOutline object for use
     //of storing them on the cloud
