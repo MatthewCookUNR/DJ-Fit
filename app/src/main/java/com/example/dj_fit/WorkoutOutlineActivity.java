@@ -73,6 +73,8 @@ public class WorkoutOutlineActivity extends BaseActivity {
         setContentView(R.layout.activity_workout_outline);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        final long start = System.currentTimeMillis();
+
 
         container = findViewById(R.id.relativeScroll);
         hrEdit = findViewById(R.id.hrEdit);
@@ -90,7 +92,9 @@ public class WorkoutOutlineActivity extends BaseActivity {
         mDatabase = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        final long end = System.currentTimeMillis();
         checkIfOutlineExists();
+        System.out.println("Time initialize: " + (end - start));
 
         //Handles the on click function of adding a day to the workout outline
         btnAddDay.setOnClickListener(new View.OnClickListener() {
