@@ -2,6 +2,8 @@ package com.example.dj_fit;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -28,11 +30,13 @@ public class TrainerRegisterActivity extends BaseActivity
 {
     private static final int RESULT_LOAD_IMAGE = 1;
     Uri imageToUpload;
+    ImageView mImage;
     EditText experienceEdit, employmentEdit, aboutYouEdit;
     Button btnUploadImage, btnBecomeTrainer;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
     private StorageReference mStorageRef;
+    String imageName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class TrainerRegisterActivity extends BaseActivity
         aboutYouEdit = findViewById(R.id.aboutYouEdit);
         btnUploadImage = findViewById(R.id.btnUploadImage);
         btnBecomeTrainer = findViewById(R.id.btnBecomeTrainer);
+        mImage = findViewById(R.id.imageView);
         imageToUpload = null;
 
         mAuth = FirebaseAuth.getInstance();
@@ -89,14 +94,16 @@ public class TrainerRegisterActivity extends BaseActivity
     {
         if(imageToUpload != null)
         {
-            StorageReference fileRef = mStorageRef.child(System.currentTimeMillis() + "." +
-            getFileExtension(imageToUpload));
+            imageName = System.currentTimeMillis() + "." +
+                    getFileExtension(imageToUpload);
+            StorageReference fileRef = mStorageRef.child(imageName);
 
             fileRef.putFile(imageToUpload).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                     Toast.makeText(TrainerRegisterActivity.this, "File upload success", Toast.LENGTH_SHORT).show();
+                    downloadFile(imageName);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -115,5 +122,30 @@ public class TrainerRegisterActivity extends BaseActivity
         {
             Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void downloadFile(String fileName)
+    {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference imageRef = storageRef.child("trainerPics/" + fileName);
+        System.out.println("trainerPics/" + fileName);
+
+        final long TEN_MEGABYTE = 10 * 1024 * 1024;
+        imageRef.getBytes(TEN_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // Data for "images/island.jpg" is returns, use this as needed
+                Toast.makeText(TrainerRegisterActivity.this, "Download success", Toast.LENGTH_SHORT).show();
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                mImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, mImage.getWidth(),
+                        mImage.getHeight(), false));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Toast.makeText(TrainerRegisterActivity.this, "Download failed", Toast.LENGTH_SHORT).show();
+                // Handle any errors
+            }
+        });
     }
 }
