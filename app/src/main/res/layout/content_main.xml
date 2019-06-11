@@ -39,5 +39,13 @@
             android:layout_below="@+id/btnBackground"
             android:text="Workout Outline"
             android:textAppearance="@android:style/TextAppearance.Large" />
+
+        <Button
+            android:id="@+id/btnRegisterTrainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnWorkoutOutline"
+            android:text="Register as a Trainer"
+            android:textAppearance="@android:style/TextAppearance.Large"/>
     </RelativeLayout>
 </ScrollView>

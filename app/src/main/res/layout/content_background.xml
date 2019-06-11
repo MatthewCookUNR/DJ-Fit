@@ -44,7 +44,7 @@
 
             <EditText
                 android:id="@+id/additionalEdit"
-                android:layout_width="361dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/additionalLabel"
                 android:layout_alignParentStart="true"
@@ -75,7 +75,7 @@
 
             <EditText
                 android:id="@+id/availabilityEdit"
-                android:layout_width="361dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/availabilityLabel"
                 android:layout_alignParentStart="true"
@@ -106,7 +106,7 @@
 
             <EditText
                 android:id="@+id/goalEdit"
-                android:layout_width="361dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/goalLabel"
                 android:layout_alignParentStart="true"
@@ -137,7 +137,7 @@
 
             <EditText
                 android:id="@+id/currentFitEdit"
-                android:layout_width="361dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/currentFitLabel"
                 android:layout_alignParentStart="true"
@@ -168,7 +168,7 @@
 
             <EditText
                 android:id="@+id/medicalEdit"
-                android:layout_width="361dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/medicalLabel"
                 android:layout_alignParentStart="true"
