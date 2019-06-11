@@ -22,9 +22,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/titleText"
+        android:gravity="center"
         android:layout_marginStart="21dp"
         android:layout_marginEnd="21dp"
-        android:layout_marginTop="34dp"
+        android:layout_marginTop="23dp"
         android:lineSpacingExtra="8sp"
         android:text="Please fill out the the following information about yourself for use in your trainer profile:"
         android:textAppearance="@android:style/TextAppearance.Medium" />
@@ -60,13 +61,6 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/testView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1000dp"
-                android:text="TextView" />
-
-            <TextView
                 android:id="@+id/experienceLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -84,6 +78,8 @@
                 android:layout_below="@+id/experienceLabel"
                 android:layout_marginStart="21dp"
                 android:layout_marginLeft="21dp"
+                android:layout_marginEnd="21dp"
+                android:layout_marginRight="21dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:inputType="textMultiLine"
