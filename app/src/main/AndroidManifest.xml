@@ -15,7 +15,8 @@
         <activity
             android:name=".TrainerRegisterActivity"
             android:label="@string/title_activity_trainer_register"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" ></activity>
         <activity
             android:name=".PopActivity"
             android:theme="@style/AppTheme.PopMe" />
@@ -31,7 +32,8 @@
         <activity
             android:name=".BackgroundActivity"
             android:label="@string/title_activity_background"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"

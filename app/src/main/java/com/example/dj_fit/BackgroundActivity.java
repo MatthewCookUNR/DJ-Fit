@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,7 +36,8 @@ public class BackgroundActivity extends BaseActivity {
                      availabilityEdit, additionalEdit;
 
     private Button btnSubmit;
-    private ScrollView backgroundView;
+    private ScrollView backgroundScroll;
+    private RelativeLayout backgroundText, backgroundBtn;
     private ImageView splashImage;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
@@ -53,7 +55,9 @@ public class BackgroundActivity extends BaseActivity {
         availabilityEdit = findViewById(R.id.availabilityEdit);
         additionalEdit = findViewById(R.id.additionalEdit);
         btnSubmit = findViewById(R.id.btnSubmit);
-        backgroundView = findViewById(R.id.backgroundView);
+        backgroundScroll = findViewById(R.id.backgroundScroll);
+        backgroundText = findViewById(R.id.backgroundText);
+        backgroundBtn = findViewById(R.id.backgroundBtn);
         splashImage = findViewById(R.id.splashImage);
 
         mAuth = FirebaseAuth.getInstance();
@@ -104,8 +108,9 @@ public class BackgroundActivity extends BaseActivity {
                 {
                     Log.d (TAG, "Current data: null");
                     splashImage.setVisibility(View.GONE);
-                    backgroundView.setVisibility(View.VISIBLE);
-                }
+                    backgroundScroll.setVisibility(View.VISIBLE);
+                    backgroundText.setVisibility(View.VISIBLE);
+                    backgroundBtn.setVisibility(View.VISIBLE);                }
             }
         });
     }
@@ -113,7 +118,9 @@ public class BackgroundActivity extends BaseActivity {
     private void populateBackground(Map<String, Object> docData)
     {
         splashImage.setVisibility(View.GONE);
-        backgroundView.setVisibility(View.VISIBLE);
+        backgroundScroll.setVisibility(View.VISIBLE);
+        backgroundText.setVisibility(View.VISIBLE);
+        backgroundBtn.setVisibility(View.VISIBLE);
         currentFitEdit.setText(docData.get("currentFitProgram").toString());
         medicalEdit.setText(docData.get("medicalHist").toString());
         goalEdit.setText(docData.get("goals").toString());
