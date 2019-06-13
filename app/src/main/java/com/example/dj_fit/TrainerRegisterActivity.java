@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -26,9 +27,13 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TrainerRegisterActivity extends BaseActivity
 {
     private static final int RESULT_LOAD_IMAGE = 1;
+    private static final String TAG = "TrainerRegisterActivity";
     Uri imageToUpload;
     ImageView mImage;
     EditText experienceEdit, employmentEdit, aboutYouEdit;
@@ -50,8 +55,9 @@ public class TrainerRegisterActivity extends BaseActivity
         aboutYouEdit = findViewById(R.id.aboutYouEdit);
         btnUploadImage = findViewById(R.id.btnUploadImage);
         btnBecomeTrainer = findViewById(R.id.btnBecomeTrainer);
-        mImage = findViewById(R.id.imageView);
+        mImage = findViewById(R.id.profileImageView);
         imageToUpload = null;
+        imageName = null;
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
@@ -68,7 +74,11 @@ public class TrainerRegisterActivity extends BaseActivity
         btnBecomeTrainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadImage();
+                if(imageName != null)
+                {
+                    uploadImage();
+                }
+                uploadToDB();
             }
         });
 
@@ -80,6 +90,7 @@ public class TrainerRegisterActivity extends BaseActivity
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK)
         {
             imageToUpload = data.getData();
+            mImage.setImageURI(imageToUpload);
         }
     }
 
@@ -103,7 +114,7 @@ public class TrainerRegisterActivity extends BaseActivity
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                     Toast.makeText(TrainerRegisterActivity.this, "File upload success", Toast.LENGTH_SHORT).show();
-                    downloadFile(imageName);
+                    //downloadFile();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -124,11 +135,52 @@ public class TrainerRegisterActivity extends BaseActivity
         }
     }
 
-    private void downloadFile(String fileName)
+    private void uploadToDB()
+    {
+        String imageLink;
+        if(imageName != null)
+        {
+            imageLink = "trainerPics/" + imageName;
+        }
+        else
+        {
+            imageLink = null;
+        }
+        String experience = experienceEdit.getText().toString();
+        String employment = employmentEdit.getText().toString();
+        String aboutYou = aboutYouEdit.getText().toString();
+        String userID = mAuth.getCurrentUser().getUid();
+
+        Map<String, Object> doctData = new HashMap<>();
+        doctData.put("experience", experience);
+        doctData.put("employment", employment);
+        doctData.put("aboutYou", aboutYou);
+        doctData.put("profilePic", imageLink);
+        doctData.put("isTrainer", true);
+
+        final long start = System.currentTimeMillis();
+
+        mDatabase.collection("users").document(userID)
+                .update(doctData).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                long end = System.currentTimeMillis();
+                Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+    }
+
+    /*
+    private void downloadFile()
     {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference imageRef = storageRef.child("trainerPics/" + fileName);
-        System.out.println("trainerPics/" + fileName);
+        StorageReference imageRef = storageRef.child("trainerPics/" + imageName);
 
         final long TEN_MEGABYTE = 10 * 1024 * 1024;
         imageRef.getBytes(TEN_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -148,4 +200,5 @@ public class TrainerRegisterActivity extends BaseActivity
             }
         });
     }
+    */
 }

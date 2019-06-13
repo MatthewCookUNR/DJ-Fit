@@ -154,6 +154,4 @@ public class BackgroundActivity extends BaseActivity {
                     }
                 });
     }
-
-
 }
