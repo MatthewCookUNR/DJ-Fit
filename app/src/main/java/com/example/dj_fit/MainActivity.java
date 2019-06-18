@@ -11,7 +11,7 @@ import android.widget.Button;
 public class MainActivity extends BaseActivity {
 
     //Variables
-    private Button btnBackground, btnWorkoutOutline, btnRegisterTrainer;
+    private Button btnBackground, btnWorkoutOutline, btnRegisterTrainer, btnTrainerProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +24,7 @@ public class MainActivity extends BaseActivity {
         btnBackground = findViewById(R.id.btnBackground);
         btnWorkoutOutline = findViewById(R.id.btnWorkoutOutline);
         btnRegisterTrainer = findViewById(R.id.btnRegisterTrainer);
+        btnTrainerProfile = findViewById(R.id.btnTrainerProfile);
 
 
 
@@ -46,8 +47,16 @@ public class MainActivity extends BaseActivity {
         btnRegisterTrainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent workoutOutlineAct = new Intent(MainActivity.this, TrainerRegisterActivity.class);
-                startActivity(workoutOutlineAct);
+                Intent trainerRegisterIntent = new Intent(MainActivity.this, TrainerRegisterActivity.class);
+                startActivity(trainerRegisterIntent);
+            }
+        });
+
+        btnTrainerProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent trainerProfileIntent = new Intent(MainActivity.this, TrainerProfileActivity.class);
+                startActivity(trainerProfileIntent);
             }
         });
 

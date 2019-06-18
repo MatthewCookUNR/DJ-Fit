@@ -2,11 +2,14 @@ package com.example.dj_fit;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -88,7 +91,23 @@ public class TrainerRegisterActivity extends BaseActivity
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK)
         {
             imageToUpload = data.getData();
-            mImage.setImageURI(imageToUpload);
+            if(imageToUpload != null)
+            {
+                try
+                {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageToUpload);
+                    RoundedBitmapDrawable roundDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+                    roundDrawable.setCircular(true);
+                    final float scale = this.getResources().getDisplayMetrics().density;
+                    mImage.setMaxHeight((int) (120 * scale + 0.5f));
+                    mImage.setMaxWidth((int) (120 * scale + 0.5f));
+                    mImage.setImageDrawable(roundDrawable);
+                }
+                catch (Exception e)
+                {
+                    System.out.println("Bitmap exception");
+                }
+            }
         }
     }
 

@@ -161,8 +161,6 @@
                 android:layout_below="@+id/profileImageView"
                 android:layout_marginStart="21dp"
                 android:layout_marginLeft="21dp"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
                 android:text="Upload Image" />
 
             <ImageView
@@ -174,6 +172,7 @@
                 android:layout_marginEnd="21dp"
                 android:layout_marginRight="21dp"
                 android:layout_marginTop="8dp"
+                android:adjustViewBounds="true"
                 android:layout_below="@+id/uploadSelfieLabel"
                 app:srcCompat="@android:color/background_light" />
 

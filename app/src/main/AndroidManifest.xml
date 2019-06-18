@@ -3,7 +3,7 @@
     package="com.example.dj_fit">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -13,10 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".TrainerProfileActivity"
+            android:label="@string/title_activity_trainer_profile"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".TrainerRegisterActivity"
             android:label="@string/title_activity_trainer_register"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" ></activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".PopActivity"
             android:theme="@style/AppTheme.PopMe" />
@@ -33,7 +37,7 @@
             android:name=".BackgroundActivity"
             android:label="@string/title_activity_background"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
