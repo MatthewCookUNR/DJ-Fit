@@ -20,8 +20,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -47,7 +49,7 @@ public class TrainerRegisterActivity extends BaseActivity
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
     private StorageReference mStorageRef;
-    String imageName;
+    String imageName, uploadedImageName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +64,14 @@ public class TrainerRegisterActivity extends BaseActivity
         btnUploadImage = findViewById(R.id.btnUploadImage);
         btnBecomeTrainer = findViewById(R.id.btnBecomeTrainer);
         mImage = findViewById(R.id.profileImageView);
+        uploadedImageName = null;
         imageToUpload = null;
         imageName = null;
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
         mStorageRef= FirebaseStorage.getInstance().getReference("trainerPics");
+        System.out.println("On create stuff");
         checkIfTrainerRegisterExists();
 
         btnUploadImage.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +96,6 @@ public class TrainerRegisterActivity extends BaseActivity
                 uploadToDB();
             }
         });
-
     }
 
     @Override
@@ -139,9 +142,14 @@ public class TrainerRegisterActivity extends BaseActivity
             fileRef.putFile(imageToUpload).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                     Toast.makeText(TrainerRegisterActivity.this, "File upload success", Toast.LENGTH_SHORT).show();
-                    //downloadFile();
+                    System.out.println("Before: " + uploadedImageName);
+                    if(uploadedImageName != null)
+                    {
+                        deleteCurrentProfilePic();
+                    }
+                    uploadedImageName = "trainerPics/" + imageName;
+                    System.out.println("After: " + uploadedImageName);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -208,10 +216,11 @@ public class TrainerRegisterActivity extends BaseActivity
         experienceEdit.setText(docData.get("experience").toString());
         employmentEdit.setText(docData.get("employment").toString());
         aboutYouEdit.setText(docData.get("aboutYou").toString());
-        imageName = docData.get("profilePic").toString();
+        Object name = docData.get("profilePic");
 
-        if(imageName != null)
+        if(name != null)
         {
+            uploadedImageName = name.toString();
             System.out.println("Image is not null");
             downloadFile();
         }
@@ -226,29 +235,41 @@ public class TrainerRegisterActivity extends BaseActivity
         final long start = System.currentTimeMillis();
         String userID = mAuth.getCurrentUser().getUid();
         DocumentReference docRef = mDatabase.collection("users").document(userID);
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                if (e != null)
-                {
-                    Log.w(TAG, "Listen failed", e);
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        Log.d(TAG, "Logged at " + (end - start));
+                        populateTrainerRegister(document.getData());
+                        end = System.currentTimeMillis();
+                        Log.d(TAG, "Populate Logged at " + (end - start));
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
                 }
+            }
+        });
+    }
 
-                if (documentSnapshot != null && documentSnapshot.exists())
-                {
-                    long end = System.currentTimeMillis();
-                    Log.d(TAG, "Current data: " + documentSnapshot.getData());
-                    Log.d(TAG, "Logged at " + (end - start));
-                    populateTrainerRegister(documentSnapshot.getData());
-                }
-                else
-                {
-                    Log.d (TAG, "Current data: null");
-                    //splashImage.setVisibility(View.GONE);
-                    //backgroundScroll.setVisibility(View.VISIBLE);
-                    //backgroundText.setVisibility(View.VISIBLE);
-                    //backgroundBtn.setVisibility(View.VISIBLE);
-                }
+    private void deleteCurrentProfilePic()
+    {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference imageRef = storageRef.child(uploadedImageName);
+        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(TrainerRegisterActivity.this, "Delete success", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(TrainerRegisterActivity.this, "Delete failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -256,7 +277,7 @@ public class TrainerRegisterActivity extends BaseActivity
     private void downloadFile()
     {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference imageRef = storageRef.child(imageName);
+        StorageReference imageRef = storageRef.child(uploadedImageName);
 
         final long TEN_MEGABYTE = 10 * 1024 * 1024;
         imageRef.getBytes(TEN_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
