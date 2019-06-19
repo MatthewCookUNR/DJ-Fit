@@ -8,6 +8,11 @@
     tools:context=".TrainerProfileActivity"
     tools:showIn="@layout/activity_trainer_profile">
 
+    <RelativeLayout
+        android:id="@+id/topGradLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grad">
 
     <ImageView
         android:id="@+id/profileImageView"
@@ -26,5 +31,78 @@
         android:layout_below="@+id/profileImageView"
         android:layout_centerHorizontal="true"
         android:text="Matthew Cook"
+        android:textColor="@color/white"
         android:textSize="32sp"/>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/trainerScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/topGradLayout">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:id="@+id/employerLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Employer:"
+                android:textSize="13dp"/>
+
+            <TextView
+                android:id="@+id/employerText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Employer Text"
+                android:fontFamily="sans-serif-light"
+                android:layout_below="@+id/employerLabel"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:id="@+id/experienceLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Experience:"
+                android:layout_marginTop="15dp"
+                android:layout_below="@+id/employerText"
+                android:textSize="13dp"/>
+
+            <TextView
+                android:id="@+id/experienceText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Experience Text"
+                android:fontFamily="sans-serif-light"
+                android:layout_below="@+id/experienceLabel"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:id="@+id/aboutMeLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="About Me:"
+                android:layout_marginTop="15dp"
+                android:layout_below="@+id/experienceText"
+                android:textSize="13dp"/>
+
+            <TextView
+                android:id="@+id/aboutMeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="About Me Text"
+                android:fontFamily="sans-serif-light"
+                android:layout_below="@+id/aboutMeLabel"
+                android:textSize="18dp"/>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
 </RelativeLayout>

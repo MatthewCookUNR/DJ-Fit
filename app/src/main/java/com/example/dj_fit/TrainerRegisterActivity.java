@@ -3,6 +3,7 @@ package com.example.dj_fit;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -80,9 +81,13 @@ public class TrainerRegisterActivity extends BaseActivity
         btnBecomeTrainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imageName != null)
+                if(imageToUpload != null)
                 {
                     uploadImage();
+                }
+                else
+                {
+                    System.out.println("No image");
                 }
                 uploadToDB();
             }
@@ -203,6 +208,17 @@ public class TrainerRegisterActivity extends BaseActivity
         experienceEdit.setText(docData.get("experience").toString());
         employmentEdit.setText(docData.get("employment").toString());
         aboutYouEdit.setText(docData.get("aboutYou").toString());
+        imageName = docData.get("profilePic").toString();
+
+        if(imageName != null)
+        {
+            System.out.println("Image is not null");
+            downloadFile();
+        }
+        else
+        {
+            System.out.println("Image is null");
+        }
     }
 
     private void checkIfTrainerRegisterExists()
@@ -237,11 +253,10 @@ public class TrainerRegisterActivity extends BaseActivity
         });
     }
 
-    /*
     private void downloadFile()
     {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference imageRef = storageRef.child("trainerPics/" + imageName);
+        StorageReference imageRef = storageRef.child(imageName);
 
         final long TEN_MEGABYTE = 10 * 1024 * 1024;
         imageRef.getBytes(TEN_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -250,8 +265,12 @@ public class TrainerRegisterActivity extends BaseActivity
                 // Data for "images/island.jpg" is returns, use this as needed
                 Toast.makeText(TrainerRegisterActivity.this, "Download success", Toast.LENGTH_SHORT).show();
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                mImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, mImage.getWidth(),
-                        mImage.getHeight(), false));
+                RoundedBitmapDrawable roundDrawable = RoundedBitmapDrawableFactory.create(getResources(), bmp);
+                roundDrawable.setCircular(true);
+                final float scale = TrainerRegisterActivity.this.getResources().getDisplayMetrics().density;
+                mImage.setMaxHeight((int) (120 * scale + 0.5f));
+                mImage.setMaxWidth((int) (120 * scale + 0.5f));
+                mImage.setImageDrawable(roundDrawable);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -261,5 +280,4 @@ public class TrainerRegisterActivity extends BaseActivity
             }
         });
     }
-    */
 }

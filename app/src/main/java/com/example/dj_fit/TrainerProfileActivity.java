@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -33,7 +35,7 @@ public class TrainerProfileActivity extends BaseActivity {
 
     String TAG = "Trainer Profile Activity";
     ImageView profileImageView;
-    TextView profileNameText;
+    TextView profileNameText, employerText, experienceText, aboutMeText;
     String imageName;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
@@ -47,6 +49,9 @@ public class TrainerProfileActivity extends BaseActivity {
 
         profileImageView = findViewById(R.id.profileImageView);
         profileNameText = findViewById(R.id.profileNameText);
+        employerText = findViewById(R.id.employerText);
+        experienceText = findViewById(R.id.experienceText);
+        aboutMeText = findViewById(R.id.aboutMeText);
         imageName = null;
 
         mAuth = FirebaseAuth.getInstance();
@@ -58,13 +63,19 @@ public class TrainerProfileActivity extends BaseActivity {
     private void populateProfilePage(Map<String, Object> docData)
     {
         imageName = (String) docData.get("profilePic");
+        String fullName = docData.get("first_name").toString() + " " + docData.get("last_name").toString();
+        profileNameText.setText(fullName);
+        employerText.setText(docData.get("employment").toString());
+        experienceText.setText(docData.get("experience").toString());
+        aboutMeText.setText(docData.get("aboutYou").toString());
         if(imageName == null)
         {
             System.out.println("Image is null");
         }
         else
         {
-            System.out.println("Image is not null");
+            System.out.println(imageName);
+            downloadFile();
         }
     }
 
@@ -103,7 +114,7 @@ public class TrainerProfileActivity extends BaseActivity {
     private void downloadFile()
     {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference imageRef = storageRef.child("trainerPics/" + imageName);
+        StorageReference imageRef = storageRef.child(imageName);
 
         final long TEN_MEGABYTE = 10 * 1024 * 1024;
         imageRef.getBytes(TEN_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -112,8 +123,12 @@ public class TrainerProfileActivity extends BaseActivity {
                 // Data for "images/island.jpg" is returns, use this as needed
                 Toast.makeText(TrainerProfileActivity.this, "Download success", Toast.LENGTH_SHORT).show();
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                profileImageView.setImageBitmap(Bitmap.createScaledBitmap(bmp, profileImageView.getWidth(),
-                        profileImageView.getHeight(), false));
+                RoundedBitmapDrawable roundDrawable = RoundedBitmapDrawableFactory.create(getResources(), bmp);
+                roundDrawable.setCircular(true);
+                final float scale = TrainerProfileActivity.this.getResources().getDisplayMetrics().density;
+                profileImageView.setMaxHeight((int) (120 * scale + 0.5f));
+                profileImageView.setMaxWidth((int) (120 * scale + 0.5f));
+                profileImageView.setImageDrawable(roundDrawable);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
