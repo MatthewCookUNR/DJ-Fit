@@ -22,7 +22,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -63,6 +67,7 @@ public class TrainerRegisterActivity extends BaseActivity
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
         mStorageRef= FirebaseStorage.getInstance().getReference("trainerPics");
+        checkIfTrainerRegisterExists();
 
         btnUploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,6 +196,45 @@ public class TrainerRegisterActivity extends BaseActivity
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
+    }
+
+    private void populateTrainerRegister(Map<String, Object> docData)
+    {
+        experienceEdit.setText(docData.get("experience").toString());
+        employmentEdit.setText(docData.get("employment").toString());
+        aboutYouEdit.setText(docData.get("aboutYou").toString());
+    }
+
+    private void checkIfTrainerRegisterExists()
+    {
+        final long start = System.currentTimeMillis();
+        String userID = mAuth.getCurrentUser().getUid();
+        DocumentReference docRef = mDatabase.collection("users").document(userID);
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                if (e != null)
+                {
+                    Log.w(TAG, "Listen failed", e);
+                }
+
+                if (documentSnapshot != null && documentSnapshot.exists())
+                {
+                    long end = System.currentTimeMillis();
+                    Log.d(TAG, "Current data: " + documentSnapshot.getData());
+                    Log.d(TAG, "Logged at " + (end - start));
+                    populateTrainerRegister(documentSnapshot.getData());
+                }
+                else
+                {
+                    Log.d (TAG, "Current data: null");
+                    //splashImage.setVisibility(View.GONE);
+                    //backgroundScroll.setVisibility(View.VISIBLE);
+                    //backgroundText.setVisibility(View.VISIBLE);
+                    //backgroundBtn.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     /*
