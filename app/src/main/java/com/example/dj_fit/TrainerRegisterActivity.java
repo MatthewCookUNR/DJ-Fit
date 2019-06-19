@@ -110,10 +110,11 @@ public class TrainerRegisterActivity extends BaseActivity
                 {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageToUpload);
                     RoundedBitmapDrawable roundDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-                    roundDrawable.setCircular(true);
                     final float scale = this.getResources().getDisplayMetrics().density;
-                    mImage.setMaxHeight((int) (120 * scale + 0.5f));
-                    mImage.setMaxWidth((int) (120 * scale + 0.5f));
+                    roundDrawable.setCircular(true);
+                    mImage.getLayoutParams().height = ((int) (120 * scale + 0.5f));
+                    mImage.getLayoutParams().width = ((int) (120 * scale + 0.5f));
+                    mImage.requestLayout();
                     mImage.setImageDrawable(roundDrawable);
                 }
                 catch (Exception e)
@@ -289,8 +290,9 @@ public class TrainerRegisterActivity extends BaseActivity
                 RoundedBitmapDrawable roundDrawable = RoundedBitmapDrawableFactory.create(getResources(), bmp);
                 roundDrawable.setCircular(true);
                 final float scale = TrainerRegisterActivity.this.getResources().getDisplayMetrics().density;
-                mImage.setMaxHeight((int) (120 * scale + 0.5f));
-                mImage.setMaxWidth((int) (120 * scale + 0.5f));
+                mImage.getLayoutParams().height = ((int) (120 * scale + 0.5f));
+                mImage.getLayoutParams().width = ((int) (120 * scale + 0.5f));
+                mImage.requestLayout();
                 mImage.setImageDrawable(roundDrawable);
             }
         }).addOnFailureListener(new OnFailureListener() {

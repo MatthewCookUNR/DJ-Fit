@@ -126,8 +126,9 @@ public class TrainerProfileActivity extends BaseActivity {
                 RoundedBitmapDrawable roundDrawable = RoundedBitmapDrawableFactory.create(getResources(), bmp);
                 roundDrawable.setCircular(true);
                 final float scale = TrainerProfileActivity.this.getResources().getDisplayMetrics().density;
-                profileImageView.setMaxHeight((int) (120 * scale + 0.5f));
-                profileImageView.setMaxWidth((int) (120 * scale + 0.5f));
+                profileImageView.getLayoutParams().height = ((int) (120 * scale + 0.5f));
+                profileImageView.getLayoutParams().width = ((int) (120 * scale + 0.5f));
+                profileImageView.requestLayout();
                 profileImageView.setImageDrawable(roundDrawable);
             }
         }).addOnFailureListener(new OnFailureListener() {
