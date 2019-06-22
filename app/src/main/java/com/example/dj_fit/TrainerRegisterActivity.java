@@ -18,6 +18,8 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,9 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -43,7 +43,9 @@ public class TrainerRegisterActivity extends BaseActivity
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final String TAG = "TrainerRegisterActivity";
     Uri imageToUpload;
-    ImageView mImage;
+    ImageView mImage, splashImage;
+    RelativeLayout botButtons, registerInfo;
+    ScrollView trainerScroll;
     EditText experienceEdit, employmentEdit, aboutYouEdit;
     Button btnUploadImage, btnBecomeTrainer;
     private FirebaseAuth mAuth;
@@ -64,6 +66,10 @@ public class TrainerRegisterActivity extends BaseActivity
         btnUploadImage = findViewById(R.id.btnUploadImage);
         btnBecomeTrainer = findViewById(R.id.btnBecomeTrainer);
         mImage = findViewById(R.id.profileImageView);
+        splashImage = findViewById(R.id.splashImage);
+        botButtons = findViewById(R.id.botButtons);
+        registerInfo = findViewById(R.id.registerInfo);
+        trainerScroll = findViewById(R.id.trainerScroll);
         uploadedImageName = null;
         imageToUpload = null;
         imageName = null;
@@ -228,6 +234,7 @@ public class TrainerRegisterActivity extends BaseActivity
         else
         {
             System.out.println("Image is null");
+            closeSplashScreen();
         }
     }
 
@@ -285,7 +292,7 @@ public class TrainerRegisterActivity extends BaseActivity
             @Override
             public void onSuccess(byte[] bytes) {
                 // Data for "images/island.jpg" is returns, use this as needed
-                Toast.makeText(TrainerRegisterActivity.this, "Download success", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(TrainerRegisterActivity.this, "Download success", Toast.LENGTH_SHORT).show();
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 RoundedBitmapDrawable roundDrawable = RoundedBitmapDrawableFactory.create(getResources(), bmp);
                 roundDrawable.setCircular(true);
@@ -294,6 +301,7 @@ public class TrainerRegisterActivity extends BaseActivity
                 mImage.getLayoutParams().width = ((int) (120 * scale + 0.5f));
                 mImage.requestLayout();
                 mImage.setImageDrawable(roundDrawable);
+                closeSplashScreen();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -302,5 +310,13 @@ public class TrainerRegisterActivity extends BaseActivity
                 // Handle any errors
             }
         });
+    }
+
+    private void closeSplashScreen()
+    {
+       splashImage.setVisibility(View.INVISIBLE);
+       botButtons.setVisibility(View.VISIBLE);
+       registerInfo.setVisibility(View.VISIBLE);
+       trainerScroll.setVisibility(View.VISIBLE);
     }
 }

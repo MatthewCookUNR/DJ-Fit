@@ -8,11 +8,20 @@
     tools:context=".TrainerRegisterActivity"
     tools:showIn="@layout/activity_trainer_register">
 
+    <ImageView
+        android:id="@+id/splashImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/splash_port_xhdpi" />
+
     <RelativeLayout
         android:id="@+id/botButtons"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible">
 
         <Button
             android:id="@+id/btnBecomeTrainer"
@@ -28,7 +37,8 @@
     <RelativeLayout
         android:id="@+id/registerInfo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/titleText"
@@ -59,7 +69,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/registerInfo"
-        android:layout_above="@id/botButtons">
+        android:layout_above="@id/botButtons"
+        android:visibility="invisible">
 
         <RelativeLayout
             android:layout_width="match_parent"

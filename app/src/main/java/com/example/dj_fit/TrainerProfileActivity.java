@@ -13,6 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,9 +36,11 @@ import javax.annotation.Nullable;
 public class TrainerProfileActivity extends BaseActivity {
 
     String TAG = "Trainer Profile Activity";
-    ImageView profileImageView;
+    ImageView profileImageView, splashImage;
     TextView profileNameText, employerText, experienceText, aboutMeText;
     String imageName;
+    RelativeLayout topGradLayout;
+    ScrollView trainerScroll;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
 
@@ -47,11 +51,14 @@ public class TrainerProfileActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        splashImage = findViewById(R.id.splashImage);
         profileImageView = findViewById(R.id.profileImageView);
         profileNameText = findViewById(R.id.profileNameText);
         employerText = findViewById(R.id.employerText);
         experienceText = findViewById(R.id.experienceText);
         aboutMeText = findViewById(R.id.aboutMeText);
+        topGradLayout = findViewById(R.id.topGradLayout);
+        trainerScroll = findViewById(R.id.trainerScroll);
         imageName = null;
 
         mAuth = FirebaseAuth.getInstance();
@@ -70,6 +77,7 @@ public class TrainerProfileActivity extends BaseActivity {
         aboutMeText.setText(docData.get("aboutYou").toString());
         if(imageName == null)
         {
+            closeSplashScreen();
             System.out.println("Image is null");
         }
         else
@@ -102,10 +110,6 @@ public class TrainerProfileActivity extends BaseActivity {
                 else
                 {
                     Log.d (TAG, "Current data: null");
-                    //splashImage.setVisibility(View.GONE);
-                    //backgroundScroll.setVisibility(View.VISIBLE);
-                    //backgroundText.setVisibility(View.VISIBLE);
-                    //backgroundBtn.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -121,7 +125,7 @@ public class TrainerProfileActivity extends BaseActivity {
             @Override
             public void onSuccess(byte[] bytes) {
                 // Data for "images/island.jpg" is returns, use this as needed
-                Toast.makeText(TrainerProfileActivity.this, "Download success", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(TrainerProfileActivity.this, "Download success", Toast.LENGTH_SHORT).show();
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 RoundedBitmapDrawable roundDrawable = RoundedBitmapDrawableFactory.create(getResources(), bmp);
                 roundDrawable.setCircular(true);
@@ -130,6 +134,7 @@ public class TrainerProfileActivity extends BaseActivity {
                 profileImageView.getLayoutParams().width = ((int) (120 * scale + 0.5f));
                 profileImageView.requestLayout();
                 profileImageView.setImageDrawable(roundDrawable);
+                closeSplashScreen();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -138,6 +143,14 @@ public class TrainerProfileActivity extends BaseActivity {
                 // Handle any errors
             }
         });
+    }
+
+
+    private void closeSplashScreen()
+    {
+        splashImage.setVisibility(View.INVISIBLE);
+        topGradLayout.setVisibility(View.VISIBLE);
+        trainerScroll.setVisibility(View.VISIBLE);
     }
 
 }
