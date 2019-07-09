@@ -4,11 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -67,6 +63,7 @@ public class TrainerProfileActivity extends BaseActivity {
 
     }
 
+    //Functions populates the page with given information the user registered with
     private void populateProfilePage(Map<String, Object> docData)
     {
         imageName = (String) docData.get("profilePic");
@@ -87,6 +84,8 @@ public class TrainerProfileActivity extends BaseActivity {
         }
     }
 
+    //Function checks if the trainer has registered as a trainer and determines if the
+    //page will be populated
     private void checkIfTrainerProfileExists()
     {
         final long start = System.currentTimeMillis();
@@ -115,6 +114,7 @@ public class TrainerProfileActivity extends BaseActivity {
         });
     }
 
+    //Button downloads the user's profile image and populates in on the profile page
     private void downloadFile()
     {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
@@ -139,8 +139,7 @@ public class TrainerProfileActivity extends BaseActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(TrainerProfileActivity.this, "Download failed", Toast.LENGTH_SHORT).show();
-                // Handle any errors
+                //Toast.makeText(TrainerProfileActivity.this, "Download failed", Toast.LENGTH_SHORT).show();
             }
         });
     }

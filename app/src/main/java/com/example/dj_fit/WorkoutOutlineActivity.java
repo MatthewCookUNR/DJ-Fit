@@ -438,7 +438,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
         exerEdit.setSingleLine(false);
         exerEdit.setWidth(0);
         exerEdit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});
-        exerEdit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        exerEdit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         exerEdit.setBackgroundResource(R.drawable.edit_border);
         exerEdit.setLayoutParams(paramColumn1);
 
@@ -658,37 +658,6 @@ public class WorkoutOutlineActivity extends BaseActivity {
                 }
             }
         });
-
-        /*
-        final long start = System.currentTimeMillis();
-
-        String userID = mAuth.getCurrentUser().getUid();
-        DocumentReference docRef = mDatabase.collection("users").document(userID).collection("fitnessData").document("workoutOutline");
-        docRef.addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if (e != null)
-                {
-                    Log.w(TAG, "Listen failed", e);
-                }
-
-                if (documentSnapshot != null && documentSnapshot.exists())
-                {
-                    long end = System.currentTimeMillis();
-                    Log.d(TAG, "Current data: " + documentSnapshot.getData());
-                    Log.d(TAG, "Logged at " + (end - start));
-                    populateOutline(documentSnapshot.getData());
-                    end = System.currentTimeMillis();
-                    Log.d(TAG, "Populate Logged at " + (end - start));
-                }
-                else
-                {
-                    Log.d (TAG, "Current data: null");
-                    splashImage.setVisibility(View.GONE);
-                }
-            }
-        });
-        */
     }
 
     //Function handles the popup alert that appears after clicking the "Add Day to Routine" button
@@ -836,8 +805,6 @@ public class WorkoutOutlineActivity extends BaseActivity {
         paramsT.topMargin = 85;
         paramsT.addRule(RelativeLayout.BELOW, titleIndex);
         container.addView(workoutOutline.get(insertIndex).getMyTable(), paramsT);
-        //System.out.println( "Day indexN: " + workoutOutline.get(insertIndex).getDayView().getId());
-        //System.out.println( "Table indexN: " + workoutOutline.get(insertIndex).getMyTable().getId());
 
         //This loop shifts the IDs of the layout elements by 1 and recreates them
         while(zIndex < workoutOutline.size()-1)
@@ -851,9 +818,6 @@ public class WorkoutOutlineActivity extends BaseActivity {
             container.removeView(workoutOutline.get(zIndex).getMyTable());
             workoutOutline.get(zIndex).getDayView().setId(titleIndex);
             workoutOutline.get(zIndex).getMyTable().setId(tableIndex);
-
-            //System.out.println( "Day index: " + workoutOutline.get(zIndex).getDayView().getId());
-            //System.out.println( "Table index: " + workoutOutline.get(zIndex).getMyTable().getId());
 
             params.topMargin = 85;
             params.addRule(RelativeLayout.BELOW, titleIndex-1);
@@ -875,9 +839,6 @@ public class WorkoutOutlineActivity extends BaseActivity {
         container.removeView(workoutOutline.get(zIndex).getMyTable());
         workoutOutline.get(zIndex).getDayView().setId(titleIndex);
         workoutOutline.get(zIndex).getMyTable().setId(tableIndex);
-
-        //System.out.println( "Day indexz: " + workoutOutline.get(zIndex).getDayView().getId());
-        //System.out.println( "Table indexz: " + workoutOutline.get(zIndex).getMyTable().getId());
 
         params.topMargin = 85;
         params.addRule(RelativeLayout.BELOW, titleIndex-1);

@@ -44,6 +44,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        //Button signs user up for a account using Firebase Authentications
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,6 +132,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         Map<String, Object> doctData2 = new HashMap<>();
         doctData2.put("Role", "Owner");
+        doctData2.put("isTrainer", false);
         mDatabase.collection("users")
                 .document(userID)
                 .collection("editors")

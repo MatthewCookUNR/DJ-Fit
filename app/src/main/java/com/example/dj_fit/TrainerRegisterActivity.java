@@ -80,6 +80,7 @@ public class TrainerRegisterActivity extends BaseActivity
         System.out.println("On create stuff");
         checkIfTrainerRegisterExists();
 
+        //Button causes the activity to open up Android Gallery to select a image for uploading
         btnUploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,6 +89,7 @@ public class TrainerRegisterActivity extends BaseActivity
             }
         });
 
+        //Button registers the user as a trainer, uploading the given data on the page for use in their profile
         btnBecomeTrainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,11 +101,13 @@ public class TrainerRegisterActivity extends BaseActivity
                 {
                     System.out.println("No image");
                 }
+                setTrainerStatusInDB();
                 uploadToDB();
             }
         });
     }
 
+    //Function handles the user selecting a desired image as their profile picture
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -131,6 +135,7 @@ public class TrainerRegisterActivity extends BaseActivity
         }
     }
 
+    //Function gets a files extension and returns it
     private String getFileExtension(Uri uri)
     {
         ContentResolver contentResolver = getContentResolver();
@@ -138,6 +143,7 @@ public class TrainerRegisterActivity extends BaseActivity
         return mime.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
+    //Function uploads a image to Firebase Storage
     private void uploadImage()
     {
         if(imageToUpload != null)
@@ -184,6 +190,10 @@ public class TrainerRegisterActivity extends BaseActivity
         {
             imageLink = "trainerPics/" + imageName;
         }
+        else if(uploadedImageName != null)
+        {
+            imageLink = uploadedImageName;
+        }
         else
         {
             imageLink = null;
@@ -218,6 +228,7 @@ public class TrainerRegisterActivity extends BaseActivity
                 });
     }
 
+    //Function populates the activity with values stored in the Firestore DB
     private void populateTrainerRegister(Map<String, Object> docData)
     {
         experienceEdit.setText(docData.get("experience").toString());
@@ -238,6 +249,8 @@ public class TrainerRegisterActivity extends BaseActivity
         }
     }
 
+    //Function checks to see if user has registered as a trainer
+    //If so it cause the activity to try and populate it with existing values
     private void checkIfTrainerRegisterExists()
     {
         final long start = System.currentTimeMillis();
@@ -265,6 +278,7 @@ public class TrainerRegisterActivity extends BaseActivity
         });
     }
 
+    //Function deletes the current profile picture from the database if it is changes
     private void deleteCurrentProfilePic()
     {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
@@ -282,6 +296,7 @@ public class TrainerRegisterActivity extends BaseActivity
         });
     }
 
+    //Function downloads the profile pic image from the Firestore DB
     private void downloadFile()
     {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
@@ -291,8 +306,8 @@ public class TrainerRegisterActivity extends BaseActivity
         imageRef.getBytes(TEN_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
+
                 // Data for "images/island.jpg" is returns, use this as needed
-                //Toast.makeText(TrainerRegisterActivity.this, "Download success", Toast.LENGTH_SHORT).show();
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 RoundedBitmapDrawable roundDrawable = RoundedBitmapDrawableFactory.create(getResources(), bmp);
                 roundDrawable.setCircular(true);
@@ -306,12 +321,35 @@ public class TrainerRegisterActivity extends BaseActivity
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(TrainerRegisterActivity.this, "Download failed", Toast.LENGTH_SHORT).show();
-                // Handle any errors
+                //Toast.makeText(TrainerRegisterActivity.this, "Download failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    //Function sets the user's status as a trainer to true upon registration
+    private void setTrainerStatusInDB()
+    {
+        String userID = mAuth.getCurrentUser().getUid();
+        Map<String, Object> doctData2 = new HashMap<>();
+        doctData2.put("isTrainer", true);
+        mDatabase.collection("users")
+                .document(userID)
+                .collection("editors")
+                .document(userID)
+                .update(doctData2).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "Document2 Snapshot added");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Error adding document 2", e);
+            }
+        });
+    }
+
+    //Function closes the splash image covering the screen
     private void closeSplashScreen()
     {
        splashImage.setVisibility(View.INVISIBLE);
