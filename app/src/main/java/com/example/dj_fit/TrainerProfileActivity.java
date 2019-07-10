@@ -14,17 +14,24 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -59,8 +66,18 @@ public class TrainerProfileActivity extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
-        checkIfTrainerProfileExists();
-
+        boolean isOwner = getIntent().getBooleanExtra("isOwner", false);
+        if(isOwner == true)
+        {
+            String userID = mAuth.getCurrentUser().getUid();
+            checkIfTrainerProfileExists(userID);
+        }
+        else
+        {
+            String first_name = getIntent().getStringExtra("first_name");
+            String last_name = getIntent().getStringExtra("last_name");
+            findTrainerInfo(first_name, last_name);
+        }
     }
 
     //Functions populates the page with given information the user registered with
@@ -93,11 +110,10 @@ public class TrainerProfileActivity extends BaseActivity {
 
     //Function checks if the trainer has registered as a trainer and determines if the
     //page will be populated
-    private void checkIfTrainerProfileExists()
+    private void checkIfTrainerProfileExists(String userID)
     {
         final long start = System.currentTimeMillis();
-        String userID = mAuth.getCurrentUser().getUid();
-        DocumentReference docRef = mDatabase.collection("users").document(userID);
+        DocumentReference docRef = mDatabase.collection("trainers").document(userID);
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
@@ -147,6 +163,29 @@ public class TrainerProfileActivity extends BaseActivity {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 //Toast.makeText(TrainerProfileActivity.this, "Download failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //Function queries for profile of desired trainer
+    private void findTrainerInfo(String first_name, String last_name)
+    {
+        CollectionReference userRef = mDatabase.collection("trainers");
+        Query query = userRef.whereEqualTo("first_name", first_name).whereEqualTo("last_name", last_name);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                    Log.d(TAG, "Getting documents successful");
+                    populateProfilePage(documents.get(0).getData());
+                }
+                else
+                {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                    closeSplashScreen();
+                }
             }
         });
     }

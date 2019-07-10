@@ -102,7 +102,7 @@ public class TrainerRegisterActivity extends BaseActivity
                     System.out.println("No image");
                 }
                 setTrainerStatusInDB();
-                uploadToDB();
+                getNameInfoDB();
             }
         });
     }
@@ -183,7 +183,7 @@ public class TrainerRegisterActivity extends BaseActivity
         }
     }
 
-    private void uploadToDB()
+    private void uploadToDB( Map<String, Object> userData )
     {
         String imageLink;
         if(imageName != null)
@@ -203,16 +203,17 @@ public class TrainerRegisterActivity extends BaseActivity
         String aboutYou = aboutYouEdit.getText().toString();
         String userID = mAuth.getCurrentUser().getUid();
 
+        final long start = System.currentTimeMillis();
         Map<String, Object> doctData = new HashMap<>();
+        doctData.put("first_name", userData.get("first_name"));
+        doctData.put("last_name", userData.get("last_name"));
         doctData.put("experience", experience);
         doctData.put("employment", employment);
         doctData.put("aboutYou", aboutYou);
         doctData.put("profilePic", imageLink);
 
-        final long start = System.currentTimeMillis();
-
-        mDatabase.collection("users").document(userID)
-                .update(doctData).addOnSuccessListener(new OnSuccessListener<Void>() {
+        mDatabase.collection("trainers").document(userID)
+                .set(doctData).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 long end = System.currentTimeMillis();
@@ -261,7 +262,8 @@ public class TrainerRegisterActivity extends BaseActivity
     {
         final long start = System.currentTimeMillis();
         String userID = mAuth.getCurrentUser().getUid();
-        DocumentReference docRef = mDatabase.collection("users").document(userID);
+
+        DocumentReference docRef = mDatabase.collection("trainers").document(userID);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -352,6 +354,35 @@ public class TrainerRegisterActivity extends BaseActivity
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.w(TAG, "Error adding document 2", e);
+            }
+        });
+    }
+
+    private void getNameInfoDB()
+    {
+        final long start = System.currentTimeMillis();
+
+        String userID = mAuth.getCurrentUser().getUid();
+        DocumentReference docRef = mDatabase.collection("users").document(userID);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        Log.d(TAG, "Logged at " + (end - start));
+                        uploadToDB(document.getData());
+                        end = System.currentTimeMillis();
+                        Log.d(TAG, "Populate Logged at " + (end - start));
+                    } else {
+                        closeSplashScreen();
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
             }
         });
     }

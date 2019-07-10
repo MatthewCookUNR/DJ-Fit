@@ -1,5 +1,6 @@
 package com.example.dj_fit;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -47,7 +48,6 @@ public class FindTrainerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 findTrainerFromID();
-                modifyTrainerFromID();
             }
         });
     }
@@ -67,6 +67,7 @@ public class FindTrainerActivity extends AppCompatActivity {
                         long end = System.currentTimeMillis();
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                         Log.d(TAG, "Logged at " + (end - start));
+                        viewTrainerProfilePage(document.getData());
                         end = System.currentTimeMillis();
                         Log.d(TAG, "Populate Logged at " + (end - start));
                     } else {
@@ -79,16 +80,25 @@ public class FindTrainerActivity extends AppCompatActivity {
         });
     }
 
+    private void viewTrainerProfilePage(Map<String, Object> docData)
+    {
+        Intent trainerProfileIntent = new Intent(FindTrainerActivity.this, TrainerProfileActivity.class);
+        trainerProfileIntent.putExtra("isOwner", false);
+        trainerProfileIntent.putExtra("first_name", docData.get("first_name").toString());
+        trainerProfileIntent.putExtra("last_name", docData.get("last_name").toString());
+        startActivity(trainerProfileIntent);
+    }
+
     //Function used to test security rules on writing a specific user's information based on their trainer status
     //User should not be able to do this
     private void modifyTrainerFromID()
     {
         Map<String, Object> doctData2 = new HashMap<>();
-        doctData2.put("Role", "Dumbhead");
+        doctData2.put("Role", "User");
         mDatabase.collection("users")
-                .document("HF9b38AapJZWc9wc9fSMOh6w9qj1")
+                .document("userId")
                 .collection("editors")
-                .document("HF9b38AapJZWc9wc9fSMOh6w9qj1")
+                .document("userId")
                 .update(doctData2).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

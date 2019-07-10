@@ -55,6 +55,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent trainerProfileIntent = new Intent(MainActivity.this, TrainerProfileActivity.class);
+                trainerProfileIntent.putExtra("isOwner", true);
                 startActivity(trainerProfileIntent);
             }
         });
