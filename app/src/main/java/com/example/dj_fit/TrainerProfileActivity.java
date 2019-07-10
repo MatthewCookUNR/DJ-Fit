@@ -66,21 +66,28 @@ public class TrainerProfileActivity extends BaseActivity {
     //Functions populates the page with given information the user registered with
     private void populateProfilePage(Map<String, Object> docData)
     {
-        imageName = (String) docData.get("profilePic");
-        String fullName = docData.get("first_name").toString() + " " + docData.get("last_name").toString();
-        profileNameText.setText(fullName);
-        employerText.setText(docData.get("employment").toString());
-        experienceText.setText(docData.get("experience").toString());
-        aboutMeText.setText(docData.get("aboutYou").toString());
-        if(imageName == null)
+        if(docData.containsKey("experience"))
         {
-            closeSplashScreen();
-            System.out.println("Image is null");
+            imageName = (String) docData.get("profilePic");
+            String fullName = docData.get("first_name").toString() + " " + docData.get("last_name").toString();
+            profileNameText.setText(fullName);
+            employerText.setText(docData.get("employment").toString());
+            experienceText.setText(docData.get("experience").toString());
+            aboutMeText.setText(docData.get("aboutYou").toString());
+            if(imageName == null)
+            {
+                closeSplashScreen();
+                System.out.println("Image is null");
+            }
+            else
+            {
+                System.out.println(imageName);
+                downloadFile();
+            }
         }
         else
         {
-            System.out.println(imageName);
-            downloadFile();
+            closeSplashScreen();
         }
     }
 

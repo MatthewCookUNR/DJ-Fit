@@ -651,6 +651,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
                         end = System.currentTimeMillis();
                         Log.d(TAG, "Populate Logged at " + (end - start));
                     } else {
+                        splashImage.setVisibility(View.GONE);
                         Log.d(TAG, "No such document");
                     }
                 } else {

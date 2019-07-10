@@ -208,7 +208,6 @@ public class TrainerRegisterActivity extends BaseActivity
         doctData.put("employment", employment);
         doctData.put("aboutYou", aboutYou);
         doctData.put("profilePic", imageLink);
-        doctData.put("isTrainer", true);
 
         final long start = System.currentTimeMillis();
 
@@ -231,20 +230,27 @@ public class TrainerRegisterActivity extends BaseActivity
     //Function populates the activity with values stored in the Firestore DB
     private void populateTrainerRegister(Map<String, Object> docData)
     {
-        experienceEdit.setText(docData.get("experience").toString());
-        employmentEdit.setText(docData.get("employment").toString());
-        aboutYouEdit.setText(docData.get("aboutYou").toString());
-        Object name = docData.get("profilePic");
-
-        if(name != null)
+        if(docData.containsKey("experience"))
         {
-            uploadedImageName = name.toString();
-            System.out.println("Image is not null");
-            downloadFile();
+            experienceEdit.setText(docData.get("experience").toString());
+            employmentEdit.setText(docData.get("employment").toString());
+            aboutYouEdit.setText(docData.get("aboutYou").toString());
+            Object name = docData.get("profilePic");
+
+            if(name != null)
+            {
+                uploadedImageName = name.toString();
+                System.out.println("Image is not null");
+                downloadFile();
+            }
+            else
+            {
+                System.out.println("Image is null");
+                closeSplashScreen();
+            }
         }
         else
         {
-            System.out.println("Image is null");
             closeSplashScreen();
         }
     }
@@ -269,6 +275,7 @@ public class TrainerRegisterActivity extends BaseActivity
                         end = System.currentTimeMillis();
                         Log.d(TAG, "Populate Logged at " + (end - start));
                     } else {
+                        closeSplashScreen();
                         Log.d(TAG, "No such document");
                     }
                 } else {

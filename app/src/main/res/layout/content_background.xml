@@ -39,6 +39,7 @@
         android:id="@+id/backgroundText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
         android:visibility="invisible">
 
         <TextView
