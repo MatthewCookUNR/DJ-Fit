@@ -2,10 +2,12 @@ package com.example.dj_fit;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -102,7 +104,7 @@ public class TrainerRegisterActivity extends BaseActivity
                     System.out.println("No image");
                 }
                 setTrainerStatusInDB();
-                getNameInfoDB();
+                uploadToDB();
             }
         });
     }
@@ -183,7 +185,7 @@ public class TrainerRegisterActivity extends BaseActivity
         }
     }
 
-    private void uploadToDB( Map<String, Object> userData )
+    private void uploadToDB()
     {
         String imageLink;
         if(imageName != null)
@@ -203,10 +205,15 @@ public class TrainerRegisterActivity extends BaseActivity
         String aboutYou = aboutYouEdit.getText().toString();
         String userID = mAuth.getCurrentUser().getUid();
 
+        final SharedPreferences myPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        String first_name = myPreferences.getString("first_name", "");
+        String last_name = myPreferences.getString("last_name", "");
+
         final long start = System.currentTimeMillis();
         Map<String, Object> doctData = new HashMap<>();
-        doctData.put("first_name", userData.get("first_name"));
-        doctData.put("last_name", userData.get("last_name"));
+        doctData.put("first_name", first_name);
+        doctData.put("last_name", last_name);
         doctData.put("experience", experience);
         doctData.put("employment", employment);
         doctData.put("aboutYou", aboutYou);
@@ -354,35 +361,6 @@ public class TrainerRegisterActivity extends BaseActivity
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.w(TAG, "Error adding document 2", e);
-            }
-        });
-    }
-
-    private void getNameInfoDB()
-    {
-        final long start = System.currentTimeMillis();
-
-        String userID = mAuth.getCurrentUser().getUid();
-        DocumentReference docRef = mDatabase.collection("users").document(userID);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        long end = System.currentTimeMillis();
-                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                        Log.d(TAG, "Logged at " + (end - start));
-                        uploadToDB(document.getData());
-                        end = System.currentTimeMillis();
-                        Log.d(TAG, "Populate Logged at " + (end - start));
-                    } else {
-                        closeSplashScreen();
-                        Log.d(TAG, "No such document");
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
             }
         });
     }

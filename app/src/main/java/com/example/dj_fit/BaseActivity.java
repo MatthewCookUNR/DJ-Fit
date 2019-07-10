@@ -2,6 +2,8 @@ package com.example.dj_fit;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -36,6 +38,12 @@ public class BaseActivity extends AppCompatActivity
             case R.id.action_signOut:
                 mAuth = FirebaseAuth.getInstance();
                 mAuth.signOut();
+                final SharedPreferences myPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor myEditor = myPreferences.edit();
+                myEditor.putString("first_name", "");
+                myEditor.putString("last_name", "");
+                myEditor.apply();
                 Toast.makeText(this, "User has signed out", Toast.LENGTH_SHORT).show();
                 Intent loginAct = new Intent(this, LoginActivity.class);
                 startActivity(loginAct);
