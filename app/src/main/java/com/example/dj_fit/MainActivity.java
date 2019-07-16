@@ -42,11 +42,13 @@ public class MainActivity extends BaseActivity {
         String first_name = myPreferences.getString("first_name", "");
         String trainerID = myPreferences.getString("trainerID", "");
 
+        //If user is a trainer, register trainer button is modify trainer instead
         if(!trainerID.equals(""))
         {
             btnRegisterTrainer.setText("Modify Trainer Information");
         }
 
+        //If name doesn't appear in shared preferences, get from DB and put it into there
         if(first_name.equals(""))
         {
             final long start = System.currentTimeMillis();

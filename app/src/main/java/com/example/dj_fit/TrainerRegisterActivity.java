@@ -1,6 +1,8 @@
 package com.example.dj_fit;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -83,7 +85,6 @@ public class TrainerRegisterActivity extends BaseActivity
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
         mStorageRef= FirebaseStorage.getInstance().getReference("trainerPics");
-        System.out.println("On create stuff");
         checkIfTrainerRegisterExists();
 
         //Button causes the activity to open up Android Gallery to select a image for uploading
@@ -107,15 +108,16 @@ public class TrainerRegisterActivity extends BaseActivity
                 {
                     System.out.println("No image");
                 }
-                setTrainerStatusInDB();
+                setTrainerStatusInDB(true);
                 uploadToDB();
             }
         });
 
         btnUnregister.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onClick(View v)
+            {
+                showUnregisterAlert();
             }
         });
     }
@@ -198,6 +200,9 @@ public class TrainerRegisterActivity extends BaseActivity
 
     private void uploadToDB()
     {
+        String userID = mAuth.getCurrentUser().getUid();
+
+        //Checks to see if a image is currently exists for profile
         String imageLink;
         if(imageName != null)
         {
@@ -211,16 +216,21 @@ public class TrainerRegisterActivity extends BaseActivity
         {
             imageLink = null;
         }
+
+        //Get information entered manually
         String experience = experienceEdit.getText().toString();
         String employment = employmentEdit.getText().toString();
         String aboutYou = aboutYouEdit.getText().toString();
-        String userID = mAuth.getCurrentUser().getUid();
 
+        //Get locally stored user information for use in trainer profile
+        //i.e. user's name and (if already registered) trainer ID
         final SharedPreferences myPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
         String first_name = myPreferences.getString("first_name", "");
         String last_name = myPreferences.getString("last_name", "");
         String trainerID = myPreferences.getString("trainerID", "");
+
+        //If not trainer ID exists, create a random ID of 8 length
         if(trainerID.equals(""))
         {
             trainerID = getAlphaNumericString();
@@ -229,6 +239,7 @@ public class TrainerRegisterActivity extends BaseActivity
             myEditor.apply();
         }
 
+        //Put all data about trainer into a map for upload to DB
         final long start = System.currentTimeMillis();
         Map<String, Object> doctData = new HashMap<>();
         doctData.put("first_name", first_name);
@@ -239,6 +250,7 @@ public class TrainerRegisterActivity extends BaseActivity
         doctData.put("profilePic", imageLink);
         doctData.put("trainerID", trainerID);
 
+        //Sets document in DB to user inputted information
         mDatabase.collection("trainers").document(userID)
                 .set(doctData).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -258,6 +270,7 @@ public class TrainerRegisterActivity extends BaseActivity
     //Function populates the activity with values stored in the Firestore DB
     private void populateTrainerRegister(Map<String, Object> docData)
     {
+        //If user is currently registered, populate the page with info
         if(docData.containsKey("experience"))
         {
             experienceEdit.setText(docData.get("experience").toString());
@@ -363,12 +376,12 @@ public class TrainerRegisterActivity extends BaseActivity
         });
     }
 
-    //Function sets the user's status as a trainer to true upon registration
-    private void setTrainerStatusInDB()
+    //Function sets the user's status as a trainer to true/false in the DB
+    private void setTrainerStatusInDB( boolean status)
     {
         String userID = mAuth.getCurrentUser().getUid();
         Map<String, Object> doctData2 = new HashMap<>();
-        doctData2.put("isTrainer", true);
+        doctData2.put("isTrainer", status);
         mDatabase.collection("users")
                 .document(userID)
                 .collection("editors")
@@ -384,6 +397,59 @@ public class TrainerRegisterActivity extends BaseActivity
                 Log.w(TAG, "Error adding document 2", e);
             }
         });
+    }
+
+    //Function unregisters the user as a trainer, deleting stored information on the database
+    private void UnregisterTrainer()
+    {
+        String userID = mAuth.getCurrentUser().getUid();
+        mDatabase.collection("trainers").document(userID)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                        setTrainerStatusInDB(false);
+                        deleteCurrentProfilePic();
+                        final SharedPreferences myPreferences =
+                                PreferenceManager.getDefaultSharedPreferences(TrainerRegisterActivity.this);
+                        SharedPreferences.Editor myEditor = myPreferences.edit();
+                        myEditor.putString("trainerID", "");
+                        myEditor.apply();
+                        Intent trainerRegisterIntent = new Intent(TrainerRegisterActivity.this, MainActivity.class);
+                        startActivity(trainerRegisterIntent);
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
+    }
+
+    private void showUnregisterAlert()
+    {
+        AlertDialog.Builder dayBuilder = new AlertDialog.Builder(TrainerRegisterActivity.this);
+        dayBuilder.setTitle("Are you sure you want to unregister as a trainer?");
+
+        dayBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                UnregisterTrainer();
+            }
+        });
+        dayBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dayBuilder.show();
     }
 
     // Function to generate a random string of length 8
@@ -411,13 +477,14 @@ public class TrainerRegisterActivity extends BaseActivity
         return buildString.toString();
     }
 
+    //Adjusts UI if user is already registered as a trainer
+    //Button appears that allows user to unregister
     private void adjustUI()
     {
         titleText.setText("Modify Trainer Information");
         btnUnregister.setVisibility(View.VISIBLE);
         RelativeLayout.LayoutParams params= (RelativeLayout.LayoutParams)  btnBecomeTrainer.getLayoutParams();
         params.addRule(RelativeLayout.ABOVE, R.id.btnUnregister);
-        //params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
         RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) botButtons.getLayoutParams();
         params2.height = params2.height*2;
         btnBecomeTrainer.setLayoutParams(params);

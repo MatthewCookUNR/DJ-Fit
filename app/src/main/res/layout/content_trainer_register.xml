@@ -93,7 +93,7 @@
                 android:layout_marginStart="21dp"
                 android:layout_marginLeft="21dp"
                 android:layout_marginTop="23dp"
-                android:text="Employment:"
+                android:text="Current Employer:"
                 android:textAppearance="@android:style/TextAppearance.Medium"
                 android:textStyle="bold" />
 
