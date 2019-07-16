@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/btnWorkoutOutline"
-            android:text="Register as a Trainer (Testing)"
+            android:text="Become Trainer"
             android:textAppearance="@android:style/TextAppearance.Large"/>
 
         <Button
@@ -53,14 +53,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/btnRegisterTrainer"
-            android:text="Trainer Profile Page (Testing)"
+            android:text="My Profile Page"
             android:textAppearance="@android:style/TextAppearance.Large"/>
         <Button
             android:id="@+id/btnFindTrainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/btnTrainerProfile"
-            android:text="Find Trainer (Testing)"
+            android:text="Find Trainer"
             android:textAppearance="@android:style/TextAppearance.Large"/>
     </RelativeLayout>
 </ScrollView>

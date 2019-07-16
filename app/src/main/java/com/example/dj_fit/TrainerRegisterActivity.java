@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,11 +46,12 @@ public class TrainerRegisterActivity extends BaseActivity
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final String TAG = "TrainerRegisterActivity";
     Uri imageToUpload;
+    TextView titleText;
     ImageView mImage, splashImage;
     RelativeLayout botButtons, registerInfo;
     ScrollView trainerScroll;
     EditText experienceEdit, employmentEdit, aboutYouEdit;
-    Button btnUploadImage, btnBecomeTrainer;
+    Button btnUploadImage, btnBecomeTrainer, btnUnregister;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
     private StorageReference mStorageRef;
@@ -62,6 +64,7 @@ public class TrainerRegisterActivity extends BaseActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        titleText = findViewById(R.id.titleText);
         experienceEdit = findViewById(R.id.experienceEdit);
         employmentEdit = findViewById(R.id.employmentEdit);
         aboutYouEdit = findViewById(R.id.aboutYouEdit);
@@ -72,6 +75,7 @@ public class TrainerRegisterActivity extends BaseActivity
         botButtons = findViewById(R.id.botButtons);
         registerInfo = findViewById(R.id.registerInfo);
         trainerScroll = findViewById(R.id.trainerScroll);
+        btnUnregister = findViewById(R.id.btnUnregister);
         uploadedImageName = null;
         imageToUpload = null;
         imageName = null;
@@ -105,6 +109,13 @@ public class TrainerRegisterActivity extends BaseActivity
                 }
                 setTrainerStatusInDB();
                 uploadToDB();
+            }
+        });
+
+        btnUnregister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
@@ -209,6 +220,14 @@ public class TrainerRegisterActivity extends BaseActivity
                 PreferenceManager.getDefaultSharedPreferences(this);
         String first_name = myPreferences.getString("first_name", "");
         String last_name = myPreferences.getString("last_name", "");
+        String trainerID = myPreferences.getString("trainerID", "");
+        if(trainerID.equals(""))
+        {
+            trainerID = getAlphaNumericString();
+            SharedPreferences.Editor myEditor = myPreferences.edit();
+            myEditor.putString("trainerID", trainerID);
+            myEditor.apply();
+        }
 
         final long start = System.currentTimeMillis();
         Map<String, Object> doctData = new HashMap<>();
@@ -218,6 +237,7 @@ public class TrainerRegisterActivity extends BaseActivity
         doctData.put("employment", employment);
         doctData.put("aboutYou", aboutYou);
         doctData.put("profilePic", imageLink);
+        doctData.put("trainerID", trainerID);
 
         mDatabase.collection("trainers").document(userID)
                 .set(doctData).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -280,6 +300,7 @@ public class TrainerRegisterActivity extends BaseActivity
                         long end = System.currentTimeMillis();
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                         Log.d(TAG, "Logged at " + (end - start));
+                        adjustUI();
                         populateTrainerRegister(document.getData());
                         end = System.currentTimeMillis();
                         Log.d(TAG, "Populate Logged at " + (end - start));
@@ -363,6 +384,45 @@ public class TrainerRegisterActivity extends BaseActivity
                 Log.w(TAG, "Error adding document 2", e);
             }
         });
+    }
+
+    // Function to generate a random string of length 8
+    static String getAlphaNumericString()
+    {
+
+        // chose a Character random from this String
+        String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+
+        // create StringBuffer size of AlphaNumericString
+        StringBuilder buildString = new StringBuilder(8);
+
+        for (int i = 0; i < 8; i++)
+        {
+
+            // generate a random number between
+            // 0 to AlphaNumericString variable length
+            int index = (int)(alphaNumericString.length() * Math.random());
+
+            // add Character one by one in end of sb
+            buildString.append(alphaNumericString.charAt(index));
+        }
+        return buildString.toString();
+    }
+
+    private void adjustUI()
+    {
+        titleText.setText("Modify Trainer Information");
+        btnUnregister.setVisibility(View.VISIBLE);
+        RelativeLayout.LayoutParams params= (RelativeLayout.LayoutParams)  btnBecomeTrainer.getLayoutParams();
+        params.addRule(RelativeLayout.ABOVE, R.id.btnUnregister);
+        //params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+        RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) botButtons.getLayoutParams();
+        params2.height = params2.height*2;
+        btnBecomeTrainer.setLayoutParams(params);
+        botButtons.setLayoutParams(params2);
+        btnBecomeTrainer.setText("Save");
     }
 
     //Function closes the splash image covering the screen

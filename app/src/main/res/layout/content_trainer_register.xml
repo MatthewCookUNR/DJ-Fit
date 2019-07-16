@@ -27,9 +27,18 @@
             android:id="@+id/btnBecomeTrainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_above="@id/btnUnregister"
             android:text="Register"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <Button
+            android:id="@+id/btnUnregister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:text="Unregister"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
@@ -57,9 +66,9 @@
             android:gravity="center"
             android:layout_marginStart="21dp"
             android:layout_marginEnd="21dp"
-            android:layout_marginTop="23dp"
+            android:layout_marginTop="12dp"
             android:lineSpacingExtra="8sp"
-            android:text="Please fill out the the following information about yourself for use in your trainer profile:"
+            android:text="Please fill out the the following information below about yourself for use in your trainer profile page:"
             android:textAppearance="@android:style/TextAppearance.Medium" />
 
     </RelativeLayout>
