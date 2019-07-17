@@ -53,6 +53,7 @@ public class ClientRequestsActivity extends BaseActivity
 
     }
 
+    //Function queries DB to see if their are any clients requesting the user as a trainer
     private void checkForNewClients()
     {
         String userID = mAuth.getUid();
@@ -67,7 +68,7 @@ public class ClientRequestsActivity extends BaseActivity
                     Log.d(TAG, "Getting documents successful");
                     if(documents.size() != 0)
                     {
-                        //populatePossibleClients(documents);
+                        populatePossibleClients(documents);
                     }
                 }
                 else
@@ -78,14 +79,16 @@ public class ClientRequestsActivity extends BaseActivity
         });
     }
 
+    //Function populates the page with the list of clients requesting the trainer
     private void populatePossibleClients( List<DocumentSnapshot> documents)
     {
-        //for(int i = 0; i < documents.size(); i++)
-        //{
-            Map<String, Object> docData = documents.get(0).getData();
+        for(int i = 0; i < documents.size(); i++)
+        {
+            Map<String, Object> docData = documents.get(i).getData();
             TextView nameText = new TextView(ClientRequestsActivity.this);
-            nameText.setTextAppearance(this, android.R.style.TextAppearance_DeviceDefault_Large);
+            nameText.setTextAppearance(this, android.R.style.TextAppearance_Large);
             nameText.setText(docData.get("first_name") + " " + docData.get("last_name"));
+            nameText.setId(integer);
             RelativeLayout.LayoutParams paramsN = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             if(integer == 1)
             {
@@ -93,7 +96,7 @@ public class ClientRequestsActivity extends BaseActivity
             }
             else
             {
-                paramsN.addRule(RelativeLayout.BELOW, integer);
+                paramsN.addRule(RelativeLayout.BELOW, integer-1);
             }
             paramsN.leftMargin = 40;
             paramsN.rightMargin = 40;
@@ -103,13 +106,65 @@ public class ClientRequestsActivity extends BaseActivity
             integer++;
 
             LinearLayout butLayout = new LinearLayout(ClientRequestsActivity.this);
-            LinearLayout.LayoutParams paramsA = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams paramsR = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            paramsR.addRule(RelativeLayout.BELOW, integer - 1);
+            paramsR.leftMargin = 40;
+            butLayout.setId(integer);
+            butLayout.setLayoutParams(paramsR);
+            integer++;
 
-            Button acceptBut = new Button(ClientRequestsActivity.this);
-            acceptBut.setText("Accept");
-            acceptBut.setTextAppearance(this, android.R.style.TextAppearance_DeviceDefault_Large);
+            LinearLayout.LayoutParams paramsB = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            paramsB.weight = 1;
 
+            Button acceptBut = createAcceptButton(documents.get(i).getId());
+            acceptBut.setLayoutParams(paramsB);
 
-        //}
+            Button declineBut = createDeclineButton(documents.get(i).getId());
+            declineBut.setLayoutParams(paramsB);
+
+            butLayout.addView(acceptBut);
+            butLayout.addView(declineBut);
+            clientReqLayout.addView(butLayout);
+        }
+    }
+
+    private Button createAcceptButton(String documentID)
+    {
+        final Button acceptBut = new Button(ClientRequestsActivity.this);
+        acceptBut.setText("Accept");
+        acceptBut.setTextSize(16);
+        acceptBut.setTag(documentID);
+        acceptBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addUserAsClient(v.getTag().toString());
+            }
+        });
+        return acceptBut;
+    }
+
+    private Button createDeclineButton(String documentID)
+    {
+        Button declineBut = new Button(ClientRequestsActivity.this);
+        declineBut.setText("Decline");
+        declineBut.setTextSize(16);
+        declineBut.setTag(documentID);
+        declineBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeClientRequest(v.getTag().toString());
+            }
+        });
+        return declineBut;
+    }
+
+    private void addUserAsClient(String clientID)
+    {
+
+    }
+
+    private void removeClientRequest(String clientID)
+    {
+
     }
 }
