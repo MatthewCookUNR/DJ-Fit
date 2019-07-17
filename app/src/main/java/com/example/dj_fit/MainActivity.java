@@ -40,10 +40,10 @@ public class MainActivity extends BaseActivity {
         final SharedPreferences myPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
         String first_name = myPreferences.getString("first_name", "");
-        String trainerID = myPreferences.getString("trainerID", "");
+        String trainerCode = myPreferences.getString("trainerCode", "");
 
         //If user is a trainer, register trainer button is modify trainer instead
-        if(!trainerID.equals(""))
+        if(!trainerCode.equals(""))
         {
             btnRegisterTrainer.setText("Modify Trainer Information");
         }

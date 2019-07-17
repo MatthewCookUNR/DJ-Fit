@@ -201,6 +201,7 @@ public class TrainerRegisterActivity extends BaseActivity
     private void uploadToDB()
     {
         String userID = mAuth.getCurrentUser().getUid();
+        final long start = System.currentTimeMillis();
 
         //Checks to see if a image is currently exists for profile
         String imageLink;
@@ -228,19 +229,18 @@ public class TrainerRegisterActivity extends BaseActivity
                 PreferenceManager.getDefaultSharedPreferences(this);
         String first_name = myPreferences.getString("first_name", "");
         String last_name = myPreferences.getString("last_name", "");
-        String trainerID = myPreferences.getString("trainerID", "");
+        String trainerCode = myPreferences.getString("trainerCode", "");
 
         //If not trainer ID exists, create a random ID of 8 length
-        if(trainerID.equals(""))
+        if(trainerCode.equals(""))
         {
-            trainerID = getAlphaNumericString();
+            trainerCode = getAlphaNumericString();
             SharedPreferences.Editor myEditor = myPreferences.edit();
-            myEditor.putString("trainerID", trainerID);
+            myEditor.putString("trainerCode", trainerCode);
             myEditor.apply();
         }
 
         //Put all data about trainer into a map for upload to DB
-        final long start = System.currentTimeMillis();
         Map<String, Object> doctData = new HashMap<>();
         doctData.put("first_name", first_name);
         doctData.put("last_name", last_name);
@@ -248,7 +248,7 @@ public class TrainerRegisterActivity extends BaseActivity
         doctData.put("employment", employment);
         doctData.put("aboutYou", aboutYou);
         doctData.put("profilePic", imageLink);
-        doctData.put("trainerID", trainerID);
+        doctData.put("trainerCode", trainerCode);
 
         //Sets document in DB to user inputted information
         mDatabase.collection("trainers").document(userID)
@@ -415,7 +415,7 @@ public class TrainerRegisterActivity extends BaseActivity
                         final SharedPreferences myPreferences =
                                 PreferenceManager.getDefaultSharedPreferences(TrainerRegisterActivity.this);
                         SharedPreferences.Editor myEditor = myPreferences.edit();
-                        myEditor.putString("trainerID", "");
+                        myEditor.putString("trainerCode", "");
                         myEditor.apply();
                         Intent trainerRegisterIntent = new Intent(TrainerRegisterActivity.this, MainActivity.class);
                         startActivity(trainerRegisterIntent);

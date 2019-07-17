@@ -9,6 +9,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -30,6 +31,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,8 +42,10 @@ public class TrainerProfileActivity extends BaseActivity {
     String TAG = "Trainer Profile Activity";
     ImageView profileImageView, splashImage;
     TextView profileNameText, employerText, experienceText, aboutMeText;
+    Button btnRequestTrainer;
     String imageName;
-    RelativeLayout topGradLayout;
+    private String trainerID;
+    RelativeLayout topGradLayout, botButtons;
     ScrollView trainerScroll;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
@@ -53,6 +57,7 @@ public class TrainerProfileActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        botButtons = findViewById(R.id.botButtons);
         splashImage = findViewById(R.id.splashImage);
         profileImageView = findViewById(R.id.profileImageView);
         profileNameText = findViewById(R.id.profileNameText);
@@ -61,22 +66,35 @@ public class TrainerProfileActivity extends BaseActivity {
         aboutMeText = findViewById(R.id.aboutMeText);
         topGradLayout = findViewById(R.id.topGradLayout);
         trainerScroll = findViewById(R.id.trainerScroll);
+        btnRequestTrainer = findViewById(R.id.btnRequestTrainer);
         imageName = null;
+        trainerID = null;
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
         boolean isOwner = getIntent().getBooleanExtra("isOwner", false);
+
+        //If viewer is owner of profile, display self profile
         if(isOwner == true)
         {
             String userID = mAuth.getCurrentUser().getUid();
             checkIfTrainerProfileExists(userID);
         }
+        //If viewer is a client, adjust UI and allow them to request trainer
         else
         {
+            adjustUI();
             String first_name = getIntent().getStringExtra("first_name");
             String last_name = getIntent().getStringExtra("last_name");
             findTrainerInfo(first_name, last_name);
         }
+
+        btnRequestTrainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendTrainerRequest(trainerID);
+            }
+        });
     }
 
     //Functions populates the page with given information the user registered with
@@ -179,6 +197,7 @@ public class TrainerProfileActivity extends BaseActivity {
                     List<DocumentSnapshot> documents = task.getResult().getDocuments();
                     Log.d(TAG, "Getting documents successful");
                     populateProfilePage(documents.get(0).getData());
+                    trainerID = documents.get(0).getId();
                 }
                 else
                 {
@@ -189,6 +208,41 @@ public class TrainerProfileActivity extends BaseActivity {
         });
     }
 
+    //Functions sends a request to the trainer with his/her first and last name
+    private void sendTrainerRequest(String trainerID)
+    {
+        String userID = mAuth.getCurrentUser().getUid();
+        final long start = System.currentTimeMillis();
+
+        String first_name = getIntent().getStringExtra("first_name");
+        String last_name = getIntent().getStringExtra("last_name");
+
+        Map<String, Object> docData = new HashMap<>();
+        docData.put("first_name", first_name);
+        docData.put("last_name", last_name);
+
+        //Sets document in DB to user inputted information
+        mDatabase.collection("trainers").document(trainerID).collection("clientRequests")
+                .document(userID).set(docData).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid)
+            {
+                long end = System.currentTimeMillis();
+                Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+    }
+
+    private void adjustUI()
+    {
+        botButtons.setVisibility(View.VISIBLE);
+    }
 
     private void closeSplashScreen()
     {

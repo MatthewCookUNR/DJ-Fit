@@ -8,6 +8,24 @@
     tools:context=".TrainerProfileActivity"
     tools:showIn="@layout/activity_trainer_profile">
 
+    <RelativeLayout
+        android:id="@+id/botButtons"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btnRequestTrainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:text="Request Trainer" />
+
+    </RelativeLayout>
+
+
     <ImageView
         android:id="@+id/splashImage"
         android:layout_width="match_parent"
@@ -50,6 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/topGradLayout"
+        android:layout_above="@+id/botButtons"
         android:visibility="invisible">
 
         <RelativeLayout

@@ -8,19 +8,23 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FindTrainerActivity extends AppCompatActivity {
@@ -30,6 +34,7 @@ public class FindTrainerActivity extends AppCompatActivity {
     private FirebaseFirestore mDatabase;
     private StorageReference mStorageRef;
     Button btnFindTrainer;
+    EditText trainerCodeEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,41 +45,38 @@ public class FindTrainerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         btnFindTrainer = findViewById(R.id.btnFindTrainer);
+        trainerCodeEdit = findViewById(R.id.trainerCodeEdit);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference("trainerPics");
 
         btnFindTrainer.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                findTrainerFromID();
+            public void onClick(View v)
+            {
+                findTrainerFromID(trainerCodeEdit.getText().toString());
             }
         });
     }
 
     //Function used to test security rules on reading a specific user's information based on their trainer status
     //User should be able to do this
-    private void findTrainerFromID()
+    private void findTrainerFromID(String trainerCode)
     {
-        final long start = System.currentTimeMillis();
-        DocumentReference docRef = mDatabase.collection("users").document("HF9b38AapJZWc9wc9fSMOh6w9qj1");
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        CollectionReference userRef = mDatabase.collection("trainers");
+        Query query = userRef.whereEqualTo("trainerCode", trainerCode);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        long end = System.currentTimeMillis();
-                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                        Log.d(TAG, "Logged at " + (end - start));
-                        viewTrainerProfilePage(document.getData());
-                        end = System.currentTimeMillis();
-                        Log.d(TAG, "Populate Logged at " + (end - start));
-                    } else {
-                        Log.d(TAG, "No such document");
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                    Log.d(TAG, "Getting documents successful");
+                    viewTrainerProfilePage(documents.get(0).getData());
+                }
+                else
+                {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }
         });

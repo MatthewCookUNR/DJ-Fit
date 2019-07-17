@@ -8,9 +8,48 @@
     tools:context=".FindTrainerActivity"
     tools:showIn="@layout/activity_find_trainer">
 
+
+
     <Button
         android:id="@+id/btnFindTrainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Find Matthew Cook" />
+        android:layout_below="@+id/trainerCodeEdit"
+        android:textSize="24sp"
+        android:text="Find Trainer"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+    <EditText
+        android:id="@+id/trainerCodeEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textSize="30sp"
+        android:ems="10"
+        android:textAlignment="center"
+        android:inputType="textPersonName"
+        android:hint="Please enter code here:" />
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:text="Find Trainer" />
+
+    <TextView
+        android:id="@+id/howToText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleText"
+        android:gravity="center"
+        android:layout_marginStart="21dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginTop="12dp"
+        android:lineSpacingExtra="8sp"
+        android:text="Please enter the 8 digit code given by your trainer to find their profile:"
+        android:textAppearance="@android:style/TextAppearance.Medium" />
 </RelativeLayout>
