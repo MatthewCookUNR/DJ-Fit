@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clientReqLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".ClientRequestsActivity"
+    tools:showIn="@layout/activity_client_requests">
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Client Requests"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/exampleClient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleText"
+        android:layout_marginStart="9dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginRight="9dp"
+        android:text="Matthew Cook"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/exampleClient"
+        android:layout_marginStart="9dp"
+        android:layout_marginLeft="9dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnAddVideo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Accept"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btnClearVideos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Decline"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+
+</RelativeLayout>

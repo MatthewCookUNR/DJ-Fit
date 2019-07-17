@@ -1,8 +1,10 @@
 package com.example.dj_fit;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -214,8 +216,10 @@ public class TrainerProfileActivity extends BaseActivity {
         String userID = mAuth.getCurrentUser().getUid();
         final long start = System.currentTimeMillis();
 
-        String first_name = getIntent().getStringExtra("first_name");
-        String last_name = getIntent().getStringExtra("last_name");
+        final SharedPreferences myPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        String first_name = myPreferences.getString("first_name", "");
+        String last_name = myPreferences.getString("last_name", "");
 
         Map<String, Object> docData = new HashMap<>();
         docData.put("first_name", first_name);

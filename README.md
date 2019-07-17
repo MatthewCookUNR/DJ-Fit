@@ -50,7 +50,7 @@ a online database so that users can always retrieve it. DJ Fit will allow users 
   
 **Figure 4:** Workout Outline Activity
   </p>
-  Figure 4 shows the workout outline activity for the app. The activity displays an organized workout outline for the user and allows them to customize it by adding or removing specific days, workouts, and instructional videos to their outline. The outline can be saved and stored the noSQL, Cloud Firestore database in Firebase.
+  Figure 4 shows the workout outline activity for the app. The activity displays an organized workout outline for the user and allows them to customize it by adding or removing specific days, workouts, and instructional videos to their outline. The outline can be saved and stored through the Cloud Firestore.
   <br />
   <br />
   

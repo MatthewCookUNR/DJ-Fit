@@ -13,9 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ClientRequestsActivity"
+            android:label="@string/title_activity_client_requests"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".FindTrainerActivity"
             android:label="@string/title_activity_find_trainer"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TrainerProfileActivity"
             android:label="@string/title_activity_trainer_profile"

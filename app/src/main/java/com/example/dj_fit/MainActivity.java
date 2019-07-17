@@ -21,7 +21,8 @@ public class MainActivity extends BaseActivity {
 
     //Variables
     private static final String TAG = "MainActivity";
-    private Button btnBackground, btnWorkoutOutline, btnRegisterTrainer, btnTrainerProfile, btnFindTrainer;
+    private Button btnBackground, btnWorkoutOutline, btnRegisterTrainer, btnTrainerProfile,
+                   btnFindTrainer, btnClientRequests;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class MainActivity extends BaseActivity {
         btnRegisterTrainer = findViewById(R.id.btnRegisterTrainer);
         btnTrainerProfile = findViewById(R.id.btnTrainerProfile);
         btnFindTrainer = findViewById(R.id.btnFindTrainer);
+        btnClientRequests = findViewById(R.id.btnClientRequests);
 
         final SharedPreferences myPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -121,6 +123,14 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent findTrainerIntent = new Intent(MainActivity.this, FindTrainerActivity.class);
                 startActivity(findTrainerIntent);
+            }
+        });
+
+        btnClientRequests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent clientRequestsIntent = new Intent(MainActivity.this, ClientRequestsActivity.class);
+                startActivity(clientRequestsIntent);
             }
         });
     }

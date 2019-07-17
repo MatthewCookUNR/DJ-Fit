@@ -3,7 +3,6 @@ package com.example.dj_fit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -20,19 +19,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FindTrainerActivity extends AppCompatActivity {
+public class FindTrainerActivity extends BaseActivity {
 
     private static final String TAG = "FindTrainerActivity";
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
-    private StorageReference mStorageRef;
     Button btnFindTrainer;
     EditText trainerCodeEdit;
 
@@ -48,7 +44,6 @@ public class FindTrainerActivity extends AppCompatActivity {
         trainerCodeEdit = findViewById(R.id.trainerCodeEdit);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
-        mStorageRef = FirebaseStorage.getInstance().getReference("trainerPics");
 
         btnFindTrainer.setOnClickListener(new View.OnClickListener() {
             @Override
