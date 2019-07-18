@@ -122,7 +122,7 @@ public class ClientRequestsActivity extends BaseActivity
             Button acceptBut = createAcceptButton(documents.get(i).getId(), (String) docData.get("first_name"), (String) docData.get("last_name") );
             acceptBut.setLayoutParams(paramsB);
 
-            Button declineBut = createDeclineButton(documents.get(i).getId());
+            Button declineBut = createDeclineButton(documents.get(i).getId(), (String) docData.get("first_name"), (String) docData.get("last_name"));
             declineBut.setLayoutParams(paramsB);
 
             butLayout.addView(acceptBut);
@@ -148,21 +148,23 @@ public class ClientRequestsActivity extends BaseActivity
         return acceptBut;
     }
 
-    private Button createDeclineButton(String documentID)
+    private Button createDeclineButton(String documentID, String first_name, String last_name)
     {
+        final String userInfo = documentID + "/" + first_name + "/" + last_name;
         Button declineBut = new Button(ClientRequestsActivity.this);
         declineBut.setText("Decline");
         declineBut.setTextSize(16);
-        declineBut.setTag(documentID);
+        declineBut.setTag(userInfo);
         declineBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeClientRequest(v.getTag().toString());
+                removeClientRequest( (String) v.getTag());
             }
         });
         return declineBut;
     }
 
+    //Function adds a user as a client, deleting client request and adding client as current client
     private void addUserAsClient(String clientTag)
     {
         String userId = mAuth.getUid();
@@ -208,8 +210,46 @@ public class ClientRequestsActivity extends BaseActivity
 
     }
 
-    private void removeClientRequest(String clientID)
+    //Function declines the client, removing request and removing read permission given
+    //by the client
+    private void removeClientRequest(String clientTag)
     {
+        String userId = mAuth.getUid();
+        final long start = System.currentTimeMillis();
+        String[] clientData = clientTag.split("/");
+
+        //Sets document in DB to user inputted information
+        mDatabase.collection("trainers").document(userId).collection("clientRequests")
+                .document(clientData[0]).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid)
+                    {
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+
+        mDatabase.collection("users").document(clientData[0]).collection("editors")
+                .document(userId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid)
+                    {
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
 
     }
 }
