@@ -67,7 +67,7 @@ public class FindTrainerActivity extends BaseActivity {
                 {
                     List<DocumentSnapshot> documents = task.getResult().getDocuments();
                     Log.d(TAG, "Getting documents successful");
-                    viewTrainerProfilePage(documents.get(0).getData());
+                    viewTrainerProfilePage(documents.get(0).getData(), documents.get(0).getId());
                 }
                 else
                 {
@@ -77,10 +77,11 @@ public class FindTrainerActivity extends BaseActivity {
         });
     }
 
-    private void viewTrainerProfilePage(Map<String, Object> docData)
+    private void viewTrainerProfilePage(Map<String, Object> docData, String trainerID)
     {
         Intent trainerProfileIntent = new Intent(FindTrainerActivity.this, TrainerProfileActivity.class);
         trainerProfileIntent.putExtra("isOwner", false);
+        trainerProfileIntent.putExtra("trainerID", trainerID);
         trainerProfileIntent.putExtra("first_name", docData.get("first_name").toString());
         trainerProfileIntent.putExtra("last_name", docData.get("last_name").toString());
         startActivity(trainerProfileIntent);

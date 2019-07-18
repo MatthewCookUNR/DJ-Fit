@@ -16,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -24,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -116,7 +119,7 @@ public class ClientRequestsActivity extends BaseActivity
             LinearLayout.LayoutParams paramsB = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             paramsB.weight = 1;
 
-            Button acceptBut = createAcceptButton(documents.get(i).getId());
+            Button acceptBut = createAcceptButton(documents.get(i).getId(), (String) docData.get("first_name"), (String) docData.get("last_name") );
             acceptBut.setLayoutParams(paramsB);
 
             Button declineBut = createDeclineButton(documents.get(i).getId());
@@ -128,16 +131,18 @@ public class ClientRequestsActivity extends BaseActivity
         }
     }
 
-    private Button createAcceptButton(String documentID)
+    private Button createAcceptButton(String documentID, String first_name, String last_name)
     {
+        final String userInfo = documentID + "/" + first_name + "/" + last_name;
         final Button acceptBut = new Button(ClientRequestsActivity.this);
         acceptBut.setText("Accept");
         acceptBut.setTextSize(16);
-        acceptBut.setTag(documentID);
+        acceptBut.setTag(userInfo);
         acceptBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addUserAsClient(v.getTag().toString());
+                System.out.println((String) v.getTag());
+                addUserAsClient( (String) v.getTag());
             }
         });
         return acceptBut;
@@ -158,8 +163,48 @@ public class ClientRequestsActivity extends BaseActivity
         return declineBut;
     }
 
-    private void addUserAsClient(String clientID)
+    private void addUserAsClient(String clientTag)
     {
+        String userId = mAuth.getUid();
+        final long start = System.currentTimeMillis();
+        String[] clientData = clientTag.split("/");
+        HashMap<String, String> docData = new HashMap<>();
+        docData.put("first_name", clientData[1]);
+        docData.put("last_name", clientData[2]);
+
+        //Sets document in DB to user inputted information
+        mDatabase.collection("trainers").document(userId).collection("clientsCurrent")
+                .document(clientData[0]).set(docData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid)
+                    {
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+
+        //Sets document in DB to user inputted information
+        mDatabase.collection("trainers").document(userId).collection("clientRequests")
+                .document(clientData[0]).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid)
+                    {
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
 
     }
 

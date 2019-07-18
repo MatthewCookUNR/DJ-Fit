@@ -221,6 +221,7 @@ public class TrainerProfileActivity extends BaseActivity {
         String first_name = myPreferences.getString("first_name", "");
         String last_name = myPreferences.getString("last_name", "");
 
+        //Part of function creates a request for training in the DB
         Map<String, Object> docData = new HashMap<>();
         docData.put("first_name", first_name);
         docData.put("last_name", last_name);
@@ -228,19 +229,44 @@ public class TrainerProfileActivity extends BaseActivity {
         //Sets document in DB to user inputted information
         mDatabase.collection("trainers").document(trainerID).collection("clientRequests")
                 .document(userID).set(docData).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid)
-            {
-                long end = System.currentTimeMillis();
-                Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
-            }
-        })
+                    @Override
+                    public void onSuccess(Void aVoid)
+                    {
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                    }
+                })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
+
+
+        //Part of functions sets permissions to allow trainer to view user's content
+        Map<String, String> editData = new HashMap<>();
+        editData.put("Role", "Trainer");
+        editData.put("first_name", getIntent().getStringExtra("first_name") );
+        editData.put("last_name", getIntent().getStringExtra("last_name") );
+
+        //Sets document in DB to user inputted information
+        mDatabase.collection("users").document(userID).collection("editors")
+                .document(getIntent().getStringExtra("trainerID")).set(editData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid)
+                    {
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+
     }
 
     private void adjustUI()
