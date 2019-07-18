@@ -131,6 +131,7 @@ public class ClientRequestsActivity extends BaseActivity
         }
     }
 
+    //Function creates a button that can handle accepting a user as a client and returns it
     private Button createAcceptButton(String documentID, String first_name, String last_name)
     {
         final String userInfo = documentID + "/" + first_name + "/" + last_name;
@@ -148,6 +149,7 @@ public class ClientRequestsActivity extends BaseActivity
         return acceptBut;
     }
 
+    //Function creates a button that can handle declining a user as a client and returns it
     private Button createDeclineButton(String documentID, String first_name, String last_name)
     {
         final String userInfo = documentID + "/" + first_name + "/" + last_name;
