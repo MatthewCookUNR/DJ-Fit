@@ -35,11 +35,11 @@ public class BackgroundActivity extends BaseActivity {
     private EditText currentFitEdit, goalEdit, medicalEdit,
                      availabilityEdit, additionalEdit;
 
+    private String userID;
     private Button btnSubmit;
     private ScrollView backgroundScroll;
     private RelativeLayout backgroundText, backgroundBtn;
     private ImageView splashImage;
-    private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
 
     @Override
@@ -60,7 +60,12 @@ public class BackgroundActivity extends BaseActivity {
         backgroundBtn = findViewById(R.id.backgroundBtn);
         splashImage = findViewById(R.id.splashImage);
 
-        mAuth = FirebaseAuth.getInstance();
+        userID = getIntent().getStringExtra("clientID");
+        if(userID == null)
+        {
+            userID = FirebaseAuth.getInstance().getUid();
+        }
+
         mDatabase = FirebaseFirestore.getInstance();
         checkIfBackgroundExists();
 
@@ -69,7 +74,6 @@ public class BackgroundActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                String userID = mAuth.getCurrentUser().getUid();
                 addBackgroundToDB(userID);
             }
         });
@@ -87,7 +91,6 @@ public class BackgroundActivity extends BaseActivity {
     private void checkIfBackgroundExists()
     {
         final long start = System.currentTimeMillis();
-        String userID = mAuth.getCurrentUser().getUid();
         DocumentReference docRef = mDatabase.collection("users").document(userID).collection("fitnessData").document("backgroundDoc");
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override

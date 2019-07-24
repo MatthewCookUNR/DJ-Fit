@@ -21,12 +21,29 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="15dp"
         android:layout_below="@+id/titleText">
 
         <RelativeLayout
             android:id="@+id/clientLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/btnBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Background"
+                android:textAppearance="@android:style/TextAppearance.Large"/>
+
+            <Button
+                android:id="@+id/btnWorkoutOutline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btnBackground"
+                android:text="Workout Outline"
+                android:textAppearance="@android:style/TextAppearance.Large"/>
+        </RelativeLayout>
     </ScrollView>
 
 </RelativeLayout>

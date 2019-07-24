@@ -44,6 +44,7 @@ import java.util.Map;
 public class WorkoutOutlineActivity extends BaseActivity {
 
     private final static String TAG = "WorkoutOutlineActivity";
+    String userID;
     private int integer = 1;
     private int viewNum = 1;
     private final static int REQUEST_CODE_1 = 1;
@@ -63,7 +64,6 @@ public class WorkoutOutlineActivity extends BaseActivity {
     private ArrayList<ArrayList<String>> videoViewz = new ArrayList<>();
 
 
-    private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
     private FirebaseUser currentUser;
 
@@ -88,7 +88,12 @@ public class WorkoutOutlineActivity extends BaseActivity {
         musclesChecked = new boolean[muscleList.length];
         Arrays.fill(daysShown, false);
 
-        mAuth = FirebaseAuth.getInstance();
+        userID = getIntent().getStringExtra("clientID");
+        if(userID == null)
+        {
+            userID = FirebaseAuth.getInstance().getUid();
+        }
+
         mDatabase = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -181,7 +186,6 @@ public class WorkoutOutlineActivity extends BaseActivity {
                 workoutOutlineMap.put("Workout", dayMap);
 
                 //Last part of function that puts workout outline data onto the cloud database
-                String userID = currentUser.getUid();
                 final long start = System.currentTimeMillis();
 
                 mDatabase.collection("users").document(userID).collection("fitnessData")
@@ -636,7 +640,6 @@ public class WorkoutOutlineActivity extends BaseActivity {
     {
         final long start = System.currentTimeMillis();
 
-        String userID = mAuth.getCurrentUser().getUid();
         DocumentReference docRef = mDatabase.collection("users").document(userID).collection("fitnessData").document("workoutOutline");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
