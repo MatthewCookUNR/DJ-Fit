@@ -50,7 +50,7 @@ public class MainActivity extends BaseActivity {
         //If user is a trainer, register trainer button is modify trainer instead
         if(!trainerCode.equals(""))
         {
-            btnRegisterTrainer.setText("Modify Trainer Information");
+            btnRegisterTrainer.setText("Modify Trainer Profile");
         }
 
         //If name doesn't appear in shared preferences, get from DB and put it into there

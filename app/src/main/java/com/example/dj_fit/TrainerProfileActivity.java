@@ -1,8 +1,14 @@
 package com.example.dj_fit;
 
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -16,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,12 +51,12 @@ public class TrainerProfileActivity extends BaseActivity {
     String TAG = "Trainer Profile Activity";
     ImageView profileImageView, splashImage;
     TextView profileNameText, employerText, experienceText, aboutMeText;
-    Button btnRequestTrainer;
+    Button btnRequestTrainer, btnGetTrainerCode;
     String imageName;
     private String trainerID;
-    RelativeLayout topGradLayout, botButtons;
+    RelativeLayout topGradLayout;
     ScrollView trainerScroll;
-    private FirebaseAuth mAuth;
+    String userID;
     private FirebaseFirestore mDatabase;
 
     @Override
@@ -59,7 +66,6 @@ public class TrainerProfileActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        botButtons = findViewById(R.id.botButtons);
         splashImage = findViewById(R.id.splashImage);
         profileImageView = findViewById(R.id.profileImageView);
         profileNameText = findViewById(R.id.profileNameText);
@@ -69,17 +75,18 @@ public class TrainerProfileActivity extends BaseActivity {
         topGradLayout = findViewById(R.id.topGradLayout);
         trainerScroll = findViewById(R.id.trainerScroll);
         btnRequestTrainer = findViewById(R.id.btnRequestTrainer);
+        btnGetTrainerCode = findViewById(R.id.btnGetTrainerCode);
         imageName = null;
         trainerID = null;
 
-        mAuth = FirebaseAuth.getInstance();
+        userID = FirebaseAuth.getInstance().getUid();
         mDatabase = FirebaseFirestore.getInstance();
         boolean isOwner = getIntent().getBooleanExtra("isOwner", false);
 
         //If viewer is owner of profile, display self profile
         if(isOwner == true)
         {
-            String userID = mAuth.getCurrentUser().getUid();
+            btnGetTrainerCode.setVisibility(View.VISIBLE);
             checkIfTrainerProfileExists(userID);
         }
         //If viewer is a client, adjust UI and allow them to request trainer
@@ -90,6 +97,13 @@ public class TrainerProfileActivity extends BaseActivity {
             String last_name = getIntent().getStringExtra("last_name");
             findTrainerInfo(first_name, last_name);
         }
+
+        btnGetTrainerCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTrainerCode();
+            }
+        });
 
         btnRequestTrainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,7 +227,6 @@ public class TrainerProfileActivity extends BaseActivity {
     //Functions sends a request to the trainer with his/her first and last name
     private void sendTrainerRequest(String trainerID)
     {
-        String userID = mAuth.getCurrentUser().getUid();
         final long start = System.currentTimeMillis();
 
         final SharedPreferences myPreferences =
@@ -269,9 +282,28 @@ public class TrainerProfileActivity extends BaseActivity {
 
     }
 
+    private void showTrainerCode()
+    {
+        final SharedPreferences myPreferences =
+                PreferenceManager.getDefaultSharedPreferences(TrainerProfileActivity.this);
+        final String trainerCode = myPreferences.getString("trainerCode", "");
+        AlertDialog.Builder codeAlert = new AlertDialog.Builder(this).setMessage(trainerCode);
+        codeAlert.setNeutralButton("Copy to Clipboard", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Trainer Code", trainerCode);
+                clipboard.setPrimaryClip(clip);
+                Toast mToast = Toast.makeText(TrainerProfileActivity.this, "Code Copied", Toast.LENGTH_SHORT);
+                mToast.show();
+            }
+        });
+        TextView textView = codeAlert.show().findViewById(android.R.id.message);
+        textView.setTextSize(50);
+    }
+
     private void adjustUI()
     {
-        botButtons.setVisibility(View.VISIBLE);
+        btnRequestTrainer.setVisibility(View.VISIBLE);
     }
 
     private void closeSplashScreen()

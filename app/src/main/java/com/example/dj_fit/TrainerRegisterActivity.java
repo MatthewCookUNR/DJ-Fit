@@ -198,6 +198,7 @@ public class TrainerRegisterActivity extends BaseActivity
         }
     }
 
+    //Function uploads the inputted information to the database
     private void uploadToDB()
     {
         String userID = mAuth.getCurrentUser().getUid();
