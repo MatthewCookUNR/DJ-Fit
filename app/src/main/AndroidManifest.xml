@@ -13,6 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ClientProgramActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".CurrentClientsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ClientRequestsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

@@ -23,7 +23,7 @@ public class MainActivity extends BaseActivity {
     //Variables
     private static final String TAG = "MainActivity";
     private Button btnBackground, btnWorkoutOutline, btnRegisterTrainer, btnTrainerProfile,
-                   btnFindTrainer, btnClientRequests;
+                   btnFindTrainer, btnClientRequests, btnCurrentClients;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +40,7 @@ public class MainActivity extends BaseActivity {
         btnTrainerProfile = findViewById(R.id.btnTrainerProfile);
         btnFindTrainer = findViewById(R.id.btnFindTrainer);
         btnClientRequests = findViewById(R.id.btnClientRequests);
+        btnCurrentClients = findViewById(R.id.btnCurrentClients);
 
         final SharedPreferences myPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -133,6 +134,14 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent clientRequestsIntent = new Intent(MainActivity.this, ClientRequestsActivity.class);
                 startActivity(clientRequestsIntent);
+            }
+        });
+
+        btnCurrentClients.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent currentClientIntent = new Intent(MainActivity.this, CurrentClientsActivity.class);
+                startActivity(currentClientIntent);
             }
         });
     }

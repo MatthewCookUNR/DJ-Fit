@@ -10,4 +10,6 @@
     <string name="title_activity_trainer_profile">TrainerProfileActivity</string>
     <string name="title_activity_find_trainer">FindTrainer</string>
     <string name="title_activity_client_requests">ClientRequestsActivity</string>
+    <string name="title_activity_current_clients">CurrentClientsActivity</string>
+    <string name="title_activity_client_program">ClientProgramActivity</string>
 </resources>

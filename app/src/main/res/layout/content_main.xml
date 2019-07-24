@@ -68,7 +68,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/btnFindTrainer"
-            android:text="View Client Requests"
+            android:text="Client Requests"
             android:textAppearance="@android:style/TextAppearance.Large" />
+
+        <Button
+            android:id="@+id/btnCurrentClients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnClientRequests"
+            android:text="Current Clients"
+            android:textAppearance="@android:style/TextAppearance.Large" />
+
     </RelativeLayout>
 </ScrollView>
