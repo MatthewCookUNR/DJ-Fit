@@ -133,6 +133,7 @@ public class CurrentClientsActivity extends BaseActivity {
         acceptBut.setText("View Program");
         acceptBut.setTextSize(16);
         acceptBut.setTag(userInfo);
+        acceptBut.setTransformationMethod(null);
         acceptBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,6 +150,7 @@ public class CurrentClientsActivity extends BaseActivity {
         declineBut.setText("Remove");
         declineBut.setTextSize(16);
         declineBut.setTag(userInfo);
+        declineBut.setTransformationMethod(null);
         declineBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

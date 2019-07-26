@@ -108,6 +108,8 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    //Function gets the user's first and last name as well as their trainer code if they are currently
+    //a trainer
     private void getUserInformation()
     {
         final SharedPreferences myPreferences =
@@ -117,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
 
+        //Gets document containing user's first and last name
         String userID = mAuth.getCurrentUser().getUid();
         DocumentReference docRef = mDatabase.collection("users").document(userID);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -144,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        //Gets document containing user's trainer code if it exists
         DocumentReference docRef2 = mDatabase.collection("trainers").document(userID);
         docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

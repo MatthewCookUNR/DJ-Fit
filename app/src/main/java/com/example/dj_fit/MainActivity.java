@@ -6,16 +6,18 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 
 public class MainActivity extends BaseActivity {
 
     //Variables
     private static final String TAG = "MainActivity";
-    private Button btnBackground, btnWorkoutOutline, btnRegisterTrainer, btnTrainerProfile,
-                   btnFindTrainer, btnClientRequests, btnCurrentClients;
+    RelativeLayout activity_main;
+    private Button btnBackground, btnWorkoutOutline, btnRegisterTrainer, btnFindTrainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +28,11 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
 
         //Initialize layout variables
+        activity_main = findViewById(R.id.activity_main);
         btnBackground = findViewById(R.id.btnBackground);
         btnWorkoutOutline = findViewById(R.id.btnWorkoutOutline);
         btnRegisterTrainer = findViewById(R.id.btnRegisterTrainer);
-        btnTrainerProfile = findViewById(R.id.btnTrainerProfile);
         btnFindTrainer = findViewById(R.id.btnFindTrainer);
-        btnClientRequests = findViewById(R.id.btnClientRequests);
-        btnCurrentClients = findViewById(R.id.btnCurrentClients);
 
         final SharedPreferences myPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity {
 
         if(!trainerCode.equals("false"))
         {
-            btnRegisterTrainer.setText("Modify Trainer Profile");
+            adjustUI();
         }
 
         btnBackground.setOnClickListener(new View.OnClickListener() {
@@ -67,14 +67,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        btnTrainerProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent trainerProfileIntent = new Intent(MainActivity.this, TrainerProfileActivity.class);
-                trainerProfileIntent.putExtra("isOwner", true);
-                startActivity(trainerProfileIntent);
-            }
-        });
+
         btnFindTrainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,21 +75,26 @@ public class MainActivity extends BaseActivity {
                 startActivity(findTrainerIntent);
             }
         });
+    }
 
-        btnClientRequests.setOnClickListener(new View.OnClickListener() {
+    private void adjustUI()
+    {
+        btnRegisterTrainer.setVisibility(View.GONE);
+        Button btnTrainerMenu = new Button(MainActivity.this);
+        RelativeLayout.LayoutParams paramsR = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        paramsR.addRule(RelativeLayout.BELOW, R.id.btnFindTrainer);
+        String myText = "Trainer Menu";
+        btnTrainerMenu.setLayoutParams(paramsR);
+        btnTrainerMenu.setTextAppearance(this, android.R.style.TextAppearance_Large);
+        btnTrainerMenu.setTransformationMethod(null);
+        btnTrainerMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent clientRequestsIntent = new Intent(MainActivity.this, ClientRequestsActivity.class);
-                startActivity(clientRequestsIntent);
+                Intent trainerMenuIntent = new Intent(MainActivity.this, TrainerMenuActivity.class);
+                startActivity(trainerMenuIntent);
             }
         });
-
-        btnCurrentClients.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent currentClientIntent = new Intent(MainActivity.this, CurrentClientsActivity.class);
-                startActivity(currentClientIntent);
-            }
-        });
+        btnTrainerMenu.setText(myText);
+        activity_main.addView(btnTrainerMenu);
     }
 }

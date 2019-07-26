@@ -143,8 +143,9 @@ public class ClientRequestsActivity extends BaseActivity
         final String userInfo = documentID + "/" + first_name + "/" + last_name;
         final Button acceptBut = new Button(ClientRequestsActivity.this);
         acceptBut.setText("Accept");
-        acceptBut.setTextSize(16);
         acceptBut.setTag(userInfo);
+        acceptBut.setTextSize(16);
+        acceptBut.setTransformationMethod(null);
         acceptBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,8 +162,9 @@ public class ClientRequestsActivity extends BaseActivity
         final String userInfo = documentID + "/" + first_name + "/" + last_name;
         Button declineBut = new Button(ClientRequestsActivity.this);
         declineBut.setText("Decline");
-        declineBut.setTextSize(16);
         declineBut.setTag(userInfo);
+        declineBut.setTextSize(16);
+        declineBut.setTransformationMethod(null);
         declineBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
