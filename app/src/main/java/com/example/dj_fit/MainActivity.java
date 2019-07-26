@@ -4,19 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends BaseActivity {
 
@@ -44,49 +36,11 @@ public class MainActivity extends BaseActivity {
 
         final SharedPreferences myPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
-        String first_name = myPreferences.getString("first_name", "");
         String trainerCode = myPreferences.getString("trainerCode", "");
 
-        //If user is a trainer, register trainer button is modify trainer instead
-        if(!trainerCode.equals(""))
+        if(!trainerCode.equals("false"))
         {
             btnRegisterTrainer.setText("Modify Trainer Profile");
-        }
-
-        //If name doesn't appear in shared preferences, get from DB and put it into there
-        if(first_name.equals(""))
-        {
-            final long start = System.currentTimeMillis();
-
-            FirebaseAuth mAuth = FirebaseAuth.getInstance();
-            FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
-
-            String userID = mAuth.getCurrentUser().getUid();
-            DocumentReference docRef = mDatabase.collection("users").document(userID);
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            long end = System.currentTimeMillis();
-                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                            Log.d(TAG, "Logged at " + (end - start));
-
-                            SharedPreferences.Editor myEditor = myPreferences.edit();
-                            myEditor.putString("first_name", document.get("first_name").toString());
-                            myEditor.putString("last_name", document.get("last_name").toString());
-                            myEditor.apply();
-                            end = System.currentTimeMillis();
-                            Log.d(TAG, "Set name in Shared Pref logged at " + (end - start));
-                        } else {
-                            Log.d(TAG, "No such document");
-                        }
-                    } else {
-                        Log.d(TAG, "get failed with ", task.getException());
-                    }
-                }
-            });
         }
 
         btnBackground.setOnClickListener(new View.OnClickListener() {

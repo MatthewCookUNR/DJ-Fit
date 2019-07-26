@@ -1,7 +1,10 @@
 package com.example.dj_fit;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -202,6 +205,7 @@ public class TrainerRegisterActivity extends BaseActivity
     private void uploadToDB()
     {
         String userID = mAuth.getCurrentUser().getUid();
+        boolean signedUp = true;
         final long start = System.currentTimeMillis();
 
         //Checks to see if a image is currently exists for profile
@@ -233,8 +237,9 @@ public class TrainerRegisterActivity extends BaseActivity
         String trainerCode = myPreferences.getString("trainerCode", "");
 
         //If not trainer ID exists, create a random ID of 8 length
-        if(trainerCode.equals(""))
+        if(trainerCode.equals("false"))
         {
+            signedUp = false;
             trainerCode = getAlphaNumericString();
             SharedPreferences.Editor myEditor = myPreferences.edit();
             myEditor.putString("trainerCode", trainerCode);
@@ -266,6 +271,12 @@ public class TrainerRegisterActivity extends BaseActivity
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
+
+        if(!signedUp)
+        {
+            Intent trainerProfileIntent = new Intent(TrainerRegisterActivity.this, TrainerProfileActivity.class);
+            showSignedUpMessage(trainerProfileIntent);
+        }
     }
 
     //Function populates the activity with values stored in the Firestore DB
@@ -412,11 +423,14 @@ public class TrainerRegisterActivity extends BaseActivity
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully deleted!");
                         setTrainerStatusInDB(false);
-                        deleteCurrentProfilePic();
+                        if(uploadedImageName != null)
+                        {
+                            deleteCurrentProfilePic();
+                        }
                         final SharedPreferences myPreferences =
                                 PreferenceManager.getDefaultSharedPreferences(TrainerRegisterActivity.this);
                         SharedPreferences.Editor myEditor = myPreferences.edit();
-                        myEditor.putString("trainerCode", "");
+                        myEditor.putString("trainerCode", "false");
                         myEditor.apply();
                         Intent trainerRegisterIntent = new Intent(TrainerRegisterActivity.this, MainActivity.class);
                         startActivity(trainerRegisterIntent);
@@ -451,6 +465,28 @@ public class TrainerRegisterActivity extends BaseActivity
             }
         });
         dayBuilder.show();
+    }
+
+    //Function shows the user their trainer code and allows them to copy it
+    private void showSignedUpMessage(final Intent trainerProfileIntent)
+    {
+        final SharedPreferences myPreferences =
+                PreferenceManager.getDefaultSharedPreferences(TrainerRegisterActivity.this);
+        final String trainerCode = myPreferences.getString("trainerCode", "");
+        AlertDialog.Builder codeAlert = new AlertDialog.Builder(this).setMessage(trainerCode);
+        codeAlert.setTitle("Here is a code used by clients to connect with you.");
+        codeAlert.setNeutralButton("Copy to Clipboard", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Trainer Code", trainerCode);
+                clipboard.setPrimaryClip(clip);
+                Toast mToast = Toast.makeText(TrainerRegisterActivity.this, "Code Copied", Toast.LENGTH_SHORT);
+                mToast.show();
+                startActivity(trainerProfileIntent);
+            }
+        });
+        TextView textView = codeAlert.show().findViewById(android.R.id.message);
+        textView.setTextSize(50);
     }
 
     // Function to generate a random string of length 8

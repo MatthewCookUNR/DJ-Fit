@@ -5,10 +5,10 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -81,10 +81,9 @@ public class TrainerProfileActivity extends BaseActivity {
 
         userID = FirebaseAuth.getInstance().getUid();
         mDatabase = FirebaseFirestore.getInstance();
-        boolean isOwner = getIntent().getBooleanExtra("isOwner", false);
-
+        boolean isOwner = getIntent().getBooleanExtra("isOwner", true);
         //If viewer is owner of profile, display self profile
-        if(isOwner == true)
+        if(isOwner)
         {
             btnGetTrainerCode.setVisibility(View.VISIBLE);
             checkIfTrainerProfileExists(userID);
@@ -92,6 +91,7 @@ public class TrainerProfileActivity extends BaseActivity {
         //If viewer is a client, adjust UI and allow them to request trainer
         else
         {
+            System.out.println();
             adjustUI();
             String first_name = getIntent().getStringExtra("first_name");
             String last_name = getIntent().getStringExtra("last_name");
@@ -282,6 +282,7 @@ public class TrainerProfileActivity extends BaseActivity {
 
     }
 
+    //Function shows the user their trainer code and allows them to copy it
     private void showTrainerCode()
     {
         final SharedPreferences myPreferences =
@@ -301,11 +302,13 @@ public class TrainerProfileActivity extends BaseActivity {
         textView.setTextSize(50);
     }
 
+    //Function adjusts the UI if it is a client viewing it
     private void adjustUI()
     {
         btnRequestTrainer.setVisibility(View.VISIBLE);
     }
 
+    //Function closes the splash image, thus revealing the activity
     private void closeSplashScreen()
     {
         splashImage.setVisibility(View.INVISIBLE);

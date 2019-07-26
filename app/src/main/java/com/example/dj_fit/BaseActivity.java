@@ -8,7 +8,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,6 +42,7 @@ public class BaseActivity extends AppCompatActivity
                 SharedPreferences.Editor myEditor = myPreferences.edit();
                 myEditor.putString("first_name", "");
                 myEditor.putString("last_name", "");
+                myEditor.putString("trainerCode", "");
                 myEditor.apply();
                 Toast.makeText(this, "User has signed out", Toast.LENGTH_SHORT).show();
                 Intent loginAct = new Intent(this, LoginActivity.class);

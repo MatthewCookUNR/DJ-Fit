@@ -36,7 +36,7 @@ public class ClientRequestsActivity extends BaseActivity
     private int integer = 1;
     RelativeLayout clientReqLayout;
     TextView titleText;
-    private FirebaseAuth mAuth;
+    String userID;
     private FirebaseFirestore mDatabase;
 
     @Override
@@ -49,7 +49,7 @@ public class ClientRequestsActivity extends BaseActivity
         clientReqLayout = findViewById(R.id.clientReqLayout);
         titleText = findViewById(R.id.titleText);
 
-        mAuth = FirebaseAuth.getInstance();
+        userID = FirebaseAuth.getInstance().getUid();
         mDatabase = FirebaseFirestore.getInstance();
 
         checkForNewClients();
@@ -59,7 +59,6 @@ public class ClientRequestsActivity extends BaseActivity
     //Function queries DB to see if their are any clients requesting the user as a trainer
     private void checkForNewClients()
     {
-        String userID = mAuth.getUid();
         CollectionReference userRef = mDatabase.collection("trainers").document(userID).collection("clientRequests");
         Query query = userRef.limit(50);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -176,7 +175,6 @@ public class ClientRequestsActivity extends BaseActivity
     //Function adds a user as a client, deleting client request and adding client as current client
     private void addUserAsClient(String clientTag)
     {
-        String userId = mAuth.getUid();
         final long start = System.currentTimeMillis();
         String[] clientData = clientTag.split("/");
         HashMap<String, String> docData = new HashMap<>();
@@ -184,7 +182,7 @@ public class ClientRequestsActivity extends BaseActivity
         docData.put("last_name", clientData[2]);
 
         //Sets document in DB to user inputted information
-        mDatabase.collection("trainers").document(userId).collection("clientsCurrent")
+        mDatabase.collection("trainers").document(userID).collection("clientsCurrent")
                 .document(clientData[0]).set(docData).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid)
@@ -201,7 +199,7 @@ public class ClientRequestsActivity extends BaseActivity
                 });
 
         //Sets document in DB to user inputted information
-        mDatabase.collection("trainers").document(userId).collection("clientRequests")
+        mDatabase.collection("trainers").document(userID).collection("clientRequests")
                 .document(clientData[0]).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid)
@@ -223,12 +221,11 @@ public class ClientRequestsActivity extends BaseActivity
     //by the client
     private void removeClientRequest(String clientTag)
     {
-        String userId = mAuth.getUid();
         final long start = System.currentTimeMillis();
         String[] clientData = clientTag.split("/");
 
         //Deletes the document that is in the trainer's collection of clients
-        mDatabase.collection("trainers").document(userId).collection("clientRequests")
+        mDatabase.collection("trainers").document(userID).collection("clientRequests")
                 .document(clientData[0]).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid)
@@ -246,7 +243,7 @@ public class ClientRequestsActivity extends BaseActivity
 
         //Deletes the document that allows the trainer to view the user's fitness program
         mDatabase.collection("users").document(clientData[0]).collection("editors")
-                .document(userId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                .document(userID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid)
                     {
