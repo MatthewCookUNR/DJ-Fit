@@ -43,6 +43,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -429,6 +430,9 @@ public class TrainerRegisterActivity extends BaseActivity
                         }
                         final SharedPreferences myPreferences =
                                 PreferenceManager.getDefaultSharedPreferences(TrainerRegisterActivity.this);
+                        String trainerCode = myPreferences.getString("trainerCode", "");
+
+                        removeTrainerIdDB(trainerCode);
                         SharedPreferences.Editor myEditor = myPreferences.edit();
                         myEditor.putString("trainerCode", "false");
                         myEditor.apply();
@@ -446,6 +450,7 @@ public class TrainerRegisterActivity extends BaseActivity
                 });
     }
 
+    //Function handles alert shown when pressing deregister button
     private void showUnregisterAlert()
     {
         AlertDialog.Builder dayBuilder = new AlertDialog.Builder(TrainerRegisterActivity.this);
@@ -490,7 +495,7 @@ public class TrainerRegisterActivity extends BaseActivity
     }
 
     // Function to generate a random string of length 8
-    static String getAlphaNumericString()
+    private String getAlphaNumericString()
     {
 
         // chose a Character random from this String
@@ -511,7 +516,112 @@ public class TrainerRegisterActivity extends BaseActivity
             // add Character one by one in end of sb
             buildString.append(alphaNumericString.charAt(index));
         }
+
+        //Checks to see if generated trainer code is already in use
+        final String alphaString = buildString.toString();
+        checkIfTrainerCodeExists(alphaString);
+
+
         return buildString.toString();
+    }
+
+    //Function checks if trainer code is already in use
+    //Note: Runs function to generate a new one if that is the case
+    private void checkIfTrainerCodeExists(final String alphaString)
+    {
+        //Part of function checks to make sure the generated string is not already used by another user
+        final long start = System.currentTimeMillis();
+        DocumentReference docRef = mDatabase.collection("trainers").document("0eh3S7vf62XX4DB2dsTG");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        Log.d(TAG, "Logged at " + (end - start));
+                        ArrayList<String> list = (ArrayList) document.getData().get("trainerCodes");
+                        int index = list.indexOf(alphaString);
+
+                        //Checks to see if generated string is already in use
+                        if(index != -1)
+                        {
+                            getAlphaNumericString();
+                        }
+                        //Else, puts new on in list of trainer codes and uploads the new list
+                        else
+                        {
+                            list.add(alphaString);
+                            setTrainerCodesDB(list);
+                        }
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+    //Function sets the list of all trainer codes with a new, updated list
+    private void setTrainerCodesDB(ArrayList<String> list)
+    {
+        final long start = System.currentTimeMillis();
+        HashMap<String, ArrayList<String>> map = new HashMap<>();
+        map.put("trainerCodes", list);
+        //Sets document in DB to user inputted information
+        mDatabase.collection("trainers").document("0eh3S7vf62XX4DB2dsTG")
+                .set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                long end = System.currentTimeMillis();
+                Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+    }
+
+    //Function removes user's trainer code from list of all trainer codes in DB
+    private void removeTrainerIdDB(final String trainerCode)
+    {
+        //Part of function checks to make sure the generated string is not already used by another user
+        final long start = System.currentTimeMillis();
+        DocumentReference docRef = mDatabase.collection("trainers").document("0eh3S7vf62XX4DB2dsTG");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        long end = System.currentTimeMillis();
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        Log.d(TAG, "Logged at " + (end - start));
+                        ArrayList<String> list = (ArrayList) document.getData().get("trainerCodes");
+                        int index = list.indexOf(trainerCode);
+                        if(index != -1)
+                        {
+                            list.remove(index);
+                            setTrainerCodesDB(list);
+                        }
+                        else
+                        {
+                            Log.d(TAG, "Trainer code does not exist");
+                        }
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
     //Adjusts UI if user is already registered as a trainer
