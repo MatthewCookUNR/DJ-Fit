@@ -49,19 +49,20 @@ import java.util.Map;
 
 public class TrainerRegisterActivity extends BaseActivity
 {
+    //Class variables
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final String TAG = "TrainerRegisterActivity";
-    Uri imageToUpload;
-    TextView titleText;
-    ImageView mImage, splashImage;
-    RelativeLayout botButtons, registerInfo;
-    ScrollView trainerScroll;
-    EditText experienceEdit, employmentEdit, aboutYouEdit;
-    Button btnUploadImage, btnBecomeTrainer, btnUnregister;
-    private FirebaseAuth mAuth;
+    private Uri imageToUpload;
+    private TextView titleText;
+    private ImageView mImage, splashImage;
+    private RelativeLayout botButtons, registerInfo;
+    private ScrollView trainerScroll;
+    private EditText experienceEdit, employmentEdit, aboutYouEdit;
+    private Button btnUploadImage, btnBecomeTrainer, btnUnregister;
     private FirebaseFirestore mDatabase;
     private StorageReference mStorageRef;
-    String imageName, uploadedImageName;
+    private String imageName, uploadedImageName;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +71,7 @@ public class TrainerRegisterActivity extends BaseActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Views and parameter initialization
         titleText = findViewById(R.id.titleText);
         experienceEdit = findViewById(R.id.experienceEdit);
         employmentEdit = findViewById(R.id.employmentEdit);
@@ -86,7 +88,8 @@ public class TrainerRegisterActivity extends BaseActivity
         imageToUpload = null;
         imageName = null;
 
-        mAuth = FirebaseAuth.getInstance();
+        //Firebase parameters
+        userID = FirebaseAuth.getInstance().getUid();
         mDatabase = FirebaseFirestore.getInstance();
         mStorageRef= FirebaseStorage.getInstance().getReference("trainerPics");
         checkIfTrainerRegisterExists();
@@ -133,6 +136,7 @@ public class TrainerRegisterActivity extends BaseActivity
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK)
         {
             imageToUpload = data.getData();
+            //If image returned is not null, set image on screen
             if(imageToUpload != null)
             {
                 try
@@ -205,7 +209,6 @@ public class TrainerRegisterActivity extends BaseActivity
     //Function uploads the inputted information to the database
     private void uploadToDB()
     {
-        String userID = mAuth.getCurrentUser().getUid();
         boolean signedUp = true;
         final long start = System.currentTimeMillis();
 
@@ -273,6 +276,7 @@ public class TrainerRegisterActivity extends BaseActivity
                     }
                 });
 
+        //If signing up and not updating, display message
         if(!signedUp)
         {
             Intent trainerProfileIntent = new Intent(TrainerRegisterActivity.this, TrainerProfileActivity.class);
@@ -291,6 +295,7 @@ public class TrainerRegisterActivity extends BaseActivity
             aboutYouEdit.setText(docData.get("aboutYou").toString());
             Object name = docData.get("profilePic");
 
+            //If they have a profile picture, download it
             if(name != null)
             {
                 uploadedImageName = name.toString();
@@ -314,7 +319,6 @@ public class TrainerRegisterActivity extends BaseActivity
     private void checkIfTrainerRegisterExists()
     {
         final long start = System.currentTimeMillis();
-        String userID = mAuth.getCurrentUser().getUid();
 
         DocumentReference docRef = mDatabase.collection("trainers").document(userID);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -392,7 +396,6 @@ public class TrainerRegisterActivity extends BaseActivity
     //Function sets the user's status as a trainer to true/false in the DB
     private void setTrainerStatusInDB( boolean status)
     {
-        String userID = mAuth.getCurrentUser().getUid();
         Map<String, Object> doctData2 = new HashMap<>();
         doctData2.put("isTrainer", status);
         mDatabase.collection("users")
@@ -415,7 +418,6 @@ public class TrainerRegisterActivity extends BaseActivity
     //Function unregisters the user as a trainer, deleting stored information on the database
     private void UnregisterTrainer()
     {
-        String userID = mAuth.getCurrentUser().getUid();
         mDatabase.collection("trainers").document(userID)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>()
@@ -423,7 +425,11 @@ public class TrainerRegisterActivity extends BaseActivity
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully deleted!");
+
+                        //Set's status as trainer to false in DB
                         setTrainerStatusInDB(false);
+
+                        //Delete user's profile picture if they have one
                         if(uploadedImageName != null)
                         {
                             deleteCurrentProfilePic();
@@ -432,7 +438,10 @@ public class TrainerRegisterActivity extends BaseActivity
                                 PreferenceManager.getDefaultSharedPreferences(TrainerRegisterActivity.this);
                         String trainerCode = myPreferences.getString("trainerCode", "");
 
+                        //Remove trainer from list of trainer codes in DB
                         removeTrainerIdDB(trainerCode);
+
+                        //Set trainer code as false in shared preferences
                         SharedPreferences.Editor myEditor = myPreferences.edit();
                         myEditor.putString("trainerCode", "false");
                         myEditor.apply();
@@ -571,6 +580,7 @@ public class TrainerRegisterActivity extends BaseActivity
         final long start = System.currentTimeMillis();
         HashMap<String, ArrayList<String>> map = new HashMap<>();
         map.put("trainerCodes", list);
+
         //Sets document in DB to user inputted information
         mDatabase.collection("trainers").document("0eh3S7vf62XX4DB2dsTG")
                 .set(map).addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -12,8 +12,9 @@ import android.widget.TextView;
 
 public class ClientProgramActivity extends BaseActivity
 {
-    TextView titleText;
-    Button btnBackground, btnWorkoutOutline;
+    //Class variables
+    private TextView titleText;
+    private Button btnBackground, btnWorkoutOutline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -22,10 +23,11 @@ public class ClientProgramActivity extends BaseActivity
         setContentView(R.layout.activity_client_program);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Views and variables initialization
         titleText = findViewById(R.id.titleText);
         btnBackground = findViewById(R.id.btnBackground);
         btnWorkoutOutline = findViewById(R.id.btnWorkoutOutline);
-
         final String[] clientData = getIntent().getStringExtra("clientTag").split("/");
         titleText.setText(clientData[1] + " " + clientData[2]);
 

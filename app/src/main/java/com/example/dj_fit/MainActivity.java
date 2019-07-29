@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 
 public class MainActivity extends BaseActivity {
 
-    //Variables
+    //Class variables
     private static final String TAG = "MainActivity";
     RelativeLayout activity_main;
     private Button btnBackground, btnWorkoutOutline, btnRegisterTrainer, btnFindTrainer;
@@ -27,19 +27,21 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Initialize layout variables
+        //Views initialization
         activity_main = findViewById(R.id.activity_main);
         btnBackground = findViewById(R.id.btnBackground);
         btnWorkoutOutline = findViewById(R.id.btnWorkoutOutline);
         btnRegisterTrainer = findViewById(R.id.btnRegisterTrainer);
         btnFindTrainer = findViewById(R.id.btnFindTrainer);
 
+        //Checks to see if the user is currently a trainer
         final SharedPreferences myPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
         String trainerCode = myPreferences.getString("trainerCode", "");
 
         if(!trainerCode.equals("false"))
         {
+            System.out.println("yes" + trainerCode);
             adjustUI();
         }
 
@@ -77,6 +79,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    //Function adjusts UI based on whether or not the user is a trainer
     private void adjustUI()
     {
         btnRegisterTrainer.setVisibility(View.GONE);

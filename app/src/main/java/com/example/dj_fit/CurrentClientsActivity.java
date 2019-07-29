@@ -30,10 +30,12 @@ import java.util.List;
 import java.util.Map;
 
 public class CurrentClientsActivity extends BaseActivity {
+
+    //Class variables
     private static final String TAG = "CurrentClientsActivity";
     private int integer = 1;
-    RelativeLayout clientLayout;
-    TextView titleText;
+    private RelativeLayout clientLayout;
+    private TextView titleText;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
 
@@ -44,8 +46,10 @@ public class CurrentClientsActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Views and variables initialization
         clientLayout = findViewById(R.id.clientLayout);
         titleText = findViewById(R.id.titleText);
+
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
 
@@ -80,7 +84,7 @@ public class CurrentClientsActivity extends BaseActivity {
         {
             Map<String, Object> docData = documents.get(i).getData();
 
-            //Part of function creates a TextView with client's first and last name
+            //Creates a TextView with client's first and last name
             TextView nameText = new TextView(CurrentClientsActivity.this);
             nameText.setTextAppearance(this, android.R.style.TextAppearance_Large);
             nameText.setText(docData.get("first_name") + " " + docData.get("last_name"));
@@ -100,7 +104,7 @@ public class CurrentClientsActivity extends BaseActivity {
             clientLayout.addView(nameText);
             integer++;
 
-            //Part of function creates a linear layout with two buttons, one to view client's program
+            //Creates a linear layout with two buttons, one to view client's program
             //and another to remove the user as the trainer's client
             LinearLayout butLayout = new LinearLayout(CurrentClientsActivity.this);
             RelativeLayout.LayoutParams paramsR = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

@@ -26,11 +26,12 @@ import java.util.Map;
 
 public class FindTrainerActivity extends BaseActivity {
 
+    //Class variables
     private static final String TAG = "FindTrainerActivity";
     private FirebaseFirestore mDatabase;
-    Button btnFindTrainer;
-    EditText trainerCodeEdit;
-    String userId;
+    private Button btnFindTrainer;
+    private EditText trainerCodeEdit;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,6 +41,7 @@ public class FindTrainerActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Views and variables initialization
         btnFindTrainer = findViewById(R.id.btnFindTrainer);
         trainerCodeEdit = findViewById(R.id.trainerCodeEdit);
         mDatabase = FirebaseFirestore.getInstance();
@@ -77,9 +79,11 @@ public class FindTrainerActivity extends BaseActivity {
         });
     }
 
+    //Opens up the trainer profile page for the given trainer code that was found in DB
     private void viewTrainerProfilePage(Map<String, Object> docData, String trainerID)
     {
         Intent trainerProfileIntent = new Intent(FindTrainerActivity.this, TrainerProfileActivity.class);
+        //If trainer code corresponds to your own profile, open accordingly
         if(trainerID.equals(userId))
         {
             trainerProfileIntent.putExtra("isOwner", true);

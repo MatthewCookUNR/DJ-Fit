@@ -43,8 +43,9 @@ import java.util.Map;
 
 public class WorkoutOutlineActivity extends BaseActivity {
 
+    //Class variables
     private final static String TAG = "WorkoutOutlineActivity";
-    String userID;
+    private String userID;
     private int integer = 1;
     private int viewNum = 1;
     private final static int REQUEST_CODE_1 = 1;
@@ -59,11 +60,8 @@ public class WorkoutOutlineActivity extends BaseActivity {
     private int dayChecked;
     private ArrayList<Integer> selectedMuscles = new ArrayList<>();
     private boolean [] musclesChecked;
-
     private ArrayList<workoutDay> workoutOutline = new ArrayList<>();
     private ArrayList<ArrayList<String>> videoViewz = new ArrayList<>();
-
-
     private FirebaseFirestore mDatabase;
     private FirebaseUser currentUser;
 
@@ -75,7 +73,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         final long start = System.currentTimeMillis();
 
-
+        //Views and variables initialization
         container = findViewById(R.id.relativeScroll);
         hrEdit = findViewById(R.id.hrEdit);
         restPeriodEdit = findViewById(R.id.restPeriodEdit);
@@ -88,6 +86,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
         musclesChecked = new boolean[muscleList.length];
         Arrays.fill(daysShown, false);
 
+        //Checks to see if viewer is the user itself or a trainer
         userID = getIntent().getStringExtra("clientID");
         if(userID == null)
         {
@@ -153,19 +152,15 @@ public class WorkoutOutlineActivity extends BaseActivity {
                 int muscleNum = 0;
                 for(int i = 0; i < workoutOutline.size(); i++)
                 {
-                    //System.out.println("Day: " + workoutOutline.get(i).getDay());
-                    //System.out.println("Exercise num is: " + workoutOutline.get(i).getExercise().size());
-                    //System.out.println("Videolist num is: " + workoutOutline.get(i).getViewVideosList().size());
                     for (int j = 1; j < workoutOutline.get(i).getExercise().size()+1; j++)
                     {
-                        //System.out.println("i is:" + i);
-                        //System.out.println("j is: " + j);
                         tempRow.setExercise(workoutOutline.get(i).getExercise().get(j-1).getText().toString());
                         tempRow.setMinWeight(workoutOutline.get(i).getMinWeight().get(j-1).getText().toString());
                         tempRow.setMaxWeight(workoutOutline.get(i).getMaxWeight().get(j-1).getText().toString());
                         tempRow.setVideoList(workoutOutline.get(i).getViewVideosList().get(j-1));
                         rowMap.put("row" + rowNum, new workoutRow(tempRow));
                         rowNum++;
+
                         //Mod 5 is used since each muscle group has a max of 5 exercises
                         if(j % 5 == 0)
                         {
@@ -182,7 +177,6 @@ public class WorkoutOutlineActivity extends BaseActivity {
                     muscleMap.clear();
                     muscleNum = 0;
                 }
-                //System.out.println(dayMap);
                 workoutOutlineMap.put("Workout", dayMap);
 
                 //Last part of function that puts workout outline data onto the cloud database
@@ -238,13 +232,13 @@ public class WorkoutOutlineActivity extends BaseActivity {
         {
             if(workoutOutline.get(z).getDayOrderIndex() < selectedIndex)
             {
-                //Case 1: Add to end of outline
+                //Case: Add to end of outline
                 if(z == workoutOutline.size()-1)
                 {
                     insertIndex = z+1;
                     break;
                 }
-                //Case 2: Add after current day but before the following day
+                //Case: Add after current day but before the following day
                 else if (workoutOutline.get(z+1).getDayOrderIndex() > selectedIndex )
                 {
                     insertIndex = z+1;
@@ -252,14 +246,13 @@ public class WorkoutOutlineActivity extends BaseActivity {
                 }
                 //If neither pass, move to next day to check
             }
-            //Case 3: Add before the entire list
+            //Case: Add before the entire list
             if(workoutOutline.get(z).getDayOrderIndex() > selectedIndex)
             {
                 insertIndex = z;
                 break;
             }
         }
-
         //Add new day to end of outline if it is the last day
         //Otherwise, insert in correct spot
         if(workoutOutline.size() == insertIndex)

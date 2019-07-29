@@ -27,10 +27,10 @@ import java.util.List;
 //Activity shows data on exercise when "View" is clicked on the Workout Outline page
 public class PopActivity extends YouTubeBaseActivity {
 
-    YouTubePlayerView mYouTubePlayerView;
+    //Class variables
+    private YouTubePlayerView mYouTubePlayerView;
     YouTubePlayer.OnInitializedListener mOnInitializedListener;
     List<String> addedVideos = new ArrayList<>();
-
     TextView linksView;
     Button btnSaveVid, btnAddVideo, btnClearVideos;
     EditText editAddVideo;
@@ -41,6 +41,7 @@ public class PopActivity extends YouTubeBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop);
 
+        //Views and variables initialization
         btnSaveVid = findViewById(R.id.btnSaveVid);
         linksView = findViewById(R.id.linksView);
         btnAddVideo = findViewById(R.id.btnAddVideo);
@@ -51,18 +52,16 @@ public class PopActivity extends YouTubeBaseActivity {
         addedVideos = getIntent().getStringArrayListExtra("videos");
         System.out.println("Videos to popup " + addedVideos);
 
+        //Display metric changes to make it appear as a pop up
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
         int height = dm.heightPixels;
-
         getWindow().setLayout((int)(width*.8), (int)(height*.7));
-
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER;
         params.x = 0;
         params.y = 20;
-
         getWindow().setAttributes(params);
 
         //Handles playing videos for YouTube Player
@@ -71,6 +70,7 @@ public class PopActivity extends YouTubeBaseActivity {
             public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer youTubePlayer, boolean wasRestored)
             {
                 mYouTubePlayer = youTubePlayer;
+                //Cue videos if video player was not restored and there are videos to play
                 if(!wasRestored)
                 {
                     if(!addedVideos.isEmpty())
@@ -96,18 +96,21 @@ public class PopActivity extends YouTubeBaseActivity {
                 editAddVideo.setText("");
                 try
                 {
+                    //Case that youtube link comes from mobile android
                     if (link.contains(".be/"))
                     {
                         String delims = "be/";
                         String[] tokens = link.split(delims);
                         addedVideos.add(tokens[1]);
                     }
+                    //Case copied link comes from PC player
                     else if (link.contains("v="))
                     {
                         String delims = "v=";
                         String[] tokens = link.split(delims);
                         addedVideos.add(tokens[1]);
                     }
+                    //Case that youtube link is a bad link
                     else
                     {
                         Toast toast = Toast.makeText(PopActivity.this, "Please enter a valid youtube address", Toast.LENGTH_SHORT);
@@ -115,6 +118,7 @@ public class PopActivity extends YouTubeBaseActivity {
                         throw new Exception();
                     }
 
+                    //If youtube player is not null, release so it can restarted with new video added
                     if (mYouTubePlayer != null)
                     {
                         mYouTubePlayer.release();

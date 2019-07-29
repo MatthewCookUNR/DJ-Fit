@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class workoutDay
 {
+    //Class variables
     private String day;
     private TextView exerTitle, viewTitle, minTitle, maxTitle, dayView;
     private TableLayout myTable;
@@ -152,6 +153,7 @@ public class workoutDay
         this.viewVideosList.add(viewVideos);
     }
 
+    //Function removes the current views from activity
     public void destroyViews()
     {
 

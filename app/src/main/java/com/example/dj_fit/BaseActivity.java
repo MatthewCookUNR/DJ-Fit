@@ -14,8 +14,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class BaseActivity extends AppCompatActivity
 {
-    private FirebaseAuth mAuth;
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -35,7 +33,7 @@ public class BaseActivity extends AppCompatActivity
         {
             //Logs the user out of the application
             case R.id.action_signOut:
-                mAuth = FirebaseAuth.getInstance();
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
                 mAuth.signOut();
                 final SharedPreferences myPreferences =
                         PreferenceManager.getDefaultSharedPreferences(this);
@@ -48,6 +46,7 @@ public class BaseActivity extends AppCompatActivity
                 Intent loginAct = new Intent(this, LoginActivity.class);
                 startActivity(loginAct);
                 return true;
+            //Takes user to the main menu
             case R.id.action_mainMenu:
                 Intent mainAct = new Intent(this, MainActivity.class);
                 startActivity(mainAct);

@@ -1,6 +1,5 @@
 package com.example.dj_fit;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,10 +24,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
+    //Class variables
     private static final String TAG = "LoginActivity";
-
-    //Variables
+    String userID;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore mDatabase;
     private EditText emailText, passwordText;
     private Button btnSignIn, btnCreateAccount;
 
@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Initializing layout variables
+        //Views and variables initialization
         emailText = findViewById(R.id.emailText);
         passwordText = findViewById(R.id.passwordText);
         btnSignIn = findViewById(R.id.btnSignIn);
@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //Initializing Firebase variables
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseFirestore.getInstance();
 
         //Button signs the user into the application if they have a existing account
         btnSignIn.setOnClickListener(new View.OnClickListener(){
@@ -76,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                                         Log.d(TAG, "signInWithEmail:success");
                                         Toast.makeText(LoginActivity.this, "Successfully signed in",
                                                 Toast.LENGTH_SHORT).show();
+                                        userID = mAuth.getUid();
                                         getUserInformation();
                                     } else {
                                         // If sign in fails, display a message to the user.
@@ -113,11 +115,8 @@ public class LoginActivity extends AppCompatActivity {
     private void getUserInformation()
     {
         final SharedPreferences myPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
+                PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
         final long start = System.currentTimeMillis();
-
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
 
         //Gets document containing user's first and last name
         String userID = mAuth.getCurrentUser().getUid();
@@ -147,6 +146,17 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        checkIfUserIsTrainer();
+    }
+
+    //Checks to see if the user signing in is a trainer, setting
+    //trainer code in Shared Preferences if true
+    private void checkIfUserIsTrainer()
+    {
+        final SharedPreferences myPreferences =
+                PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+        final long start = System.currentTimeMillis();
+
         //Gets document containing user's trainer code if it exists
         DocumentReference docRef2 = mDatabase.collection("trainers").document(userID);
         docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -158,7 +168,6 @@ public class LoginActivity extends AppCompatActivity {
                         long end = System.currentTimeMillis();
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                         Log.d(TAG, "Logged at " + (end - start));
-
                         SharedPreferences.Editor myEditor = myPreferences.edit();
                         myEditor.putString("trainerCode", document.get("trainerCode").toString());
                         myEditor.apply();
@@ -170,13 +179,14 @@ public class LoginActivity extends AppCompatActivity {
                         myEditor.apply();
                         Log.d(TAG, "No such document");
                     }
+                    userSignedIn();
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
                 }
             }
         });
-        userSignedIn();
     }
+
     //Function takes user to main page after logging in
     private void userSignedIn()
     {

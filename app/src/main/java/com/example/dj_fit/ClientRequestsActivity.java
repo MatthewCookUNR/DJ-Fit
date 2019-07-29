@@ -32,11 +32,13 @@ import java.util.Map;
 
 public class ClientRequestsActivity extends BaseActivity
 {
+
+    //Class variables
     private static final String TAG = "ClientRequestsActivity";
     private int integer = 1;
-    RelativeLayout clientReqLayout;
-    TextView titleText;
-    String userID;
+    private RelativeLayout clientReqLayout;
+    private TextView titleText;
+    private String userID;
     private FirebaseFirestore mDatabase;
 
     @Override
@@ -46,6 +48,7 @@ public class ClientRequestsActivity extends BaseActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Views and variables initialization
         clientReqLayout = findViewById(R.id.clientReqLayout);
         titleText = findViewById(R.id.titleText);
 
@@ -88,7 +91,7 @@ public class ClientRequestsActivity extends BaseActivity
         {
             Map<String, Object> docData = documents.get(i).getData();
 
-            //Part of function creates a TextView with client's first and last name
+            //Creates a TextView with client's first and last name
             TextView nameText = new TextView(ClientRequestsActivity.this);
             nameText.setTextAppearance(this, android.R.style.TextAppearance_Large);
             nameText.setText(docData.get("first_name") + " " + docData.get("last_name"));
@@ -111,7 +114,7 @@ public class ClientRequestsActivity extends BaseActivity
             clientReqLayout.addView(nameText);
             integer++;
 
-            //Part of function creates a linear layout with two buttons, one to add user as one of
+            //Creates a linear layout with two buttons, one to add user as one of
             //the trainer's clients, and the other to decline the user's client request
             LinearLayout butLayout = new LinearLayout(ClientRequestsActivity.this);
             RelativeLayout.LayoutParams paramsR = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

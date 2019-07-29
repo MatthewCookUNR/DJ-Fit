@@ -24,6 +24,7 @@ import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
+    //Class variables
     private static final String TAG = "SignUpActivity";
     private FirebaseAuth mAuth;
     private EditText passEdit, firstNameEdit, lastNameEdit, emailEdit;
@@ -36,21 +37,23 @@ public class SignUpActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Views initialization
         passEdit = findViewById(R.id.passEdit);
         firstNameEdit = findViewById(R.id.firstNameEdit);
         lastNameEdit = findViewById(R.id.lastNameEdit);
         emailEdit = findViewById(R.id.emailEdit);
         btnSignUp = findViewById(R.id.btnSignUp);
 
+        //Firebase initialization
         mAuth = FirebaseAuth.getInstance();
 
         //Button signs user up for a account using Firebase Authentications
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try
                 {
+                    //If any of the fields are empty, ask user to fill out
                     final String currentEmail = emailEdit.getText().toString();
                     if (currentEmail.isEmpty())
                     {
@@ -74,30 +77,8 @@ public class SignUpActivity extends AppCompatActivity {
                         throw new Exception();
                     }
 
-                    //Button creates a account using user-inputted information
-                    mAuth.createUserWithEmailAndPassword(currentEmail, currentPass)
-                            .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
-                                        Log.d(TAG, "createUserWithEmail:success");
-                                        String id = mAuth.getCurrentUser().getUid();
-                                        addUserToDB(id, currentFirstName, currentLastName);
-                                        Toast.makeText(SignUpActivity.this, "Account successfully created.",
-                                                Toast.LENGTH_SHORT).show();
-
-                                        Intent signUpAct = new Intent(SignUpActivity.this, LoginActivity.class);
-                                        startActivity(signUpAct);
-
-                                    } else {
-                                        // If sign in fails, display a message to the user.
-                                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                        Toast.makeText(SignUpActivity.this, "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+                    //If all fields have text, create account with given info
+                    createAccount(currentEmail, currentPass, currentFirstName, currentLastName);
                 }
                 catch (Exception e)
                 {
@@ -109,9 +90,40 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
+    //Function creates a account with the user's inputted information
+    private void createAccount(final String currentEmail, final String currentPass,
+                               final String currentFirstName,final String currentLastName)
+    {
+        //Button creates a account using user-inputted information
+        mAuth.createUserWithEmailAndPassword(currentEmail, currentPass)
+                .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success");
+                            String id = mAuth.getCurrentUser().getUid();
+                            addUserToDB(id, currentFirstName, currentLastName);
+                            Toast.makeText(SignUpActivity.this, "Account successfully created.",
+                                    Toast.LENGTH_SHORT).show();
+
+                            Intent signUpAct = new Intent(SignUpActivity.this, LoginActivity.class);
+                            startActivity(signUpAct);
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
     //Function adds a new user's login information to the database
     private void addUserToDB ( String userID, String firstName, String lastName)
     {
+        //Creates document for user in the database
         FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
         Map<String, Object> doctData = new HashMap<>();
         doctData.put("first_name", firstName);
@@ -130,6 +142,7 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 });
 
+        //Creates a document that gives user ownership of the files in the user's collection
         Map<String, Object> doctData2 = new HashMap<>();
         doctData2.put("Role", "Owner");
         doctData2.put("isTrainer", false);

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 //Class used to organize data stored in each row of the workout routine table
 public class workoutRow
 {
+    //Class variables
     private String exercise, minWeight, maxWeight;
     private ArrayList<String> videoList;
 

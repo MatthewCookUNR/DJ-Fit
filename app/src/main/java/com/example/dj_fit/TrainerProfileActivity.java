@@ -47,15 +47,16 @@ import javax.annotation.Nullable;
 
 public class TrainerProfileActivity extends BaseActivity {
 
-    String TAG = "Trainer Profile Activity";
-    ImageView profileImageView, splashImage;
-    TextView profileNameText, employerText, experienceText, aboutMeText;
-    Button btnRequestTrainer, btnGetTrainerCode;
-    String imageName;
+    //Class variables
+    private static final String TAG = "TrainerProfileActivity";
+    private ImageView profileImageView, splashImage;
+    private TextView profileNameText, employerText, experienceText, aboutMeText;
+    private Button btnRequestTrainer, btnGetTrainerCode;
+    private String imageName;
     private String trainerID;
-    RelativeLayout topGradLayout;
-    ScrollView trainerScroll;
-    String userID;
+    private RelativeLayout topGradLayout;
+    private ScrollView trainerScroll;
+    private String userID;
     private FirebaseFirestore mDatabase;
 
     @Override
@@ -65,6 +66,7 @@ public class TrainerProfileActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Views and variables initialization
         splashImage = findViewById(R.id.splashImage);
         profileImageView = findViewById(R.id.profileImageView);
         profileNameText = findViewById(R.id.profileNameText);
@@ -75,12 +77,15 @@ public class TrainerProfileActivity extends BaseActivity {
         trainerScroll = findViewById(R.id.trainerScroll);
         btnRequestTrainer = findViewById(R.id.btnRequestTrainer);
         btnGetTrainerCode = findViewById(R.id.btnGetTrainerCode);
+        boolean isOwner = getIntent().getBooleanExtra("isOwner", true);
         imageName = null;
         trainerID = null;
 
+
+        //Firebase parameters
         userID = FirebaseAuth.getInstance().getUid();
         mDatabase = FirebaseFirestore.getInstance();
-        boolean isOwner = getIntent().getBooleanExtra("isOwner", true);
+
         //If viewer is owner of profile, display self profile
         if(isOwner)
         {
@@ -170,7 +175,7 @@ public class TrainerProfileActivity extends BaseActivity {
         });
     }
 
-    //Button downloads the user's profile image and populates in on the profile page
+    //Function downloads the user's profile image and populates in on the profile page
     private void downloadFile()
     {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
@@ -234,7 +239,7 @@ public class TrainerProfileActivity extends BaseActivity {
         String first_name = myPreferences.getString("first_name", "");
         String last_name = myPreferences.getString("last_name", "");
 
-        //Part of function creates a request for training in the DB
+        //Creates a request for training in the DB
         Map<String, Object> docData = new HashMap<>();
         docData.put("first_name", first_name);
         docData.put("last_name", last_name);
@@ -256,8 +261,15 @@ public class TrainerProfileActivity extends BaseActivity {
                     }
                 });
 
+        giveTrainerAccessInDB();
+    }
 
-        //Part of functions sets permissions to allow trainer to view user's content
+    //Gives trainer access to the user's background and workout outline
+    private void giveTrainerAccessInDB()
+    {
+        final long start = System.currentTimeMillis();
+
+        //Sets permissions to allow trainer to view user's content
         Map<String, String> editData = new HashMap<>();
         editData.put("Role", "Trainer");
         editData.put("first_name", getIntent().getStringExtra("first_name") );
@@ -266,20 +278,19 @@ public class TrainerProfileActivity extends BaseActivity {
         //Sets document in DB to user inputted information
         mDatabase.collection("users").document(userID).collection("editors")
                 .document(getIntent().getStringExtra("trainerID")).set(editData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid)
-                    {
-                        long end = System.currentTimeMillis();
-                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
-                    }
-                })
+            @Override
+            public void onSuccess(Void aVoid)
+            {
+                long end = System.currentTimeMillis();
+                Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+            }
+        })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
-
     }
 
     //Function shows the user their trainer code and allows them to copy it

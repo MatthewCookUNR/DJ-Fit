@@ -30,11 +30,10 @@ import javax.annotation.Nullable;
 
 public class BackgroundActivity extends BaseActivity {
 
+    //Class variables
     private static final String TAG = "BackgroundActivity";
-
     private EditText currentFitEdit, goalEdit, medicalEdit,
                      availabilityEdit, additionalEdit;
-
     private String userID;
     private Button btnSubmit;
     private ScrollView backgroundScroll;
@@ -49,6 +48,7 @@ public class BackgroundActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Views and variables initialization
         currentFitEdit = findViewById(R.id.currentFitEdit);
         goalEdit = findViewById(R.id.goalEdit);
         medicalEdit = findViewById(R.id.medicalEdit);
@@ -88,6 +88,7 @@ public class BackgroundActivity extends BaseActivity {
         });
     }
 
+    //Function checks if the user has already saved their background before
     private void checkIfBackgroundExists()
     {
         final long start = System.currentTimeMillis();
@@ -99,7 +100,6 @@ public class BackgroundActivity extends BaseActivity {
                 {
                     Log.w(TAG, "Listen failed", e);
                 }
-
                 if (documentSnapshot != null && documentSnapshot.exists())
                 {
                     long end = System.currentTimeMillis();
@@ -118,19 +118,18 @@ public class BackgroundActivity extends BaseActivity {
         });
     }
 
+    //Function populates background with user's previous background information
     private void populateBackground(Map<String, Object> docData)
     {
-        splashImage.setVisibility(View.GONE);
-        backgroundScroll.setVisibility(View.VISIBLE);
-        backgroundText.setVisibility(View.VISIBLE);
-        backgroundBtn.setVisibility(View.VISIBLE);
         currentFitEdit.setText(docData.get("currentFitProgram").toString());
         medicalEdit.setText(docData.get("medicalHist").toString());
         goalEdit.setText(docData.get("goals").toString());
         availabilityEdit.setText(docData.get("availability").toString());
         additionalEdit.setText(docData.get("otherInfo").toString());
+        closeSplashScreen();
     }
 
+    //Function saves the given background information to the database
     private void addBackgroundToDB(String userID)
     {
         String currentFit = currentFitEdit.getText().toString();
@@ -164,4 +163,14 @@ public class BackgroundActivity extends BaseActivity {
                     }
                 });
     }
+
+    //Function closes the splash screen
+    private void closeSplashScreen()
+    {
+        splashImage.setVisibility(View.GONE);
+        backgroundScroll.setVisibility(View.VISIBLE);
+        backgroundText.setVisibility(View.VISIBLE);
+        backgroundBtn.setVisibility(View.VISIBLE);
+    }
+
 }

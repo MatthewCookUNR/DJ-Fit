@@ -11,6 +11,7 @@ import android.widget.Button;
 
 public class TrainerMenuActivity extends BaseActivity {
 
+    //Class variables
     Button btnModifyProfile, btnTrainerProfile, btnCurrentClients, btnClientRequests;
 
     @Override
@@ -20,6 +21,7 @@ public class TrainerMenuActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Views initialization
         btnModifyProfile = findViewById(R.id.btnModifyProfile);
         btnTrainerProfile = findViewById(R.id.btnTrainerProfile);
         btnCurrentClients = findViewById(R.id.btnCurrentClients);
