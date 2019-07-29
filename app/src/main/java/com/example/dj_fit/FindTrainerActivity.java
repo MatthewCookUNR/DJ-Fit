@@ -27,10 +27,10 @@ import java.util.Map;
 public class FindTrainerActivity extends BaseActivity {
 
     private static final String TAG = "FindTrainerActivity";
-    private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
     Button btnFindTrainer;
     EditText trainerCodeEdit;
+    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,8 +42,8 @@ public class FindTrainerActivity extends BaseActivity {
 
         btnFindTrainer = findViewById(R.id.btnFindTrainer);
         trainerCodeEdit = findViewById(R.id.trainerCodeEdit);
-        mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
+        userId = FirebaseAuth.getInstance().getUid();
 
         btnFindTrainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,10 +80,17 @@ public class FindTrainerActivity extends BaseActivity {
     private void viewTrainerProfilePage(Map<String, Object> docData, String trainerID)
     {
         Intent trainerProfileIntent = new Intent(FindTrainerActivity.this, TrainerProfileActivity.class);
-        trainerProfileIntent.putExtra("isOwner", false);
-        trainerProfileIntent.putExtra("trainerID", trainerID);
-        trainerProfileIntent.putExtra("first_name", docData.get("first_name").toString());
-        trainerProfileIntent.putExtra("last_name", docData.get("last_name").toString());
+        if(trainerID.equals(userId))
+        {
+            trainerProfileIntent.putExtra("isOwner", true);
+        }
+        else
+        {
+            trainerProfileIntent.putExtra("isOwner", false);
+            trainerProfileIntent.putExtra("trainerID", trainerID);
+            trainerProfileIntent.putExtra("first_name", docData.get("first_name").toString());
+            trainerProfileIntent.putExtra("last_name", docData.get("last_name").toString());
+        }
         startActivity(trainerProfileIntent);
     }
 

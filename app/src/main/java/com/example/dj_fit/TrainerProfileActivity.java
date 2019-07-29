@@ -5,7 +5,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -91,7 +90,6 @@ public class TrainerProfileActivity extends BaseActivity {
         //If viewer is a client, adjust UI and allow them to request trainer
         else
         {
-            System.out.println();
             adjustUI();
             String first_name = getIntent().getStringExtra("first_name");
             String last_name = getIntent().getStringExtra("last_name");
@@ -109,6 +107,8 @@ public class TrainerProfileActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 sendTrainerRequest(trainerID);
+                btnRequestTrainer.setText("Request Sent");
+                btnRequestTrainer.setClickable(false);
             }
         });
     }
