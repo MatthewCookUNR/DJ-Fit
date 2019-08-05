@@ -190,12 +190,14 @@ public class WorkoutOutlineActivity extends BaseActivity {
                     public void onSuccess(Void aVoid) {
                         long end = System.currentTimeMillis();
                         Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                        Toast.makeText(getApplicationContext(), "Save Successful!", Toast.LENGTH_SHORT).show();
                     }
                 })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Log.w(TAG, "Error adding document", e);
+                                Toast.makeText(getApplicationContext(), "Save Failure!", Toast.LENGTH_SHORT).show();
                             }
                         });
             }
