@@ -1,11 +1,21 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file CurrentClientsActivity.java
+ *
+ * @brief Activity is used to display a trainer's current clients and allow them
+ *        to view their client's workout information or remove them as a client
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.example.dj_fit;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +38,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 import java.util.Map;
+
+// Current Clients Activity Class ////////////////////////////////////////////////////////////////
 
 public class CurrentClientsActivity extends BaseActivity {
 
@@ -56,7 +68,20 @@ public class CurrentClientsActivity extends BaseActivity {
         checkForClients();
     }
 
-    //Function queries DB to see if the user has any current clients for training
+    // Function definitions ////////////////////////////////////////////////////////
+
+    /*
+     *@Name: Check for Clients
+     *
+     *@Purpose: Checks to see if the trainer has any clients
+     *
+     *@Param N/A
+     *
+     *@Brief: Function queries DB to see if the user has any current clients
+     *        for training that have been accepted
+     *
+     *@ErrorsHandled: N/A
+     */
     private void checkForClients() {
         String userID = mAuth.getUid();
         CollectionReference userRef = mDatabase.collection("trainers").document(userID).collection("clientsCurrent");
@@ -77,7 +102,18 @@ public class CurrentClientsActivity extends BaseActivity {
         });
     }
 
-    //Function populates activity with the trainers current clients if there are any
+    /*
+     *@Name: Populate Clients
+     *
+     *@Purpose: Populates page with list of clients
+     *
+     *@Param N/A
+     *
+     *@Brief: Function loops through all of the received documents from the DB query
+     *        and creates views to display them as clients
+     *
+     *@ErrorsHandled: N/A
+     */
     private void populateClients(List<DocumentSnapshot> documents)
     {
         for (int i = 0; i < documents.size(); i++)
@@ -92,6 +128,8 @@ public class CurrentClientsActivity extends BaseActivity {
             RelativeLayout.LayoutParams paramsN = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
             //Integer is used to keep track of where the view will be placed in relative layout
+
+            //Case where the view is the first one added
             if (integer == 1) {
                 paramsN.addRule(RelativeLayout.BELOW, titleText.getId());
             } else {
@@ -130,41 +168,82 @@ public class CurrentClientsActivity extends BaseActivity {
         }
     }
 
-    //Function creates a button that allows the user to manage their client's fitness program
+    /*
+     *@Name: Create View Program Button
+     *
+     *@Purpose: Create button that shows client's program
+     *
+     *@Param in: Client's ID (documentID)
+     *       in: Client's first name (first_name)
+     *       in: Client's last name (last_name)
+     *       out: View client's program button (viewBut)
+     *
+     *@Brief: Function creates a button with client's user information like ID and
+     *        first/last name which will allow the trainer to distinguish them and
+     *        find their information
+     *
+     *@ErrorsHandled: N/A
+     */
     private Button createViewProgramButton(String documentID, String first_name, String last_name) {
         final String userInfo = documentID + "/" + first_name + "/" + last_name;
-        final Button acceptBut = new Button(CurrentClientsActivity.this);
-        acceptBut.setText("View Program");
-        acceptBut.setTextSize(16);
-        acceptBut.setTag(userInfo);
-        acceptBut.setTransformationMethod(null);
-        acceptBut.setOnClickListener(new View.OnClickListener() {
+        final Button viewBut = new Button(CurrentClientsActivity.this);
+        viewBut.setText("View Program");
+        viewBut.setTextSize(16);
+        viewBut.setTag(userInfo);
+        viewBut.setTransformationMethod(null);
+        viewBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewClientProgram((String) v.getTag());
             }
         });
-        return acceptBut;
+        return viewBut;
     }
 
-    //Function creates a button that can handle removing a user as a client
+    /*
+     *@Name: Create Remove Button
+     *
+     *@Purpose: Create button that removes client
+     *
+     *@Param in: Client's ID (documentID)
+     *       in: Client's first name (first_name)
+     *       in: Client's last name (last_name)
+     *       out: Remove client button (declineBut)
+     *
+     *@Brief: Function creates a button with client's user information like ID and
+     *        first/last name which will allow the trainer to distinguish them and
+     *        remove them as their client
+     *
+     *@ErrorsHandled: N/A
+     */
     private Button createRemoveButton(String documentID, String first_name, String last_name) {
         final String userInfo = documentID + "/" + first_name + "/" + last_name;
-        Button declineBut = new Button(CurrentClientsActivity.this);
-        declineBut.setText("Remove");
-        declineBut.setTextSize(16);
-        declineBut.setTag(userInfo);
-        declineBut.setTransformationMethod(null);
-        declineBut.setOnClickListener(new View.OnClickListener() {
+        Button removeBut = new Button(CurrentClientsActivity.this);
+        removeBut.setText("Remove");
+        removeBut.setTextSize(16);
+        removeBut.setTag(userInfo);
+        removeBut.setTransformationMethod(null);
+        removeBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 removeUserAsClient((String) v.getTag());
             }
         });
-        return declineBut;
+        return removeBut;
     }
 
-    //Function takes the user to a seperate activity to view their personal program
+    /*
+     *@Name: View Client Program
+     *
+     *@Purpose: Takes trainer to their client's fitness program
+     *
+     *@Param in: Client's Tag (clientTag)
+     *
+     *@Brief: Function takes the user to a seperate activity to view
+     *        their personal program
+     *
+     *@ErrorsHandled: N/A
+     */
     private void viewClientProgram(String clientTag)
     {
         Intent clientProgramIntent = new Intent(CurrentClientsActivity.this, ClientProgramActivity.class);
@@ -172,7 +251,19 @@ public class CurrentClientsActivity extends BaseActivity {
         startActivity(clientProgramIntent);
     }
 
-    //Function removes the user as one of the trainer's clients
+    /*
+     *@Name: Remove User as Client
+     *
+     *@Purpose: Removes client as trainer's accepted client
+     *
+     *@Param in: Client's Tag (clientTag)
+     *
+     *@Brief: Function deletes user from their list of clients
+     *        and removes their own permission to view/modify
+     *       the clients fitness program
+     *
+     *@ErrorsHandled: N/A
+     */
     private void removeUserAsClient(String clientTag)
     {
         String userId = mAuth.getUid();

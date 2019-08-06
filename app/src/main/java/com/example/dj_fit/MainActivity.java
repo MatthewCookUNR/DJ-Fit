@@ -1,3 +1,15 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file MainActivity.java
+ *
+ * @brief Shows the main menu screen for the app
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.example.dj_fit;
 
 import android.content.Intent;
@@ -11,6 +23,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+// Main Activity Class ////////////////////////////////////////////////////////////////
 
 public class MainActivity extends BaseActivity {
 
@@ -79,7 +92,20 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    //Function adjusts UI based on whether or not the user is a trainer
+    // Function definitions ////////////////////////////////////////////////////////
+
+    /*
+     *@Name: Adjust UI
+     *
+     *@Purpose: Change UI based on if user is a trainer
+     *
+     *@Param N/A
+     *
+     *@Brief: Function makes the trainer menu button visisble and removes the register
+     *        as trainer button
+     *
+     *@ErrorsHandled: N/A
+     */
     private void adjustUI()
     {
         btnRegisterTrainer.setVisibility(View.GONE);

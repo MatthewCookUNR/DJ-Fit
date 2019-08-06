@@ -1,3 +1,18 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file BackgroundActivity.java
+ *
+ * @brief Background Activity is used by the user to enter some information about
+ *        themselves that will make it easier for the trainer to provide them
+ *        with a personal fitness program.
+ *
+ * @author Matthew Cook
+ * @author Collin Potters
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.example.dj_fit;
 
 import android.os.Bundle;
@@ -28,6 +43,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+// Background Activity Class ////////////////////////////////////////////////////////////////
 
 public class BackgroundActivity extends BaseActivity {
 
@@ -89,7 +105,21 @@ public class BackgroundActivity extends BaseActivity {
         });
     }
 
-    //Function checks if the user has already saved their background before
+    // Function definitions ////////////////////////////////////////////////////////
+
+    /*
+     *@Name: Check if Background Exists
+     *
+     *@Purpose: Checks if the user has already saved their background before
+     *
+     *@Param N/A
+     *
+     *@Brief: The function uses a snapshot listener to see if they have a
+     *        background doc present in the database, which would mean that
+     *        they have previously saved their background
+     *
+     *@ErrorsHandled: N/A
+     */
     private void checkIfBackgroundExists()
     {
         final long start = System.currentTimeMillis();
@@ -119,7 +149,18 @@ public class BackgroundActivity extends BaseActivity {
         });
     }
 
-    //Function populates background with user's previous background information
+    /*
+     *@Name: Populate Background
+     *
+     *@Purpose: Populates background with user's previous background information
+     *
+     *@Param N/A
+     *
+     *@Brief: Uses the received Map of background information and uses the
+     *        corresponding fields to populate the page
+     *
+     *@ErrorsHandled: N/A
+     */
     private void populateBackground(Map<String, Object> docData)
     {
         currentFitEdit.setText(docData.get("currentFitProgram").toString());
@@ -130,22 +171,20 @@ public class BackgroundActivity extends BaseActivity {
         closeSplashScreen();
     }
 
-    //Function saves the given background information to the database
+    /*
+     *@Name: Add Background to Database
+     *
+     *@Purpose: Saves the given background information to the database
+     *
+     *@Param in: String
+     *
+     *@Brief: Sets a document in the database that is a Map of user's background
+     *
+     *@ErrorsHandled: N/A
+     */
     private void addBackgroundToDB(String userID)
     {
-        String currentFit = currentFitEdit.getText().toString();
-        String medicalHist = medicalEdit.getText().toString();
-        String goals = goalEdit.getText().toString();
-        String availability = availabilityEdit.getText().toString();
-        String otherInfo = additionalEdit.getText().toString();
-
-        Map<String, Object> doctData = new HashMap<>();
-        doctData.put("currentFitProgram", currentFit);
-        doctData.put("medicalHist", medicalHist);
-        doctData.put("goals", goals);
-        doctData.put("availability", availability);
-        doctData.put("otherInfo", otherInfo);
-
+        Map doctData = createBackgroundMap();
         final long start = System.currentTimeMillis();
 
         mDatabase.collection("users").document(userID).collection("fitnessData")
@@ -167,7 +206,48 @@ public class BackgroundActivity extends BaseActivity {
                 });
     }
 
-    //Function closes the splash screen
+
+    /*
+     *@Name: Create Background Map
+     *
+     *@Purpose: Saves the given background information to the database
+     *
+     *@Param out: Map containing background info (doctData)
+     *
+     *@Brief: Gets the different entered text in the form of strings
+     *        and puts in into a Map.
+     *
+     *@ErrorsHandled: N/A
+     */
+    private Map createBackgroundMap()
+    {
+        String currentFit = currentFitEdit.getText().toString();
+        String medicalHist = medicalEdit.getText().toString();
+        String goals = goalEdit.getText().toString();
+        String availability = availabilityEdit.getText().toString();
+        String otherInfo = additionalEdit.getText().toString();
+
+        Map<String, Object> doctData = new HashMap<>();
+        doctData.put("currentFitProgram", currentFit);
+        doctData.put("medicalHist", medicalHist);
+        doctData.put("goals", goals);
+        doctData.put("availability", availability);
+        doctData.put("otherInfo", otherInfo);
+        return doctData;
+    }
+
+    /*
+     *@Name: Close Splash Screen
+     *
+     *@Purpose: Removes Splash Image to show background
+     *
+     *@Param N/A
+     *
+     *@Brief: Sets splash image visibility to gone and the other elements to visible.
+     *        The result is that the background entry elements are now shown.
+     *
+     *@ErrorsHandled: N/A
+     */
     private void closeSplashScreen()
     {
         splashImage.setVisibility(View.GONE);

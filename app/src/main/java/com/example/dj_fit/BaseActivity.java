@@ -1,3 +1,16 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file BaseActivity.java
+ *
+ * @brief Base Activity is used extended by most activities to allow them to use
+ *        the options menu at the top right of the screen
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.example.dj_fit;
 
 import android.content.DialogInterface;
@@ -12,6 +25,8 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+// Base Activity Class ////////////////////////////////////////////////////////////////
+
 public class BaseActivity extends AppCompatActivity
 {
     @Override
@@ -23,9 +38,6 @@ public class BaseActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

@@ -1,3 +1,16 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file FindTrainerActivity.java
+ *
+ * @brief Find Trainer Activity is used by users to locate the profile page for
+ *        trainers so that they can request them.
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.example.dj_fit;
 
 import android.content.Intent;
@@ -10,8 +23,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -20,9 +31,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+// Find Trainer Activity Class ////////////////////////////////////////////////////////////////
 
 public class FindTrainerActivity extends BaseActivity {
 
@@ -56,8 +68,20 @@ public class FindTrainerActivity extends BaseActivity {
         });
     }
 
-    //Function used to test security rules on reading a specific user's information based on their trainer status
-    //User should be able to do this
+    // Function definitions ////////////////////////////////////////////////////////
+
+    /*
+     *@Name: Find Trainer From ID
+     *
+     *@Purpose: Use user-entered trainer code to locate trainer
+     *
+     *@Param in: Trainer's unique code (trainerCode)
+     *
+     *@Brief: Function uses given code to look for trainer's document in the database.
+     *        If found, takes user to the trainers profile page
+     *
+     *@ErrorsHandled: N/A
+     */
     private void findTrainerFromID(String trainerCode)
     {
         CollectionReference userRef = mDatabase.collection("trainers");
@@ -79,15 +103,30 @@ public class FindTrainerActivity extends BaseActivity {
         });
     }
 
-    //Opens up the trainer profile page for the given trainer code that was found in DB
+    /*
+     *@Name: View Trainer Profile Page
+     *
+     *@Purpose: Opens up the trainer profile page for the given trainer code
+     *
+     *@Param in: Map containing information to find trainer (docData)
+     *           Trainer's unique code (trainerCode)
+     *
+     *@Brief: Function checks to see if trainer is the user itself or a client.
+     *        If user is a client, user's first/last name are put in intent
+     *        along with the trainer's code
+     *
+     *@ErrorsHandled: N/A
+     */
     private void viewTrainerProfilePage(Map<String, Object> docData, String trainerID)
     {
         Intent trainerProfileIntent = new Intent(FindTrainerActivity.this, TrainerProfileActivity.class);
+
         //If trainer code corresponds to your own profile, open accordingly
         if(trainerID.equals(userId))
         {
             trainerProfileIntent.putExtra("isOwner", true);
         }
+        //Else, put information needed to find trainer and request trainer them in Intent
         else
         {
             trainerProfileIntent.putExtra("isOwner", false);
@@ -96,28 +135,5 @@ public class FindTrainerActivity extends BaseActivity {
             trainerProfileIntent.putExtra("last_name", docData.get("last_name").toString());
         }
         startActivity(trainerProfileIntent);
-    }
-
-    //Function used to test security rules on writing a specific user's information based on their trainer status
-    //User should not be able to do this
-    private void modifyTrainerFromID()
-    {
-        Map<String, Object> doctData2 = new HashMap<>();
-        doctData2.put("Role", "User");
-        mDatabase.collection("users")
-                .document("userId")
-                .collection("editors")
-                .document("userId")
-                .update(doctData2).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG, "Document2 Snapshot added");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Error adding document 2", e);
-            }
-        });
     }
 }

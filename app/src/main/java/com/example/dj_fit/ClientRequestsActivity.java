@@ -1,3 +1,16 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file ClientRequestsActivity.java
+ *
+ * @brief Activity is used to display user's that have requested the trainer
+ *        and allow the trainer to accept or decline them
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.example.dj_fit;
 
 import android.os.Bundle;
@@ -30,6 +43,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// Client Requests Activity Class ////////////////////////////////////////////////////////////////
+
 public class ClientRequestsActivity extends BaseActivity
 {
 
@@ -59,7 +74,20 @@ public class ClientRequestsActivity extends BaseActivity
 
     }
 
-    //Function queries DB to see if their are any clients requesting the user as a trainer
+    // Function definitions ////////////////////////////////////////////////////////
+
+    /*
+     *@Name: Check for New Clients
+     *
+     *@Purpose: Checks to see if the trainer has any new client requests
+     *
+     *@Param N/A
+     *
+     *@Brief: Function queries DB to see if the user has any new client
+     *        requests that have been made
+     *
+     *@ErrorsHandled: N/A
+     */
     private void checkForNewClients()
     {
         CollectionReference userRef = mDatabase.collection("trainers").document(userID).collection("clientRequests");
@@ -84,8 +112,18 @@ public class ClientRequestsActivity extends BaseActivity
         });
     }
 
-    //Function populates the page with the list of clients requesting the trainer
-    private void populatePossibleClients( List<DocumentSnapshot> documents)
+    /*
+     *@Name: Populate Clients
+     *
+     *@Purpose: Populates page with list of clients requesting trainer
+     *
+     *@Param N/A
+     *
+     *@Brief: Function loops through all of the received documents from the DB query
+     *        and creates views to display them as new client requests
+     *
+     *@ErrorsHandled: N/A
+     */    private void populatePossibleClients( List<DocumentSnapshot> documents)
     {
         for(int i = 0; i < documents.size(); i++)
         {
@@ -99,6 +137,8 @@ public class ClientRequestsActivity extends BaseActivity
             RelativeLayout.LayoutParams paramsN = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
             //Integer is used to keep track of where the view will be placed in relative layout
+
+            //Case where the view is the first one added
             if(integer == 1)
             {
                 paramsN.addRule(RelativeLayout.BELOW, titleText.getId());
@@ -140,7 +180,23 @@ public class ClientRequestsActivity extends BaseActivity
         }
     }
 
-    //Function creates a button that can handle accepting a user as a client and returns it
+
+    /*
+     *@Name: Create Accept Button
+     *
+     *@Purpose: Create button that accepts user as trainer's new client
+     *
+     *@Param in: Client's ID (documentID)
+     *       in: Client's first name (first_name)
+     *       in: Client's last name (last_name)
+     *       out: Accept client button (acceptBut)
+     *
+     *@Brief: Function creates a button with client's user information like ID and
+     *        first/last name which will allow the trainer to distinguish them and
+     *        find their information
+     *
+     *@ErrorsHandled: N/A
+     */
     private Button createAcceptButton(String documentID, String first_name, String last_name)
     {
         final String userInfo = documentID + "/" + first_name + "/" + last_name;
@@ -159,8 +215,22 @@ public class ClientRequestsActivity extends BaseActivity
         return acceptBut;
     }
 
-    //Function creates a button that can handle declining a user as a client and returns it
-    private Button createDeclineButton(String documentID, String first_name, String last_name)
+    /*
+     *@Name: Create Decline Button
+     *
+     *@Purpose: Create button that declines user as trainer's new client
+     *
+     *@Param in: Client's ID (documentID)
+     *       in: Client's first name (first_name)
+     *       in: Client's last name (last_name)
+     *       out: Accept client button (acceptBut)
+     *
+     *@Brief: Function creates a button with client's user information like ID and
+     *        first/last name which will allow the trainer to distinguish them and
+     *        find their information
+     *
+     *@ErrorsHandled: N/A
+     */    private Button createDeclineButton(String documentID, String first_name, String last_name)
     {
         final String userInfo = documentID + "/" + first_name + "/" + last_name;
         Button declineBut = new Button(ClientRequestsActivity.this);
@@ -177,7 +247,18 @@ public class ClientRequestsActivity extends BaseActivity
         return declineBut;
     }
 
-    //Function adds a user as a client, deleting client request and adding client as current client
+    /*
+     *@Name: Add User as Client
+     *
+     *@Purpose: Adds user as one of the trainer's clients
+     *
+     *@Param in: Client's Tag (clientTag)
+     *
+     *@Brief: Function sets document for client in collection of current clients
+     *        and then deletes client from list of client requests
+     *
+     *@ErrorsHandled: N/A
+     */
     private void addUserAsClient(String clientTag)
     {
         final long start = System.currentTimeMillis();
@@ -222,8 +303,20 @@ public class ClientRequestsActivity extends BaseActivity
 
     }
 
-    //Function declines the client, removing request and removing read permission given
-    //by the client
+
+    /*
+     *@Name: Remove Client Request
+     *
+     *@Purpose: Remove client request from list of client requests
+     *
+     *@Param in: Client's Tag (clientTag)
+     *
+     *@Brief: Function deletes document that contains client request
+     *        and removes the access to data that the client gave
+     *        the trainer
+     *
+     *@ErrorsHandled: N/A
+     */
     private void removeClientRequest(String clientTag)
     {
         final long start = System.currentTimeMillis();

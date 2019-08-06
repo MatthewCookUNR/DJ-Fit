@@ -1,3 +1,16 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file LoginActivity.java
+ *
+ * @brief Login Activity is used to not only log user in but retrieve necessary
+ *        information to run the app such as first/last name and trainer code
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.example.dj_fit;
 
 import android.content.Intent;
@@ -21,6 +34,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+// Login Activity Class ////////////////////////////////////////////////////////////////
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -110,8 +125,20 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    //Function gets the user's first and last name as well as their trainer code if they are currently
-    //a trainer
+    // Function definitions ////////////////////////////////////////////////////////
+
+    /*
+     *@Name: Get User Information
+     *
+     *@Purpose: Retrieve information from database required to run the app properly
+     *
+     *@Param N/A
+     *
+     *@Brief: Function gets the user's first and last name as well as their trainer
+     *        code if they are currently a trainer
+     *
+     *@ErrorsHandled: N/A
+     */
     private void getUserInformation()
     {
         final SharedPreferences myPreferences =
@@ -149,8 +176,19 @@ public class LoginActivity extends AppCompatActivity {
         checkIfUserIsTrainer();
     }
 
-    //Checks to see if the user signing in is a trainer, setting
-    //trainer code in Shared Preferences if true
+    /*
+     *@Name: Check if User is a Trainer
+     *
+     *@Purpose: Checks to see if user logging in is already a trainer and
+     *          handles accordingly
+     *
+     *@Param N/A
+     *
+     *@Brief: Function checks to see if user has a trainer document and, if so,
+     *        stores their trainer code in a shared preference
+     *
+     *@ErrorsHandled: N/A
+     */
     private void checkIfUserIsTrainer()
     {
         final SharedPreferences myPreferences =
@@ -187,14 +225,26 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    //Function takes user to main page after logging in
+    /*
+     *@Name: User Signed In
+     *
+     *@Purpose: Take user to main activity on sign in
+     *
+     *@Param N/A
+     *
+     *@Brief: Creates intent for main activity and takes user
+     *        there
+     *
+     *@ErrorsHandled: N/A
+     */
     private void userSignedIn()
     {
         Intent mainAct = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(mainAct);
     }
 
-    //Lets the user know if they are currently logged in
+    //On start, program checks if user is logged in, if so, takes user to Main
+    //Activity
     @Override
     public void onStart() {
         super.onStart();
