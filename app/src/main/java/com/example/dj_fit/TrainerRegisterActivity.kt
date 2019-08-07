@@ -1,3 +1,16 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file TrainerRegisterActivity.java
+ *
+ * @brief Allow trainers to register or modify their trainer information/status
+ *
+ * @author Collin Potter
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.example.dj_fit
 
 import android.app.Activity
@@ -47,6 +60,8 @@ import java.util.HashMap
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+
+// Trainer Register Activity Class ////////////////////////////////////////////////////////////////
 
 class TrainerRegisterActivity : BaseActivity() {
     private var imageToUpload: Uri? = null
@@ -142,7 +157,23 @@ class TrainerRegisterActivity : BaseActivity() {
         btnUnregister!!.setOnClickListener { showUnregisterAlert() }
     }
 
-    //Function handles the user selecting a desired image as their profile picture
+    // Function definitions ////////////////////////////////////////////////////////
+
+    /*
+     *@Name: On Activity Result
+     *
+     *@Purpose: Handles receiving image from the gallery intent
+     *
+     *@Param in: Integer code telling what request was for (requestCode)
+     *       in: Integer code telling status of result (resultCode)
+     *       in: Data received from the intent (data)
+     *
+     *@Brief: Function checks what kind of request was received and if the result
+     *        returned OK. If a image is returned, the function puts the image on
+     *        screen.
+     *
+     *@ErrorsHandled: N/A
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {
@@ -166,14 +197,36 @@ class TrainerRegisterActivity : BaseActivity() {
         }
     }
 
-    //Function gets a files extension and returns it
+    /*
+     *@Name: Get File Extension
+     *
+     *@Purpose: Gets the file extension from the given URI
+     *
+     *@Param in: URI that will be translated to file extension (Uri)
+     *       out: String representing file extension of given Uri
+     *
+     *@Brief: N/A
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun getFileExtension(uri: Uri): String? {
         val contentResolver = contentResolver
         val mime = MimeTypeMap.getSingleton()
         return mime.getExtensionFromMimeType(contentResolver.getType(uri))
     }
 
-    //Function uploads a image to Firebase Storage
+    /*
+     *@Name: Upload Image
+     *
+     *@Purpose: Upload Image to Firebase Storage
+     *
+     *@Param N/A
+     *
+     *@Brief: Function puts the image file that is received from the
+     *        gallery onto Firebase Cloud Storage for later retrieval
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun uploadImage() {
         if (imageToUpload != null) {
             val tempImage = imageToUpload
@@ -195,7 +248,18 @@ class TrainerRegisterActivity : BaseActivity() {
         }
     }
 
-    //Function uploads the inputted information to the database
+    /*
+     *@Name: Upload to Database
+     *
+     *@Purpose: Uploads trainer's inputted information to the DB
+     *
+     *@Param N/A
+     *
+     *@Brief: Function puts all information shown on their profile into
+     *        a Map and then puts it onto the Firestore DB
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun uploadToDB() {
         var signedUp = true
         val start = System.currentTimeMillis()
@@ -260,7 +324,18 @@ class TrainerRegisterActivity : BaseActivity() {
         }
     }
 
-    //Function populates the activity with values stored in the Firestore DB
+    /*
+     *@Name: Populate Trainer Register
+     *
+     *@Purpose: Populates page with information saved in the DB
+     *
+     *@Param in: Map containing data used for population (docData)
+     *
+     *@Brief: Function sets various fields to previous data and downloads
+     *        the user's profile picture if there is one
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun populateTrainerRegister(docData: Map<String, Any>) {
         //If user is currently registered, populate the page with info
         if (docData.containsKey("experience")) {
@@ -286,8 +361,18 @@ class TrainerRegisterActivity : BaseActivity() {
         }
     }
 
-    //Function checks to see if user has registered as a trainer
-    //If so it cause the activity to try and populate it with existing values
+    /*
+     *@Name: Check if Trainer Register Exists
+     *
+     *@Purpose: Checks database to see if trainer is already registered
+     *
+     *@Param N/A
+     *
+     *@Brief: Functions tries to get the trainer's document from
+     *        trainer sub-collection and, if so, populates the activity
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun checkIfTrainerRegisterExists() {
         val start = System.currentTimeMillis()
 
@@ -313,14 +398,37 @@ class TrainerRegisterActivity : BaseActivity() {
         }
     }
 
-    //Function deletes the current profile picture from the database if it is changes
+    /*
+     *@Name: Delete Current Profile Pic
+     *
+     *@Purpose: Deletes user's current profile picture
+     *
+     *@Param N/A
+     *
+     *@Brief: Function uses image's name to find it in Cloud Storage
+     *        and then deletes it.
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun deleteCurrentProfilePic() {
         val storageRef = FirebaseStorage.getInstance().reference
         val imageRef = storageRef.child(uploadedImageName!!)
         imageRef.delete().addOnSuccessListener { Toast.makeText(this@TrainerRegisterActivity, "Delete success", Toast.LENGTH_SHORT).show() }.addOnFailureListener { Toast.makeText(this@TrainerRegisterActivity, "Delete failed", Toast.LENGTH_SHORT).show() }
     }
 
-    //Function downloads the profile pic image from the Firestore DB
+    /*
+     *@Name: Download File
+     *
+     *@Purpose: Download profile picture for Firebase Cloud Storage
+     *
+     *@Param N/A
+     *
+     *@Brief: Downloads file corresponding to the imageName retrieved
+     *        from Firestore, which contains the user's profile picture
+     *        Picture is altered to show in a small circle on-screen
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun downloadFile() {
         val storageRef = FirebaseStorage.getInstance().reference
         val imageRef = storageRef.child(uploadedImageName!!)
@@ -342,7 +450,18 @@ class TrainerRegisterActivity : BaseActivity() {
         }
     }
 
-    //Function sets the user's status as a trainer to true/false in the DB
+    /*
+     *@Name: Set Trainer Status in DB
+     *
+     *@Purpose: Sets user's status as being a trainer in DB
+     *
+     *@Param in: boolean stating status of being trainer (status)
+     *
+     *@Brief: Sets field in user's editors subcollection
+     *        to being a trainer (isTrainer)
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun setTrainerStatusInDB(status: Boolean) {
         val doctData2 = HashMap<String, Any>()
         doctData2["isTrainer"] = status
@@ -353,8 +472,19 @@ class TrainerRegisterActivity : BaseActivity() {
                 .update(doctData2).addOnSuccessListener { Log.d(TAG, "Document2 Snapshot added") }.addOnFailureListener { e -> Log.w(TAG, "Error adding document 2", e) }
     }
 
-    //Function unregisters the user as a trainer, deleting stored information on the database
-    private fun UnregisterTrainer() {
+    /*
+     *@Name: Unregister Trainer
+     *
+     *@Purpose: Unregisters the user as a trainer
+     *
+     *@Param N/A
+     *
+     *@Brief: Deletes user's trainer data and sets isTrainer status
+     *        as false
+     *
+     *@ErrorsHandled: N/A
+     */
+    private fun unRegisterTrainer() {
         mDatabase!!.collection("trainers").document(userID!!)
                 .delete()
                 .addOnSuccessListener {
@@ -383,12 +513,22 @@ class TrainerRegisterActivity : BaseActivity() {
                 .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
     }
 
-    //Function handles alert shown when pressing deregister button
+    /*
+     *@Name: Show Unregister Alert
+     *
+     *@Purpose: Displays a alert that allows the user to unregister
+     *
+     *@Param N/A
+     *
+     *@Brief: N/A
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun showUnregisterAlert() {
         val dayBuilder = AlertDialog.Builder(this@TrainerRegisterActivity)
         dayBuilder.setTitle("Are you sure you want to unregister as a trainer?")
 
-        dayBuilder.setPositiveButton("Yes") { dialog, which -> UnregisterTrainer() }
+        dayBuilder.setPositiveButton("Yes") { dialog, which -> unRegisterTrainer() }
         dayBuilder.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
         dayBuilder.show()
     }
@@ -411,8 +551,19 @@ class TrainerRegisterActivity : BaseActivity() {
         textView.textSize = 50f
     }
 
-    //Function checks if trainer code is already in use
-    //Note: Runs function to generate a new one if that is the case
+    /*
+     *@Name: Check if Trainer Code Exists
+     *
+     *@Purpose: Checks to see if the generated trainer code is already
+     *          in use by another trainer
+     *
+     *@Param N/A
+     *
+     *@Brief: Function downloads a document containing all the trainer codes
+     *        and then checks to see if the given one is in the document
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun checkIfTrainerCodeExists(alphaString: String) {
         //Part of function checks to make sure the generated string is not already used by another user
         val start = System.currentTimeMillis()
@@ -443,7 +594,17 @@ class TrainerRegisterActivity : BaseActivity() {
         }
     }
 
-    //Function sets the list of all trainer codes with a new, updated list
+    /*
+     *@Name: Set Trainer Codes DB
+     *
+     *@Purpose: Set updated list of trainer codes to DB
+     *
+     *@Param N/A
+     *
+     *@Brief: N/A
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun setTrainerCodesDB(list: ArrayList<String>) {
         val start = System.currentTimeMillis()
         val map = HashMap<String, ArrayList<String>>()
@@ -458,7 +619,17 @@ class TrainerRegisterActivity : BaseActivity() {
                 .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
     }
 
-    //Function removes user's trainer code from list of all trainer codes in DB
+    /*
+     *@Name: Remove Trainer ID from DB
+     *
+     *@Purpose: Removes given trainer code from list of trainer codes
+     *
+     *@Param N/A
+     *
+     *@Brief: N/A
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun removeTrainerIdDB(trainerCode: String?) {
         //Part of function checks to make sure the generated string is not already used by another user
         val start = System.currentTimeMillis()
@@ -487,8 +658,20 @@ class TrainerRegisterActivity : BaseActivity() {
         }
     }
 
-    //Adjusts UI if user is already registered as a trainer
-    //Button appears that allows user to unregister
+    /*
+     *@Name: Adjust UI
+     *
+     *@Purpose: Change UI if the user is already a trainer
+     *
+     *@Param N/A
+     *
+     *@Brief: Function changes various text on screen and
+     *        displays a new button that allows them to
+     *        unregister
+     *
+     *@ErrorsHandled: N/A
+     */
+
     private fun adjustUI() {
         titleText!!.text = "Modify Trainer Information"
         btnUnregister!!.visibility = View.VISIBLE
@@ -501,7 +684,17 @@ class TrainerRegisterActivity : BaseActivity() {
         btnBecomeTrainer!!.text = "Save"
     }
 
-    //Function closes the splash image covering the screen
+    /*
+     *@Name: Close Splash Screen
+     *
+     *@Purpose: Remove Splash Screen and make profile UI visible
+     *
+     *@Param N/A
+     *
+     *@Brief: Makes the Splash Image view invisible and the other views visible
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun closeSplashScreen() {
         splashImage!!.visibility = View.INVISIBLE
         botButtons!!.visibility = View.VISIBLE

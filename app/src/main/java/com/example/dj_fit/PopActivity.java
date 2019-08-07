@@ -1,3 +1,16 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file PopActivity.java
+ *
+ * @brief Shows the pop activity for watching youtube videos attached to exercises
+ *        when the user clicks "View"
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.example.dj_fit;
 
 import android.app.AlertDialog;
@@ -24,7 +37,8 @@ import com.google.android.youtube.player.YouTubePlayerView;
 import java.util.ArrayList;
 import java.util.List;
 
-//Activity shows data on exercise when "View" is clicked on the Workout Outline page
+// Pop Activity Class ////////////////////////////////////////////////////////////////
+
 public class PopActivity extends YouTubeBaseActivity {
 
     //Class variables
@@ -180,6 +194,7 @@ public class PopActivity extends YouTubeBaseActivity {
     public void onResume()
     {
         super.onResume();
+        //If orientation is landscape, show the fullscreen version of activity
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
         {
             fullScreenLayout();
@@ -191,7 +206,20 @@ public class PopActivity extends YouTubeBaseActivity {
         }
     }
 
-    //Clears the layout of views so that fullscreen on YouTube Player can be shown
+    // Function definitions ////////////////////////////////////////////////////////
+
+    /*
+     *@Name: Fullscreen Layout
+     *
+     *@Purpose: Updates UI to make it fullscreen compatible
+     *
+     *@Param N/A
+     *
+     *@Brief: Clears the layout of views so that fullscreen on YouTube
+     *        Player can be shown
+     *
+     *@ErrorsHandled: N/A
+     */
     private void fullScreenLayout()
     {
         linksView.setVisibility(View.GONE);

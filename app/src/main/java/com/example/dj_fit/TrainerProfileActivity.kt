@@ -1,3 +1,16 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file TrainerProfileActivity.java
+ *
+ * @brief Displays trainer profile for both the trainer or their potential clients
+ *
+ * @author Collin Potter
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.example.dj_fit
 
 import android.app.AlertDialog
@@ -41,6 +54,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 import java.util.HashMap
+
+// Trainer Profile Activity Class ////////////////////////////////////////////////////////////////
 
 class TrainerProfileActivity : BaseActivity() {
     private var profileImageView: ImageView? = null
@@ -88,7 +103,7 @@ class TrainerProfileActivity : BaseActivity() {
         //If viewer is owner of profile, display self profile
         if (isOwner) {
             btnGetTrainerCode!!.visibility = View.VISIBLE
-            checkIfTrainerProfileExists(userID)
+            checkIfTrainerProfileExists()
         } else {
             adjustUI()
             val first_name = intent.getStringExtra("first_name")
@@ -105,7 +120,21 @@ class TrainerProfileActivity : BaseActivity() {
         }
     }
 
-    //Functions populates the page with given information the user registered with
+    // Function definitions ////////////////////////////////////////////////////////
+
+    /*
+     *@Name: Populate Profile Page
+     *
+     *@Purpose: Populates the profile page with existing information
+     *
+     *@Param in: Map of document containing profile information (docData)
+     *
+     *@Brief: Different fields on screen are filled with previous information
+     *        obtained from Firestore and the profile picture is downloaded if
+     *        one exists
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun populateProfilePage(docData: Map<String, Any>) {
         if (docData.containsKey("experience")) {
             imageName = docData["profilePic"] as String
@@ -129,9 +158,19 @@ class TrainerProfileActivity : BaseActivity() {
         }
     }
 
-    //Function checks if the trainer has registered as a trainer and determines if the
-    //page will be populated
-    private fun checkIfTrainerProfileExists(userID: String?) {
+    /*
+     *@Name: Check if Trainer Profile Exists
+     *
+     *@Purpose: Get file with user's profile is it exists in the DB
+     *
+     *@Param N/A
+     *
+     *@Brief: The function uses a snapshot listener that checks to see if
+     *        the user is a trainer, if so, attempts to populate the data
+     *
+     *@ErrorsHandled: N/A
+     */
+    private fun checkIfTrainerProfileExists() {
         val start = System.currentTimeMillis()
         val docRef = mDatabase!!.collection("trainers").document(userID!!)
         docRef.addSnapshotListener { documentSnapshot, e ->
@@ -150,7 +189,19 @@ class TrainerProfileActivity : BaseActivity() {
         }
     }
 
-    //Function downloads the user's profile image and populates in on the profile page
+    /*
+     *@Name: Download File
+     *
+     *@Purpose: Download profile picture for Firebase Cloud Storage
+     *
+     *@Param N/A
+     *
+     *@Brief: Downloads file corresponding to the imageName retrieved
+     *        from Firestore, which contains the user's profile picture
+     *        Picture is altered to show in a small circle on-screen
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun downloadFile() {
         val storageRef = FirebaseStorage.getInstance().reference
         val imageRef = storageRef.child(imageName!!)
@@ -173,7 +224,21 @@ class TrainerProfileActivity : BaseActivity() {
         }
     }
 
-    //Function queries for profile of desired trainer
+    /*
+     *@Name: Find Trainer Info
+     *
+     *@Purpose: Gets a trainer's profile data based on given first
+     *          and last name
+     *
+     *@Param in: Trainer's first name (first_name)
+     *       in: Trainer's last name (last_name)
+     *
+     *@Brief: Gets database document corresponding to the trainer's
+     *        first and last name and then populates the page with
+     *        it
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun findTrainerInfo(first_name: String, last_name: String) {
         val userRef = mDatabase!!.collection("trainers")
         val query = userRef.whereEqualTo("first_name", first_name).whereEqualTo("last_name", last_name)
@@ -190,7 +255,18 @@ class TrainerProfileActivity : BaseActivity() {
         }
     }
 
-    //Functions sends a request to the trainer with his/her first and last name
+    /*
+     *@Name: Send Trainer Request
+     *
+     *@Purpose: Send request to trainer to become their client
+     *
+     *@Param in: Trainer's unique ID (trainerID)
+     *
+     *@Brief: Sets document in clientRequests sub-collection under the given trainer
+     *        with client's first and last name
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun sendTrainerRequest(trainerID: String?) {
         val start = System.currentTimeMillis()
 
@@ -214,7 +290,18 @@ class TrainerProfileActivity : BaseActivity() {
         giveTrainerAccessInDB()
     }
 
-    //Gives trainer access to the user's background and workout outline
+    /*
+     *@Name: Give Trainer Access in Database
+     *
+     *@Purpose: Gives trainer access to view client's fitness data
+     *
+     *@Param N/A
+     *
+     *@Brief: Sets document in clientRequests sub-collection under the given trainer
+     *        with client's first and last name
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun giveTrainerAccessInDB() {
         val start = System.currentTimeMillis()
 
@@ -233,7 +320,18 @@ class TrainerProfileActivity : BaseActivity() {
                 .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
     }
 
-    //Function shows the user their trainer code and allows them to copy it
+    /*
+     *@Name: Show Trainer Code
+     *
+     *@Purpose: Display's trainer's unique code
+     *
+     *@Param N/A
+     *
+     *@Brief: Opens up a alert with the trainer's code (stored in SharedPreferences)
+     *        and allows them to copy to clipboard
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun showTrainerCode() {
         val myPreferences = PreferenceManager.getDefaultSharedPreferences(this@TrainerProfileActivity)
         val trainerCode = myPreferences.getString("trainerCode", "")
@@ -249,12 +347,32 @@ class TrainerProfileActivity : BaseActivity() {
         textView.textSize = 50f
     }
 
-    //Function adjusts the UI if it is a client viewing it
+    /*
+     *@Name: Adjust UI
+     *
+     *@Purpose: Change UI to display client options
+     *
+     *@Param N/A
+     *
+     *@Brief: Makes the button to request trainer visible to user
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun adjustUI() {
         btnRequestTrainer!!.visibility = View.VISIBLE
     }
 
-    //Function closes the splash image, thus revealing the activity
+    /*
+     *@Name: Close Splash Screen
+     *
+     *@Purpose: Remove Splash Screen and make profile UI visible
+     *
+     *@Param N/A
+     *
+     *@Brief: Makes the Splash Image view invisible and the other views visible
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun closeSplashScreen() {
         splashImage!!.visibility = View.INVISIBLE
         topGradLayout!!.visibility = View.VISIBLE

@@ -1,3 +1,15 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file SignUpActivity.java
+ *
+ * @brief Handles signing up for the app through Firebase
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.example.dj_fit;
 
 import android.content.Intent;
@@ -21,6 +33,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+
+// Sign Up Activity Class ////////////////////////////////////////////////////////////////
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -90,7 +104,23 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
-    //Function creates a account with the user's inputted information
+    // Function definitions ////////////////////////////////////////////////////////
+
+    /*
+     *@Name: Create Account
+     *
+     *@Purpose: Create account for user
+     *
+     *@Param in: User's entered email (currentEmail)
+     *       in: User's entered password (currentPass)
+     *       in: User's entered first name (currentFirstName)
+     *       in: User's entered last name (currentLastName)
+     *
+     *@Brief: Uses Firebase Authentication to create the account with
+     *        user inputted information
+     *
+     *@ErrorsHandled: N/A
+     */
     private void createAccount(final String currentEmail, final String currentPass,
                                final String currentFirstName,final String currentLastName)
     {
@@ -102,8 +132,7 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            String id = mAuth.getCurrentUser().getUid();
-                            addUserToDB(id, currentFirstName, currentLastName);
+                            addUserToDB(currentFirstName, currentLastName);
                             Toast.makeText(SignUpActivity.this, "Account successfully created.",
                                     Toast.LENGTH_SHORT).show();
 
@@ -120,10 +149,24 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
-    //Function adds a new user's login information to the database
-    private void addUserToDB ( String userID, String firstName, String lastName)
+    /*
+     *@Name: Add User to Database
+     *
+     *@Purpose: Add's user's account to DB
+     *
+     *@Param in: User account's first name (firstName)
+     *       in: User account's last name (lastName)
+     *
+     *@Brief: Sets a document in "Users" collection corresponding
+     *        to his/her UID with their name and sets a document
+     *        setting their permission as "Owner"
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void addUserToDB ( String firstName, String lastName)
     {
         //Creates document for user in the database
+        String userID = mAuth.getUid();
         FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
         Map<String, Object> doctData = new HashMap<>();
         doctData.put("first_name", firstName);
