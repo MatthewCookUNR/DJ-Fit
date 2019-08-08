@@ -108,7 +108,12 @@ public class CurrentClientsActivity extends BaseActivity {
                     if (documents.size() != 0) {
                         populateClients(documents);
                     }
+                    else
+                    {
+                        closeSplashScreen();
+                    }
                 } else {
+                    closeSplashScreen();
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }

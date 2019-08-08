@@ -139,6 +139,8 @@ public class BackgroundActivity extends BaseActivity {
                 if (e != null)
                 {
                     Log.w(TAG, "Listen failed", e);
+                    closeSplashScreen();
+
                 }
                 if (documentSnapshot != null && documentSnapshot.exists())
                 {
@@ -150,10 +152,8 @@ public class BackgroundActivity extends BaseActivity {
                 else
                 {
                     Log.d (TAG, "Current data: null");
-                    splashImage.setVisibility(View.GONE);
-                    backgroundScroll.setVisibility(View.VISIBLE);
-                    backgroundText.setVisibility(View.VISIBLE);
-                    backgroundBtn.setVisibility(View.VISIBLE);                }
+                    closeSplashScreen();
+                }
             }
         });
     }

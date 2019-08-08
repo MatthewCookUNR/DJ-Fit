@@ -201,6 +201,8 @@ class TrainerProfileActivity : BaseActivity() {
                 populateProfilePage(documentSnapshot.data!!)
                 splashLocal?.clearAnimation()
             } else {
+                splashLocal?.clearAnimation()
+                closeSplashScreen()
                 Log.d(TAG, "Current data: null")
             }
         }

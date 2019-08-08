@@ -117,9 +117,15 @@ public class ClientRequestsActivity extends BaseActivity
                     {
                         populatePossibleClients(documents);
                     }
+                    else
+                    {
+                        closeSplashScreen();
+
+                    }
                 }
                 else
                 {
+                    closeSplashScreen();
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }
@@ -192,6 +198,7 @@ public class ClientRequestsActivity extends BaseActivity
             butLayout.addView(declineBut);
             clientReqLayout.addView(butLayout);
         }
+        closeSplashScreen();
     }
 
 

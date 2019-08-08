@@ -135,7 +135,7 @@ public class SignUpActivity extends AppCompatActivity {
                             addUserToDB(currentFirstName, currentLastName);
                             Toast.makeText(SignUpActivity.this, "Account successfully created.",
                                     Toast.LENGTH_SHORT).show();
-
+                            mAuth.signOut();
                             Intent signUpAct = new Intent(SignUpActivity.this, LoginActivity.class);
                             startActivity(signUpAct);
 

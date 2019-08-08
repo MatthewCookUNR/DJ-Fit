@@ -171,18 +171,6 @@ class TrainerRegisterActivity : BaseActivity() {
         btnUnregister!!.setOnClickListener { showUnregisterAlert() }
     }
 
-    class MyAsyncTask : AsyncTask<Unit, Unit, String>()
-    {
-        override fun doInBackground(vararg params: Unit): String
-        {
-            return "Yes"
-        }
-        override fun onPostExecute(result: String)
-        {
-
-        }
-    }
-
     // Function definitions ////////////////////////////////////////////////////////
 
     /*
@@ -421,6 +409,7 @@ class TrainerRegisterActivity : BaseActivity() {
                     end = System.currentTimeMillis()
                     Log.d(TAG, "Populate Logged at " + (end - start))
                 } else {
+                    splashLocal?.clearAnimation()
                     closeSplashScreen()
                     Log.d(TAG, "No such document")
                 }
