@@ -25,6 +25,7 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.AsyncTask
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -34,6 +35,9 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import android.webkit.MimeTypeMap
 import android.widget.Button
 import android.widget.EditText
@@ -84,6 +88,7 @@ class TrainerRegisterActivity : BaseActivity() {
     private var uploadedImageName: String? = null
     private var userID: String? = null
 
+
     // Function to generate a random string of length 8
     private// chose a Character random from this String
     // create StringBuffer size of AlphaNumericString
@@ -116,6 +121,7 @@ class TrainerRegisterActivity : BaseActivity() {
         setSupportActionBar(toolbar)
 
         //Views and parameter initialization
+        val splashLocal : ImageView? = findViewById(R.id.splashImage)
         titleText = findViewById(R.id.titleText)
         experienceEdit = findViewById(R.id.experienceEdit)
         employmentEdit = findViewById(R.id.employmentEdit)
@@ -132,12 +138,18 @@ class TrainerRegisterActivity : BaseActivity() {
         imageToUpload = null
         imageName = null
 
+        val rotateAnimation = RotateAnimation(0f, 720f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+        rotateAnimation.setDuration(5000)
+        rotateAnimation.setInterpolator(LinearInterpolator())
+
         //Firebase parameters
         userID = FirebaseAuth.getInstance().uid
         mDatabase = FirebaseFirestore.getInstance()
         mStorageRef = FirebaseStorage.getInstance().getReference("trainerPics")
 
-        checkIfTrainerRegisterExists()
+        splashLocal?.startAnimation(rotateAnimation)
+        checkIfTrainerRegisterExists(splashLocal)
 
         //Button causes the activity to open up Android Gallery to select a image for uploading
         btnUploadImage!!.setOnClickListener {
@@ -392,9 +404,8 @@ class TrainerRegisterActivity : BaseActivity() {
      *
      *@ErrorsHandled: N/A
      */
-    private fun checkIfTrainerRegisterExists() {
+    private fun checkIfTrainerRegisterExists(splashLocal: ImageView?) {
         val start = System.currentTimeMillis()
-
         val docRef = mDatabase!!.collection("trainers").document(userID!!)
         docRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -405,6 +416,8 @@ class TrainerRegisterActivity : BaseActivity() {
                     Log.d(TAG, "Logged at " + (end - start))
                     adjustUI()
                     populateTrainerRegister(document.data!!)
+                    splashLocal?.clearAnimation()
+                    closeSplashScreen()
                     end = System.currentTimeMillis()
                     Log.d(TAG, "Populate Logged at " + (end - start))
                 } else {

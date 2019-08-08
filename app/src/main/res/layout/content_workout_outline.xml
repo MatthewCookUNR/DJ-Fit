@@ -11,8 +11,17 @@
             tools:showIn="@layout/activity_workout_outline"
             android:id="@+id/activity_workout_outline">
 
+    <ImageView
+        android:id="@+id/splashImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/splash_port_xhdpi" />
+
     <RelativeLayout
         android:id="@+id/botButtons"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true">
@@ -32,7 +41,8 @@
     <RelativeLayout
         android:id="@+id/topContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -173,14 +183,6 @@
             android:ems="10"
             android:gravity="center_horizontal"
             android:inputType="textPersonName" />
-
-        <ImageView
-            android:id="@+id/splashImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/splash_port_xhdpi" />
 
     </RelativeLayout>
 

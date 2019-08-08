@@ -8,8 +8,17 @@
     tools:context=".ClientRequestsActivity"
     tools:showIn="@layout/activity_client_requests">
 
+    <ImageView
+        android:id="@+id/splashImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/splash_port_xhdpi" />
+
     <TextView
         android:id="@+id/titleText"
+        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -25,6 +34,7 @@
 
         <RelativeLayout
             android:id="@+id/clientReqLayout"
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </ScrollView>

@@ -22,6 +22,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -82,8 +85,14 @@ public class BackgroundActivity extends BaseActivity {
         {
             userID = FirebaseAuth.getInstance().getUid();
         }
-
         mDatabase = FirebaseFirestore.getInstance();
+
+        final RotateAnimation rotateAnimation = new RotateAnimation(0f, 720f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(5000);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        splashImage.startAnimation(rotateAnimation);
+
         checkIfBackgroundExists();
 
 
@@ -251,6 +260,7 @@ public class BackgroundActivity extends BaseActivity {
     private void closeSplashScreen()
     {
         splashImage.setVisibility(View.GONE);
+        splashImage.clearAnimation();
         backgroundScroll.setVisibility(View.VISIBLE);
         backgroundText.setVisibility(View.VISIBLE);
         backgroundBtn.setVisibility(View.VISIBLE);

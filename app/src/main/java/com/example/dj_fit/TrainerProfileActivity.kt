@@ -28,6 +28,9 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -81,6 +84,7 @@ class TrainerProfileActivity : BaseActivity() {
         setSupportActionBar(toolbar)
 
         //Views and variables initialization
+        val splashLocal : ImageView? = findViewById(R.id.splashImage)
         splashImage = findViewById(R.id.splashImage)
         profileImageView = findViewById(R.id.profileImageView)
         profileNameText = findViewById(R.id.profileNameText)
@@ -95,15 +99,23 @@ class TrainerProfileActivity : BaseActivity() {
         imageName = null
         trainerID = null
 
+        val rotateAnimation = RotateAnimation(0f, 360f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+        rotateAnimation.setDuration(5000)
+        rotateAnimation.setInterpolator(LinearInterpolator())
+
 
         //Firebase parameters
         userID = FirebaseAuth.getInstance().uid
         mDatabase = FirebaseFirestore.getInstance()
 
+        splashLocal?.startAnimation(rotateAnimation)
+
+
         //If viewer is owner of profile, display self profile
         if (isOwner) {
             btnGetTrainerCode!!.visibility = View.VISIBLE
-            checkIfTrainerProfileExists()
+            checkIfTrainerProfileExists(splashLocal)
         } else {
             adjustUI()
             val first_name = intent.getStringExtra("first_name")
@@ -174,7 +186,7 @@ class TrainerProfileActivity : BaseActivity() {
      *
      *@ErrorsHandled: N/A
      */
-    private fun checkIfTrainerProfileExists() {
+    private fun checkIfTrainerProfileExists(splashLocal: ImageView?) {
         val start = System.currentTimeMillis()
         val docRef = mDatabase!!.collection("trainers").document(userID!!)
         docRef.addSnapshotListener { documentSnapshot, e ->
@@ -187,6 +199,7 @@ class TrainerProfileActivity : BaseActivity() {
                 Log.d(TAG, "Current data: " + documentSnapshot.data!!)
                 Log.d(TAG, "Logged at " + (end - start))
                 populateProfilePage(documentSnapshot.data!!)
+                splashLocal?.clearAnimation()
             } else {
                 Log.d(TAG, "Current data: null")
             }

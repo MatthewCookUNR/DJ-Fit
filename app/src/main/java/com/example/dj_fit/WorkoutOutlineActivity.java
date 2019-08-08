@@ -27,6 +27,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -61,7 +64,8 @@ public class WorkoutOutlineActivity extends BaseActivity {
     private int integer = 1;
     private int viewNum = 1;
     private final static int REQUEST_CODE_1 = 1;
-    private RelativeLayout container;
+    private RelativeLayout container, topContent, botButtons;
+    private FloatingActionButton fab;
     private EditText hrEdit, restPeriodEdit, repRangeEdit, setsEdit;
     private Button btnAddDay, btnSaveOutline, btnRemoveDay;
     private ImageView splashImage;
@@ -94,8 +98,18 @@ public class WorkoutOutlineActivity extends BaseActivity {
         btnAddDay = findViewById(R.id.btnAddDay);
         btnRemoveDay = findViewById(R.id.btnRemoveDay);
         splashImage = findViewById(R.id.splashImage);
+        topContent = findViewById(R.id.topContent);
+        botButtons = findViewById(R.id.botButtons);
+        fab = findViewById(R.id.fab);
         musclesChecked = new boolean[muscleList.length];
         Arrays.fill(daysShown, false);
+
+        final RotateAnimation rotateAnimation = new RotateAnimation(0f, 720f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(5000);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+
+        splashImage.startAnimation(rotateAnimation);
 
         //Checks to see if viewer is the user itself or a trainer
         userID = getIntent().getStringExtra("clientID");
@@ -793,7 +807,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
             outlineIndex = 0;
             p++;
         }
-        splashImage.setVisibility(View.GONE);
+        closeSplashScreen();
     }
 
     /*
@@ -1161,5 +1175,27 @@ public class WorkoutOutlineActivity extends BaseActivity {
             }
         }
         return intMuscles;
+    }
+
+    /*
+     *@Name: Close Splash Screen
+     *
+     *@Purpose: Removes Splash Image to show background
+     *
+     *@Param N/A
+     *
+     *@Brief: Sets splash image visibility to gone and the other elements to visible.
+     *        Also ends splash image spin animation. The result is that the outline
+     *        elements are now shown.
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void closeSplashScreen()
+    {
+        splashImage.clearAnimation();
+        splashImage.setVisibility(View.GONE);
+        topContent.setVisibility(View.VISIBLE);
+        botButtons.setVisibility(View.VISIBLE);
+        fab.show();
     }
 }

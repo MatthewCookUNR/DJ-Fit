@@ -20,7 +20,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,6 +53,7 @@ public class CurrentClientsActivity extends BaseActivity {
     private RelativeLayout clientLayout;
     private TextView titleText;
     private FirebaseAuth mAuth;
+    private ImageView splashImage;
     private FirebaseFirestore mDatabase;
 
     @Override
@@ -61,9 +66,17 @@ public class CurrentClientsActivity extends BaseActivity {
         //Views and variables initialization
         clientLayout = findViewById(R.id.clientLayout);
         titleText = findViewById(R.id.titleText);
+        splashImage = findViewById(R.id.splashImage);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
+
+        final RotateAnimation rotateAnimation = new RotateAnimation(0f, 720f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(5000);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+
+        splashImage.startAnimation(rotateAnimation);
 
         checkForClients();
     }
@@ -166,6 +179,7 @@ public class CurrentClientsActivity extends BaseActivity {
             butLayout.addView(declineBut);
             clientLayout.addView(butLayout);
         }
+        closeSplashScreen();
     }
 
     /*
@@ -304,6 +318,27 @@ public class CurrentClientsActivity extends BaseActivity {
                     }
                 });
 
+    }
+
+    /*
+     *@Name: Close Splash Screen
+     *
+     *@Purpose: Removes Splash Image to show background
+     *
+     *@Param N/A
+     *
+     *@Brief: Sets splash image visibility to gone and the other elements to visible.
+     *        Also ends splash image spin animation. The result is that the outline
+     *        elements are now shown.
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void closeSplashScreen()
+    {
+        splashImage.clearAnimation();
+        splashImage.setVisibility(View.GONE);
+        titleText.setVisibility(View.VISIBLE);
+        clientLayout.setVisibility(View.VISIBLE);
     }
 
 }

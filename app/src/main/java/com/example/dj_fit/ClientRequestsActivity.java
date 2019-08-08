@@ -23,7 +23,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -53,6 +57,7 @@ public class ClientRequestsActivity extends BaseActivity
     private int integer = 1;
     private RelativeLayout clientReqLayout;
     private TextView titleText;
+    private ImageView splashImage;
     private String userID;
     private FirebaseFirestore mDatabase;
 
@@ -66,9 +71,18 @@ public class ClientRequestsActivity extends BaseActivity
         //Views and variables initialization
         clientReqLayout = findViewById(R.id.clientReqLayout);
         titleText = findViewById(R.id.titleText);
+        splashImage = findViewById(R.id.splashImage);
+
 
         userID = FirebaseAuth.getInstance().getUid();
         mDatabase = FirebaseFirestore.getInstance();
+
+        final RotateAnimation rotateAnimation = new RotateAnimation(0f, 720f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(5000);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+
+        splashImage.startAnimation(rotateAnimation);
 
         checkForNewClients();
 
@@ -356,5 +370,26 @@ public class ClientRequestsActivity extends BaseActivity
                     }
                 });
 
+    }
+
+    /*
+     *@Name: Close Splash Screen
+     *
+     *@Purpose: Removes Splash Image to show background
+     *
+     *@Param N/A
+     *
+     *@Brief: Sets splash image visibility to gone and the other elements to visible.
+     *        Also ends splash image spin animation. The result is that the outline
+     *        elements are now shown.
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void closeSplashScreen()
+    {
+        splashImage.clearAnimation();
+        splashImage.setVisibility(View.GONE);
+        titleText.setVisibility(View.VISIBLE);
+        clientReqLayout.setVisibility(View.VISIBLE);
     }
 }
