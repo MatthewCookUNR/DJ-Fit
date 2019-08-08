@@ -25,6 +25,7 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.MediaStore
@@ -135,6 +136,7 @@ class TrainerRegisterActivity : BaseActivity() {
         userID = FirebaseAuth.getInstance().uid
         mDatabase = FirebaseFirestore.getInstance()
         mStorageRef = FirebaseStorage.getInstance().getReference("trainerPics")
+
         checkIfTrainerRegisterExists()
 
         //Button causes the activity to open up Android Gallery to select a image for uploading
@@ -155,6 +157,18 @@ class TrainerRegisterActivity : BaseActivity() {
         }
 
         btnUnregister!!.setOnClickListener { showUnregisterAlert() }
+    }
+
+    class MyAsyncTask : AsyncTask<Unit, Unit, String>()
+    {
+        override fun doInBackground(vararg params: Unit): String
+        {
+            return "Yes"
+        }
+        override fun onPostExecute(result: String)
+        {
+
+        }
     }
 
     // Function definitions ////////////////////////////////////////////////////////
@@ -343,6 +357,7 @@ class TrainerRegisterActivity : BaseActivity() {
             employmentEdit!!.setText(docData["employment"].toString())
             aboutYouEdit!!.setText(docData["aboutYou"].toString())
             val name = docData["profilePic"]
+            closeSplashScreen()
 
             //If they have a profile picture, download it
             if (name != null) {
@@ -350,7 +365,11 @@ class TrainerRegisterActivity : BaseActivity() {
                 println("Image is not null")
                 // Call function with kotlin's coroutines to remove possibility of halting other processes during load
                 GlobalScope.launch {
-                    downloadFile()
+                    //Thread to download profile pic if it exists
+                    runOnUiThread(Runnable
+                    {
+                        downloadFile()
+                    })
                 }
             } else {
                 println("Image is null")
@@ -444,7 +463,6 @@ class TrainerRegisterActivity : BaseActivity() {
             mImage!!.layoutParams.width = (120 * scale + 0.5f).toInt()
             mImage!!.requestLayout()
             mImage!!.setImageDrawable(roundDrawable)
-            closeSplashScreen()
         }.addOnFailureListener {
             //Toast.makeText(TrainerRegisterActivity.this, "Download failed", Toast.LENGTH_SHORT).show();
         }

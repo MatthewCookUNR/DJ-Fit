@@ -207,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                         Log.d(TAG, "Logged at " + (end - start));
                         SharedPreferences.Editor myEditor = myPreferences.edit();
-                        myEditor.putString("trainerCode", document.get("trainerCode").toString());
+                        myEditor.putString("trainerCode", (String) document.get("trainerCode"));
                         myEditor.apply();
                         end = System.currentTimeMillis();
                         Log.d(TAG, "Set trainer code in Shared Pref logged at " + (end - start));

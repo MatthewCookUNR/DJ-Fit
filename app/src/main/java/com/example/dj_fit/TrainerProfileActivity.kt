@@ -143,14 +143,18 @@ class TrainerProfileActivity : BaseActivity() {
             employerText!!.text = docData["employment"].toString()
             experienceText!!.text = docData["experience"].toString()
             aboutMeText!!.text = docData["aboutYou"].toString()
+            closeSplashScreen()
             if (imageName == null) {
-                closeSplashScreen()
                 println("Image is null")
             } else {
                 println(imageName)
                 // Call function with kotlin's coroutines to remove possibility of stopping main thread during load
                 GlobalScope.launch {
-                    downloadFile()
+                    //Thread to download profile pic if it exists
+                    runOnUiThread(Runnable
+                    {
+                        downloadFile()
+                    })
                 }
             }
         } else {
@@ -218,7 +222,6 @@ class TrainerProfileActivity : BaseActivity() {
             profileImageView!!.layoutParams.width = (120 * scale + 0.5f).toInt()
             profileImageView!!.requestLayout()
             profileImageView!!.setImageDrawable(roundDrawable)
-            closeSplashScreen()
         }.addOnFailureListener {
             //Toast.makeText(TrainerProfileActivity.this, "Download failed", Toast.LENGTH_SHORT).show();
         }
