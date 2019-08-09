@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,48 +10,72 @@
     tools:context=".FindTrainerActivity"
     tools:showIn="@layout/activity_find_trainer">
 
-
-
-    <Button
-        android:id="@+id/btnFindTrainer"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/trainerCodeEdit"
-        android:textSize="24sp"
-        android:text="Find Trainer"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/trainerCodeEdit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textSize="30sp"
-        android:ems="10"
-        android:textAlignment="center"
-        android:inputType="textPersonName"
-        android:hint="Please enter code here:" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:text="Find Trainer" />
+            <Button
+                android:id="@+id/btnFindTrainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/trainerCodeEdit"
+                android:text="Find Trainer"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/howToText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/titleText"
-        android:gravity="center"
-        android:layout_marginStart="21dp"
-        android:layout_marginEnd="21dp"
-        android:layout_marginTop="12dp"
-        android:lineSpacingExtra="8sp"
-        android:text="Please enter the 8 digit code given by your trainer to find their profile:"
-        android:textAppearance="@android:style/TextAppearance.Medium" />
-</RelativeLayout>
+            <EditText
+                android:id="@+id/trainerCodeEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:ems="10"
+                android:hint="Please enter code here:"
+                android:inputType="textPersonName"
+                android:textAlignment="center"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Find Trainer"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/howToText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/titleText"
+                android:layout_marginStart="21dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="21dp"
+                android:gravity="center"
+                android:lineSpacingExtra="8sp"
+                android:text="Please enter the 8 digit code given by your trainer to find their profile:"
+                android:textAppearance="@android:style/TextAppearance.Medium" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/botBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true">
+
+            <android.support.design.widget.BottomNavigationView
+                android:id="@+id/bottomNavigationItemView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:menu="@menu/bottom_navigation_menu" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

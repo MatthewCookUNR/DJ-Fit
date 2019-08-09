@@ -14,19 +14,17 @@
 package com.example.dj_fit
 
 import android.app.AlertDialog
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.DialogInterface
-import android.content.SharedPreferences
+import android.content.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.design.widget.BottomNavigationView
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
@@ -114,8 +112,8 @@ class TrainerProfileActivity : BaseActivity() {
 
         //If viewer is owner of profile, display self profile
         if (isOwner) {
-            btnGetTrainerCode!!.visibility = View.VISIBLE
             checkIfTrainerProfileExists(splashLocal)
+            btnGetTrainerCode!!.visibility = View.VISIBLE
         } else {
             adjustUI()
             val first_name = intent.getStringExtra("first_name")
@@ -130,6 +128,41 @@ class TrainerProfileActivity : BaseActivity() {
             btnRequestTrainer!!.text = "Request Sent"
             btnRequestTrainer!!.isClickable = false
         }
+
+        val bottomNavigationItemView : BottomNavigationView = findViewById(R.id.bottomNavigationItemView)
+        bottomNavigationItemView.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.ic_back -> {
+                    if(isOwner)
+                    {
+                        val myProfileIntent = Intent(applicationContext, TrainerMenuActivity::class.java)
+                        startActivity(myProfileIntent)
+                    }
+                    else
+                    {
+                        val clientProfileIntent = Intent(applicationContext, FindTrainerActivity::class.java)
+                        startActivity(clientProfileIntent)
+                    }
+                }
+                R.id.ic_home -> {
+                    val homeIntent = Intent(applicationContext, MainActivity::class.java)
+                    startActivity(homeIntent)
+                }
+                R.id.ic_training -> {
+                    //Checks to see if the user is currently a trainer
+                    val myPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                    val trainerCode = myPreferences.getString("trainerCode", "")
+                    if (trainerCode != "false") {
+                        val trainerIntent = Intent(applicationContext, TrainerMenuActivity::class.java)
+                        startActivity(trainerIntent)
+                    } else {
+                        val becomeTrainerIntent = Intent(applicationContext, BecomeTrainerActivity::class.java)
+                        startActivity(becomeTrainerIntent)
+                    }
+                }
+            }
+            false
+        })
     }
 
     // Function definitions ////////////////////////////////////////////////////////
@@ -392,6 +425,7 @@ class TrainerProfileActivity : BaseActivity() {
      *@ErrorsHandled: N/A
      */
     private fun closeSplashScreen() {
+        splashImage!!.clearAnimation()
         splashImage!!.visibility = View.INVISIBLE
         topGradLayout!!.visibility = View.VISIBLE
         trainerScroll!!.visibility = View.VISIBLE

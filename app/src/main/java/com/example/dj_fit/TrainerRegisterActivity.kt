@@ -30,6 +30,7 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.MediaStore
+import android.support.design.widget.BottomNavigationView
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.widget.Toolbar
@@ -169,6 +170,41 @@ class TrainerRegisterActivity : BaseActivity() {
         }
 
         btnUnregister!!.setOnClickListener { showUnregisterAlert() }
+
+        val bottomNavigationItemView : BottomNavigationView = findViewById(R.id.bottomNavigationItemView)
+        bottomNavigationItemView.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.ic_back -> {
+                    //Checks to see if the user is currently a trainer
+                    val myPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                    val trainerCode = myPreferences.getString("trainerCode", "")
+                    if (trainerCode != "false") {
+                        val trainerIntent = Intent(applicationContext, TrainerMenuActivity::class.java)
+                        startActivity(trainerIntent)
+                    } else {
+                        val becomeTrainerIntent = Intent(applicationContext, BecomeTrainerActivity::class.java)
+                        startActivity(becomeTrainerIntent)
+                    }
+                }
+                R.id.ic_home -> {
+                    val homeIntent = Intent(applicationContext, MainActivity::class.java)
+                    startActivity(homeIntent)
+                }
+                R.id.ic_training -> {
+                    //Checks to see if the user is currently a trainer
+                    val myPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                    val trainerCode = myPreferences.getString("trainerCode", "")
+                    if (trainerCode != "false") {
+                        val trainerIntent = Intent(applicationContext, TrainerMenuActivity::class.java)
+                        startActivity(trainerIntent)
+                    } else {
+                        val becomeTrainerIntent = Intent(applicationContext, BecomeTrainerActivity::class.java)
+                        startActivity(becomeTrainerIntent)
+                    }
+                }
+            }
+            false
+        })
     }
 
     // Function definitions ////////////////////////////////////////////////////////

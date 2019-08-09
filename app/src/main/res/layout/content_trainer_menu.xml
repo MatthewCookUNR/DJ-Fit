@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,47 +10,75 @@
     tools:context=".TrainerMenuActivity"
     tools:showIn="@layout/activity_trainer_menu">
 
-    <TextView
-        android:id="@+id/titleText"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Trainer Menu"
-        android:textAppearance="@android:style/TextAppearance.Large"
-        android:textSize="30sp" />
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btnModifyProfile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/titleText"
-        android:layout_marginTop="31dp"
-        android:text="Modify Trainer Profile"
-        android:textAppearance="@android:style/TextAppearance.Large"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btnTrainerProfile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnModifyProfile"
-        android:text="My Profile Page"
-        android:textAppearance="@android:style/TextAppearance.Large"/>
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Trainer Menu"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:textSize="30sp" />
 
-    <Button
-        android:id="@+id/btnCurrentClients"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnTrainerProfile"
-        android:text="Current Clients"
-        android:textAppearance="@android:style/TextAppearance.Large" />
+            <Button
+                android:id="@+id/btnModifyProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titleText"
+                android:layout_marginTop="31dp"
+                android:text="Modify Trainer Profile"
+                android:textAppearance="@android:style/TextAppearance.Large" />
 
-    <Button
-        android:id="@+id/btnClientRequests"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnCurrentClients"
-        android:text="Client Requests"
-        android:textAppearance="@android:style/TextAppearance.Large" />
+            <Button
+                android:id="@+id/btnTrainerProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btnModifyProfile"
+                android:text="My Profile Page"
+                android:textAppearance="@android:style/TextAppearance.Large" />
+
+            <Button
+                android:id="@+id/btnCurrentClients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btnTrainerProfile"
+                android:text="Current Clients"
+                android:textAppearance="@android:style/TextAppearance.Large" />
+
+            <Button
+                android:id="@+id/btnClientRequests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btnCurrentClients"
+                android:text="Client Requests"
+                android:textAppearance="@android:style/TextAppearance.Large" />
 
 
-</RelativeLayout>
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/botBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true">
+
+            <android.support.design.widget.BottomNavigationView
+                android:id="@+id/bottomNavigationItemView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:menu="@menu/bottom_navigation_menu" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

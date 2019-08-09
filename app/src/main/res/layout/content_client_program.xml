@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,42 +10,68 @@
     tools:context=".ClientProgramActivity"
     tools:showIn="@layout/activity_client_program">
 
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="Insert Name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textSize="30sp"
-        android:textStyle="bold" />
-
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="15dp"
-        android:layout_below="@+id/titleText">
+        android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/clientLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/btnBackground"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Background"
-                android:textAppearance="@android:style/TextAppearance.Large"/>
+                android:layout_centerHorizontal="true"
+                android:text="Insert Name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnWorkoutOutline"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/btnBackground"
-                android:text="Workout Outline"
-                android:textAppearance="@android:style/TextAppearance.Large"/>
+                android:layout_height="match_parent"
+                android:layout_below="@+id/titleText"
+                android:layout_marginTop="15dp">
+
+                <RelativeLayout
+                    android:id="@+id/clientLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/btnBackground"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Background"
+                        android:textAppearance="@android:style/TextAppearance.Large" />
+
+                    <Button
+                        android:id="@+id/btnWorkoutOutline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/btnBackground"
+                        android:text="Workout Outline"
+                        android:textAppearance="@android:style/TextAppearance.Large" />
+                </RelativeLayout>
+            </ScrollView>
+
         </RelativeLayout>
-    </ScrollView>
 
-</RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/botBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true">
+
+            <android.support.design.widget.BottomNavigationView
+                android:id="@+id/bottomNavigationItemView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:menu="@menu/bottom_navigation_menu" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

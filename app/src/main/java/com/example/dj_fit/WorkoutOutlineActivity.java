@@ -15,9 +15,12 @@ package com.example.dj_fit;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +28,7 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -60,6 +64,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
 
     //Class variables
     private final static String TAG = "WorkoutOutlineActivity";
+    private boolean isOwner = false;
     private String userID;
     private int integer = 1;
     private int viewNum = 1;
@@ -100,7 +105,6 @@ public class WorkoutOutlineActivity extends BaseActivity {
         splashImage = findViewById(R.id.splashImage);
         topContent = findViewById(R.id.topContent);
         botButtons = findViewById(R.id.botButtons);
-        fab = findViewById(R.id.fab);
         musclesChecked = new boolean[muscleList.length];
         Arrays.fill(daysShown, false);
 
@@ -115,6 +119,7 @@ public class WorkoutOutlineActivity extends BaseActivity {
         userID = getIntent().getStringExtra("clientID");
         if(userID == null)
         {
+            isOwner = true;
             userID = FirebaseAuth.getInstance().getUid();
         }
 
@@ -168,13 +173,50 @@ public class WorkoutOutlineActivity extends BaseActivity {
             }
         });
 
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        BottomNavigationView bottomNavigationItemView = findViewById(R.id.bottomNavigationItemView);
+        bottomNavigationItemView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
+            {
+                switch(menuItem.getItemId())
+                {
+                    case R.id.ic_back:
+                        if(isOwner)
+                        {
+                            Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(homeIntent);
+                        }
+                        else
+                        {
+                            Intent clientIntent = new Intent(getApplicationContext(), ClientProgramActivity.class);
+                            clientIntent.putExtra("clientTag", getIntent().getStringExtra("clientTag"));
+                            startActivity(clientIntent);
+                        }
+
+                        break;
+                    case R.id.ic_home:
+                        Intent homeIntent2 = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(homeIntent2);
+                        break;
+                    case R.id.ic_training:
+                        //Checks to see if the user is currently a trainer
+                        final SharedPreferences myPreferences =
+                                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        String trainerCode = myPreferences.getString("trainerCode", "");
+                        if(!trainerCode.equals("false"))
+                        {
+                            Intent trainerIntent = new Intent(getApplicationContext(), TrainerMenuActivity.class);
+                            startActivity(trainerIntent);
+                        }
+                        else
+                        {
+                            Intent becomeTrainerIntent = new Intent(getApplicationContext(), BecomeTrainerActivity.class);
+                            startActivity(becomeTrainerIntent);
+                        }
+                        break;
+                }
+                return false;
+
             }
         });
     }
@@ -1196,6 +1238,5 @@ public class WorkoutOutlineActivity extends BaseActivity {
         splashImage.setVisibility(View.GONE);
         topContent.setVisibility(View.VISIBLE);
         botButtons.setVisibility(View.VISIBLE);
-        fab.show();
     }
 }

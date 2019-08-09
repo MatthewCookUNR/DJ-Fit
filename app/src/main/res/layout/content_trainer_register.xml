@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,196 +10,223 @@
     tools:context=".TrainerRegisterActivity"
     tools:showIn="@layout/activity_trainer_register">
 
-    <ImageView
-        android:id="@+id/splashImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/splash_port_xhdpi" />
-
     <RelativeLayout
-        android:id="@+id/botButtons"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:visibility="invisible">
-
-        <Button
-            android:id="@+id/btnBecomeTrainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/btnUnregister"
-            android:text="Register"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-        <Button
-            android:id="@+id/btnUnregister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:text="Unregister"
-            android:visibility="gone"/>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/registerInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:visibility="invisible">
-
-        <TextView
-            android:id="@+id/titleText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Register as a Trainer"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/howToText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/titleText"
-            android:gravity="center"
-            android:layout_marginStart="21dp"
-            android:layout_marginEnd="21dp"
-            android:layout_marginTop="12dp"
-            android:lineSpacingExtra="8sp"
-            android:text="Please fill out the the following information below about yourself for use in your trainer profile page:"
-            android:textAppearance="@android:style/TextAppearance.Medium" />
-
-    </RelativeLayout>
-
-    <ScrollView
-        android:id="@+id/trainerScroll"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/registerInfo"
-        android:layout_above="@id/botButtons"
-        android:visibility="invisible">
+        android:layout_height="match_parent">
 
         <RelativeLayout
+            android:layout_above="@+id/botBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/employmentLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/experienceEdit"
-                android:layout_marginStart="21dp"
-                android:layout_marginLeft="21dp"
-                android:layout_marginTop="23dp"
-                android:text="Current Employer:"
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/experienceLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="21dp"
-                android:layout_marginLeft="21dp"
-                android:layout_marginTop="23dp"
-                android:text="Experience:"
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                android:textStyle="bold"/>
-
-            <EditText
-                android:id="@+id/experienceEdit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/experienceLabel"
-                android:layout_marginStart="21dp"
-                android:layout_marginLeft="21dp"
-                android:layout_marginEnd="21dp"
-                android:layout_marginRight="21dp"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:inputType="textMultiLine"
-                android:hint="Ex. 6 months, 3 years etc." />
-
-            <EditText
-                android:id="@+id/aboutYouEdit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/aboutYouLabel"
-                android:layout_marginStart="21dp"
-                android:layout_marginLeft="21dp"
-                android:layout_marginEnd="21dp"
-                android:layout_marginRight="21dp"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:inputType="textMultiLine"
-                android:hint="Write short paragraph about yourself" />
-
-            <TextView
-                android:id="@+id/aboutYouLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/employmentEdit"
-                android:layout_marginStart="21dp"
-                android:layout_marginLeft="21dp"
-                android:layout_marginTop="23dp"
-                android:text="About Yourself:"
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/employmentEdit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/employmentLabel"
-                android:layout_marginStart="21dp"
-                android:layout_marginLeft="21dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="21dp"
-                android:layout_marginRight="21dp"
-                android:ems="10"
-                android:hint="Where do you work?"
-                android:inputType="textMultiLine" />
-
-            <TextView
-                android:id="@+id/uploadSelfieLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/aboutYouEdit"
-                android:layout_marginStart="21dp"
-                android:layout_marginLeft="21dp"
-                android:layout_marginTop="23dp"
-                android:text="Upload Profile Picture (Optional):"
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/btnUploadImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/profileImageView"
-                android:layout_marginStart="21dp"
-                android:layout_marginLeft="21dp"
-                android:text="Upload Image" />
+            android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/profileImageView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="21dp"
-                android:layout_marginLeft="21dp"
-                android:layout_marginEnd="21dp"
-                android:layout_marginRight="21dp"
-                android:layout_marginTop="8dp"
-                android:scaleType="fitXY"
-                android:layout_below="@+id/uploadSelfieLabel"
-                app:srcCompat="@android:color/background_light" />
+                android:id="@+id/splashImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/splash_port_xhdpi" />
+
+            <RelativeLayout
+                android:id="@+id/botButtons"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible">
+
+                <Button
+                    android:id="@+id/btnBecomeTrainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/btnUnregister"
+                    android:text="Register"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <Button
+                    android:id="@+id/btnUnregister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:text="Unregister"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/registerInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:visibility="invisible">
+
+                <TextView
+                    android:id="@+id/titleText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Register as a Trainer"
+                    android:textAppearance="@android:style/TextAppearance.Large"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/howToText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/titleText"
+                    android:layout_marginStart="21dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="21dp"
+                    android:gravity="center"
+                    android:lineSpacingExtra="8sp"
+                    android:text="Please fill out the the following information below about yourself for use in your trainer profile page:"
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+            </RelativeLayout>
+
+            <ScrollView
+                android:id="@+id/trainerScroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/botButtons"
+                android:layout_below="@+id/registerInfo"
+                android:visibility="invisible">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/employmentLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/experienceEdit"
+                        android:layout_marginStart="21dp"
+                        android:layout_marginLeft="21dp"
+                        android:layout_marginTop="23dp"
+                        android:text="Current Employer:"
+                        android:textAppearance="@android:style/TextAppearance.Medium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/experienceLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="21dp"
+                        android:layout_marginLeft="21dp"
+                        android:layout_marginTop="23dp"
+                        android:text="Experience:"
+                        android:textAppearance="@android:style/TextAppearance.Medium"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/experienceEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/experienceLabel"
+                        android:layout_marginStart="21dp"
+                        android:layout_marginLeft="21dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="21dp"
+                        android:layout_marginRight="21dp"
+                        android:ems="10"
+                        android:hint="Ex. 6 months, 3 years etc."
+                        android:inputType="textMultiLine" />
+
+                    <EditText
+                        android:id="@+id/aboutYouEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/aboutYouLabel"
+                        android:layout_marginStart="21dp"
+                        android:layout_marginLeft="21dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="21dp"
+                        android:layout_marginRight="21dp"
+                        android:ems="10"
+                        android:hint="Write short paragraph about yourself"
+                        android:inputType="textMultiLine" />
+
+                    <TextView
+                        android:id="@+id/aboutYouLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/employmentEdit"
+                        android:layout_marginStart="21dp"
+                        android:layout_marginLeft="21dp"
+                        android:layout_marginTop="23dp"
+                        android:text="About Yourself:"
+                        android:textAppearance="@android:style/TextAppearance.Medium"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/employmentEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/employmentLabel"
+                        android:layout_marginStart="21dp"
+                        android:layout_marginLeft="21dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="21dp"
+                        android:layout_marginRight="21dp"
+                        android:ems="10"
+                        android:hint="Where do you work?"
+                        android:inputType="textMultiLine" />
+
+                    <TextView
+                        android:id="@+id/uploadSelfieLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/aboutYouEdit"
+                        android:layout_marginStart="21dp"
+                        android:layout_marginLeft="21dp"
+                        android:layout_marginTop="23dp"
+                        android:text="Upload Profile Picture (Optional):"
+                        android:textAppearance="@android:style/TextAppearance.Medium"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnUploadImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/profileImageView"
+                        android:layout_marginStart="21dp"
+                        android:layout_marginLeft="21dp"
+                        android:text="Upload Image" />
+
+                    <ImageView
+                        android:id="@+id/profileImageView"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_below="@+id/uploadSelfieLabel"
+                        android:layout_marginStart="21dp"
+                        android:layout_marginLeft="21dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="21dp"
+                        android:layout_marginRight="21dp"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@android:color/background_light" />
+
+                </RelativeLayout>
+
+            </ScrollView>
 
         </RelativeLayout>
 
-    </ScrollView>
+        <RelativeLayout
+            android:id="@+id/botBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true">
 
-</RelativeLayout>
+            <android.support.design.widget.BottomNavigationView
+                android:id="@+id/bottomNavigationItemView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:menu="@menu/bottom_navigation_menu" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

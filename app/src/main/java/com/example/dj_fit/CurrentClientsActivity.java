@@ -16,8 +16,10 @@ package com.example.dj_fit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -79,6 +81,30 @@ public class CurrentClientsActivity extends BaseActivity {
         splashImage.startAnimation(rotateAnimation);
 
         checkForClients();
+
+        BottomNavigationView bottomNavigationItemView = findViewById(R.id.bottomNavigationItemView);
+        bottomNavigationItemView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
+            {
+                switch(menuItem.getItemId())
+                {
+                    case R.id.ic_back:
+                        Intent clientReqIntent = new Intent(getApplicationContext(), TrainerMenuActivity.class);
+                        startActivity(clientReqIntent);
+                        break;
+                    case R.id.ic_home:
+                        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(homeIntent);
+                        break;
+                    case R.id.ic_training:
+                        Intent trainerIntent = new Intent(getApplicationContext(), TrainerMenuActivity.class);
+                        startActivity(trainerIntent);
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     // Function definitions ////////////////////////////////////////////////////////

@@ -83,8 +83,8 @@ public class MainActivity extends BaseActivity {
                     case R.id.ic_back:
                         break;
                     case R.id.ic_home:
-                        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(homeIntent);
+                        //Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        //startActivity(homeIntent);
                         break;
                     case R.id.ic_training:
                         //Checks to see if the user is currently a trainer

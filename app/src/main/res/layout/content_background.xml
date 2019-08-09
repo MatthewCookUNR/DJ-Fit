@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".BackgroundActivity"
-    tools:showIn="@layout/activity_background">
+    tools:showIn="@layout/activity_become_trainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/splashImage"
@@ -21,7 +25,7 @@
         android:id="@+id/backgroundBtn"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/botBar"
         android:visibility="invisible">
 
         <Button
@@ -177,7 +181,6 @@
                 android:id="@+id/currentFitLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/howToText"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_marginStart="21dp"
@@ -237,4 +240,20 @@
 
         </RelativeLayout>
     </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/botBar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true">
+
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bottomNavigationItemView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:menu="@menu/bottom_navigation_menu" />
+
+    </RelativeLayout>
+
 </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
