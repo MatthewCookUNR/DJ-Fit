@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/ic_back"
+        android:icon="@drawable/ic_arrow_back"
+        android:title="Back" />
+    <item
+        android:id="@+id/ic_home"
+        android:icon="@drawable/ic_android"
+        android:title="Home" />
+    <item
+        android:id="@+id/ic_training"
+        android:icon="@drawable/ic_library_books"
+        android:title="Training" />
+</menu>

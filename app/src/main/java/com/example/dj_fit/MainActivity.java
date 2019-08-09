@@ -16,9 +16,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -30,7 +33,7 @@ public class MainActivity extends BaseActivity {
     //Class variables
     private static final String TAG = "MainActivity";
     RelativeLayout activity_main;
-    private Button btnBackground, btnWorkoutOutline, btnRegisterTrainer, btnFindTrainer;
+    private Button btnBackground, btnWorkoutOutline, btnFindTrainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +47,7 @@ public class MainActivity extends BaseActivity {
         activity_main = findViewById(R.id.activity_main);
         btnBackground = findViewById(R.id.btnBackground);
         btnWorkoutOutline = findViewById(R.id.btnWorkoutOutline);
-        btnRegisterTrainer = findViewById(R.id.btnRegisterTrainer);
         btnFindTrainer = findViewById(R.id.btnFindTrainer);
-
-        //Checks to see if the user is currently a trainer
-        final SharedPreferences myPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
-        String trainerCode = myPreferences.getString("trainerCode", "");
-
-        if(!trainerCode.equals("false"))
-        {
-            System.out.println("yes" + trainerCode);
-            adjustUI();
-        }
 
         btnBackground.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,20 +65,46 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        btnRegisterTrainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent trainerRegisterIntent = new Intent(MainActivity.this, TrainerRegisterActivity.class);
-                startActivity(trainerRegisterIntent);
-            }
-        });
-
-
         btnFindTrainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent findTrainerIntent = new Intent(MainActivity.this, FindTrainerActivity.class);
                 startActivity(findTrainerIntent);
+            }
+        });
+
+        BottomNavigationView bottomNavigationItemView = findViewById(R.id.bottomNavigationItemView);
+        bottomNavigationItemView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
+            {
+                switch(menuItem.getItemId())
+                {
+                    case R.id.ic_back:
+                        break;
+                    case R.id.ic_home:
+                        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(homeIntent);
+                        break;
+                    case R.id.ic_training:
+                        //Checks to see if the user is currently a trainer
+                        final SharedPreferences myPreferences =
+                                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        String trainerCode = myPreferences.getString("trainerCode", "");
+                        if(!trainerCode.equals("false"))
+                        {
+                            Intent trainerIntent = new Intent(getApplicationContext(), TrainerMenuActivity.class);
+                            startActivity(trainerIntent);
+                        }
+                        else
+                        {
+                            Intent becomeTrainerIntent = new Intent(getApplicationContext(), BecomeTrainerActivity.class);
+                            startActivity(becomeTrainerIntent);
+                        }
+                        break;
+                }
+                return false;
+
             }
         });
     }
@@ -108,7 +125,7 @@ public class MainActivity extends BaseActivity {
      */
     private void adjustUI()
     {
-        btnRegisterTrainer.setVisibility(View.GONE);
+        /*
         Button btnTrainerMenu = new Button(MainActivity.this);
         RelativeLayout.LayoutParams paramsR = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramsR.addRule(RelativeLayout.BELOW, R.id.btnFindTrainer);
@@ -125,5 +142,6 @@ public class MainActivity extends BaseActivity {
         });
         btnTrainerMenu.setText(myText);
         activity_main.addView(btnTrainerMenu);
+        */
     }
 }

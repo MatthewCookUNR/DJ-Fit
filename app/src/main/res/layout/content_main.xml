@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,52 +10,115 @@
     tools:showIn="@layout/activity_main">
 
     <RelativeLayout
-        android:id="@+id/activity_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/titleText"
+        <RelativeLayout
+            android:layout_above="@id/botBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Welcome to DJ FIT"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            android:textSize="30sp" />
+            android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btnBackground"
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/activity_main"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="50dp">
+
+                    <TextView
+                        android:id="@+id/titleText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:gravity="center"
+                        android:text="Home"
+                        android:textAppearance="@android:style/TextAppearance.Large"
+                        android:textSize="36sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnBackground"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_below="@+id/titleText"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/compGreen"
+                        android:drawableStart="@drawable/notepad"
+                        android:drawableLeft="@drawable/notepad"
+                        android:text="Background"
+                        android:textAppearance="@android:style/TextAppearance.Large"
+                        android:textColor="@color/white"
+                        android:textSize="32sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnWorkoutOutline"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_below="@+id/btnBackground"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/compBrown"
+                        android:drawableStart="@drawable/dumbbell"
+                        android:drawableLeft="@drawable/dumbbell"
+                        android:text="Workout Outline"
+                        android:textAppearance="@android:style/TextAppearance.Large"
+                        android:textColor="@color/white"
+                        android:textSize="32sp"
+                        android:textStyle="bold" />
+
+
+                    <Button
+                        android:id="@+id/btnFindTrainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_below="@id/btnWorkoutOutline"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/compViolet"
+                        android:drawableStart="@drawable/weight_training"
+                        android:drawableLeft="@drawable/weight_training"
+                        android:text="Find Trainer"
+                        android:textAppearance="@android:style/TextAppearance.Large"
+                        android:textColor="@color/white"
+                        android:textSize="32sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+            </ScrollView>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/botBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/titleText"
-            android:layout_marginTop="31dp"
-            android:text="Individual Background"
-            android:textAppearance="@android:style/TextAppearance.Large" />
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true">
 
-        <Button
-            android:id="@+id/btnWorkoutOutline"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btnBackground"
-            android:text="Workout Outline"
-            android:textAppearance="@android:style/TextAppearance.Large" />
-
-
-        <Button
-            android:id="@+id/btnFindTrainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/btnWorkoutOutline"
-            android:text="Find Trainer"
-            android:textAppearance="@android:style/TextAppearance.Large"/>
-
-        <Button
-            android:id="@+id/btnRegisterTrainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/btnFindTrainer"
-            android:text="Become Trainer"
-            android:textAppearance="@android:style/TextAppearance.Large"/>
+            <android.support.design.widget.BottomNavigationView
+                android:id="@+id/bottomNavigationItemView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:menu="@menu/bottom_navigation_menu" />
+        </RelativeLayout>
 
     </RelativeLayout>
-</ScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

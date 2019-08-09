@@ -21,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -67,7 +68,7 @@ public class BaseActivity extends AppCompatActivity
             case R.id.action_about:
                 AlertDialog aboutDialog = new AlertDialog.Builder(this).create();
                 aboutDialog.setTitle("About DJ FIT");
-                aboutDialog.setMessage("Application is being developed by Matthew Cook.");
+                aboutDialog.setMessage("Application is being developed by Matthew Cook and Collin Potter.");
                 aboutDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
