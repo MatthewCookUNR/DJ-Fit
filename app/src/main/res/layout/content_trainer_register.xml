@@ -208,6 +208,15 @@
                         android:scaleType="fitXY"
                         app:srcCompat="@android:color/background_light" />
 
+                    <Button
+                        android:id="@+id/btnRemovePic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/btnUploadImage"
+                        android:layout_toEndOf="@+id/btnUploadImage"
+                        android:layout_below="@+id/profileImageView"
+                        android:text="Remove Image" />
+
                 </RelativeLayout>
 
             </ScrollView>

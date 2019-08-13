@@ -83,10 +83,11 @@ class TrainerRegisterActivity : BaseActivity() {
     private var btnUploadImage: Button? = null
     private var btnBecomeTrainer: Button? = null
     private var btnUnregister: Button? = null
+    private var btnRemovePic: Button? = null
     private var mDatabase: FirebaseFirestore? = null
     private var mStorageRef: StorageReference? = null
     private var imageName: String? = null
-    private var uploadedImageName: String? = null
+    private var uploadedImageName: String? = ""
     private var userID: String? = null
 
 
@@ -135,9 +136,7 @@ class TrainerRegisterActivity : BaseActivity() {
         registerInfo = findViewById(R.id.registerInfo)
         trainerScroll = findViewById(R.id.trainerScroll)
         btnUnregister = findViewById(R.id.btnUnregister)
-        uploadedImageName = null
-        imageToUpload = null
-        imageName = null
+        btnRemovePic = findViewById(R.id.btnRemovePic)
 
         val rotateAnimation = RotateAnimation(0f, 720f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
@@ -158,12 +157,26 @@ class TrainerRegisterActivity : BaseActivity() {
             startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE)
         }
 
+        //Button removes old profile image
+        btnRemovePic!!.setOnClickListener {
+            mImage?.layout(0, 0, 0, 0)
+            mImage?.setImageDrawable(null)
+            mImage!!.visibility = View.GONE
+            imageToUpload = null
+        }
+
         //Button registers the user as a trainer, uploading the given data on the page for use in their profile
         btnBecomeTrainer!!.setOnClickListener {
-            if (imageToUpload != null) {
+            println(imageToUpload)
+            if (imageToUpload != null)
+            {
                 uploadImage()
-            } else {
+            }
+            else if (imageToUpload == null && uploadedImageName != "")
+            {
                 println("No image")
+                deleteCurrentProfilePic()
+                uploadedImageName = ""
             }
             setTrainerStatusInDB(true)
             uploadToDB()
@@ -239,6 +252,7 @@ class TrainerRegisterActivity : BaseActivity() {
                     mImage!!.layoutParams.width = (120 * scale + 0.5f).toInt()
                     mImage!!.requestLayout()
                     mImage!!.setImageDrawable(roundDrawable)
+                    mImage!!.visibility = View.VISIBLE
                 } catch (e: Exception) {
                     println("Bitmap exception")
                 }
@@ -287,8 +301,9 @@ class TrainerRegisterActivity : BaseActivity() {
             fileRef.putFile(imageToUpload!!).addOnSuccessListener {
                 Toast.makeText(this@TrainerRegisterActivity, "File upload success", Toast.LENGTH_SHORT).show()
                 println("Before: " + uploadedImageName!!)
-                if (uploadedImageName != null) {
+                if (uploadedImageName != "") {
                     deleteCurrentProfilePic()
+                    uploadedImageName = ""
                 }
                 uploadedImageName = "trainerPics/" + imageName!!
                 println("After: " + uploadedImageName!!)
@@ -316,12 +331,18 @@ class TrainerRegisterActivity : BaseActivity() {
 
         //Checks to see if a image is currently exists for profile
         val imageLink: String?
-        if (imageName != null) {
+        if (imageToUpload != null)
+        {
+            println("Case 1")
             imageLink = "trainerPics/" + imageName!!
-        } else if (uploadedImageName != null) {
+        } else if (uploadedImageName != "")
+        {
+            println("Case 2")
             imageLink = uploadedImageName
-        } else {
-            imageLink = null
+        } else
+        {
+            println("Case 3")
+            imageLink = ""
         }
 
         //Get information entered manually
@@ -396,7 +417,7 @@ class TrainerRegisterActivity : BaseActivity() {
             closeSplashScreen()
 
             //If they have a profile picture, download it
-            if (name != null) {
+            if (name != "") {
                 uploadedImageName = name.toString()
                 println("Image is not null")
                 // Call function with kotlin's coroutines to remove possibility of halting other processes during load
