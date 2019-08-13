@@ -18,7 +18,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginLeft="0dp"
+                android:gravity="center"
+                android:text="Home"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
             <ScrollView
+                android:layout_below="@id/titleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -26,27 +41,12 @@
                     android:id="@+id/activity_main"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="50dp">
-
-                    <TextView
-                        android:id="@+id/titleText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:gravity="center"
-                        android:text="Home"
-                        android:textAppearance="@android:style/TextAppearance.Large"
-                        android:textSize="36sp"
-                        android:textStyle="bold" />
+                    android:paddingBottom="25dp">
 
                     <Button
                         android:id="@+id/btnBackground"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:layout_below="@+id/titleText"
                         android:layout_marginStart="10dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="10dp"

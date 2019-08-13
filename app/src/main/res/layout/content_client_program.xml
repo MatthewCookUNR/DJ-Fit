@@ -42,17 +42,39 @@
                     <Button
                         android:id="@+id/btnBackground"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="200dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/compGreen"
+                        android:drawableStart="@drawable/notepad"
+                        android:drawableLeft="@drawable/notepad"
                         android:text="Background"
-                        android:textAppearance="@android:style/TextAppearance.Large" />
+                        android:textAppearance="@android:style/TextAppearance.Large"
+                        android:textColor="@color/white"
+                        android:textSize="32sp"
+                        android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/btnWorkoutOutline"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/btnBackground"
+                        android:layout_height="200dp"
+                        android:layout_below="@+id/btnBackground"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/compBrown"
+                        android:drawableStart="@drawable/dumbbell"
+                        android:drawableLeft="@drawable/dumbbell"
                         android:text="Workout Outline"
-                        android:textAppearance="@android:style/TextAppearance.Large" />
+                        android:textAppearance="@android:style/TextAppearance.Large"
+                        android:textColor="@color/white"
+                        android:textSize="32sp"
+                        android:textStyle="bold" />
                 </RelativeLayout>
             </ScrollView>
 

@@ -14,54 +14,106 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Trainer Menu"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+
+        <ScrollView
+            android:layout_above="@id/botBar"
+            android:layout_below="@+id/titleText"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/titleText"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Trainer Menu"
-                android:textAppearance="@android:style/TextAppearance.Large"
-                android:textSize="30sp" />
+                android:paddingBottom="25dp">
 
-            <Button
-                android:id="@+id/btnModifyProfile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/titleText"
-                android:layout_marginTop="31dp"
-                android:text="Modify Trainer Profile"
-                android:textAppearance="@android:style/TextAppearance.Large" />
+                <Button
+                    android:id="@+id/btnTrainerProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@color/compGreen"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:drawableStart="@drawable/profile_image"
+                    android:drawableLeft="@drawable/profile_image"
+                    android:text="Profile Page"
+                    android:textAppearance="@android:style/TextAppearance.Large"
+                    android:textColor="@color/white"
+                    android:textSize="32sp"
+                    android:textStyle="bold"/>
 
-            <Button
-                android:id="@+id/btnTrainerProfile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/btnModifyProfile"
-                android:text="My Profile Page"
-                android:textAppearance="@android:style/TextAppearance.Large" />
+                <Button
+                    android:id="@+id/btnCurrentClients"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@color/compBrown"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_below="@id/btnTrainerProfile"
+                    android:text="Current Clients"
+                    android:drawableStart="@drawable/ic_clients_list"
+                    android:drawableLeft="@drawable/ic_clients_list"
+                    android:textAppearance="@android:style/TextAppearance.Large"
+                    android:textColor="@color/white"
+                    android:textSize="32sp"
+                    android:textStyle="bold"/>
 
-            <Button
-                android:id="@+id/btnCurrentClients"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/btnTrainerProfile"
-                android:text="Current Clients"
-                android:textAppearance="@android:style/TextAppearance.Large" />
+                <Button
+                    android:id="@+id/btnClientRequests"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@color/compViolet"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_below="@id/btnCurrentClients"
+                    android:drawableStart="@drawable/ic_client_requests"
+                    android:drawableLeft="@drawable/ic_client_requests"
+                    android:text="Client Requests"
+                    android:textAppearance="@android:style/TextAppearance.Large"
+                    android:textColor="@color/white"
+                    android:textSize="32sp"
+                    android:textStyle="bold"/>
 
-            <Button
-                android:id="@+id/btnClientRequests"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/btnCurrentClients"
-                android:text="Client Requests"
-                android:textAppearance="@android:style/TextAppearance.Large" />
+                <Button
+                    android:id="@+id/btnModifyProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@color/compGreen"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_below="@+id/btnClientRequests"
+                    android:drawableStart="@drawable/settings_image"
+                    android:drawableLeft="@drawable/settings_image"
+                    android:text="Trainer Settings"
+                    android:textAppearance="@android:style/TextAppearance.Large"
+                    android:textColor="@color/white"
+                    android:textSize="32sp"
+                    android:textStyle="bold"/>
 
 
-        </RelativeLayout>
+            </RelativeLayout>
+
+        </ScrollView>
 
 
         <RelativeLayout

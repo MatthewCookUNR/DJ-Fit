@@ -51,6 +51,7 @@ public class ClientProgramActivity extends BaseActivity
             public void onClick(View v) {
                 Intent backgroundAct = new Intent(ClientProgramActivity.this, BackgroundActivity.class);
                 backgroundAct.putExtra("clientID", clientData[0]);
+                backgroundAct.putExtra("first_name", clientData[1]);
                 backgroundAct.putExtra("clientTag", getIntent().getStringExtra("clientTag"));
                 startActivity(backgroundAct);
             }

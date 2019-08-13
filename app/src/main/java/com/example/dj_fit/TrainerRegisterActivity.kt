@@ -729,7 +729,7 @@ class TrainerRegisterActivity : BaseActivity() {
      */
 
     private fun adjustUI() {
-        titleText!!.text = "Modify Trainer Information"
+        titleText!!.text = "Trainer Profile Settings"
         btnUnregister!!.visibility = View.VISIBLE
         val params = btnBecomeTrainer!!.layoutParams as RelativeLayout.LayoutParams
         params.addRule(RelativeLayout.ABOVE, R.id.btnUnregister)

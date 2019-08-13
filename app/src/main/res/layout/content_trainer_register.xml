@@ -67,7 +67,8 @@
                     android:gravity="center"
                     android:text="Register as a Trainer"
                     android:textAppearance="@android:style/TextAppearance.Large"
-                    android:textSize="30sp" />
+                    android:textSize="36sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/howToText"

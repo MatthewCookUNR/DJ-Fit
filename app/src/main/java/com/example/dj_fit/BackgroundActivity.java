@@ -21,8 +21,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -35,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -59,6 +58,7 @@ public class BackgroundActivity extends BaseActivity {
     private static final String TAG = "BackgroundActivity";
     private EditText currentFitEdit, goalEdit, medicalEdit,
                      availabilityEdit, additionalEdit;
+    private TextView titleText;
     private boolean isOwner = false;
     private String userID;
     private Button btnSubmit;
@@ -75,6 +75,7 @@ public class BackgroundActivity extends BaseActivity {
         setSupportActionBar(toolbar);
 
         //Views and variables initialization
+        titleText = findViewById(R.id.titleText);
         currentFitEdit = findViewById(R.id.currentFitEdit);
         goalEdit = findViewById(R.id.goalEdit);
         medicalEdit = findViewById(R.id.medicalEdit);
@@ -91,6 +92,11 @@ public class BackgroundActivity extends BaseActivity {
         {
             isOwner = true;
             userID = FirebaseAuth.getInstance().getUid();
+        }
+        else
+        {
+            String clientName = getIntent().getStringExtra("first_name") + "'s" + " Background";
+            titleText.setText(clientName);
         }
         mDatabase = FirebaseFirestore.getInstance();
 
