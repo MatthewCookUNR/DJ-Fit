@@ -112,5 +112,6 @@
         android:layout_marginLeft="10dp"
         android:text="Create an Account"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:textStyle="bold"/>
 </RelativeLayout>

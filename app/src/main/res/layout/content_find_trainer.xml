@@ -46,7 +46,8 @@
                 android:text="Find Trainer"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="30sp" />
+                android:textStyle="bold"
+                android:textSize="36sp" />
 
             <TextView
                 android:id="@+id/howToText"

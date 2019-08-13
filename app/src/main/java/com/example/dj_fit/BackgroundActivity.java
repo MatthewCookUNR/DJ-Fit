@@ -58,7 +58,7 @@ public class BackgroundActivity extends BaseActivity {
     private static final String TAG = "BackgroundActivity";
     private EditText currentFitEdit, goalEdit, medicalEdit,
                      availabilityEdit, additionalEdit;
-    private TextView titleText;
+    private TextView titleText, howToText;
     private boolean isOwner = false;
     private String userID;
     private Button btnSubmit;
@@ -76,6 +76,7 @@ public class BackgroundActivity extends BaseActivity {
 
         //Views and variables initialization
         titleText = findViewById(R.id.titleText);
+        howToText = findViewById(R.id.howToText);
         currentFitEdit = findViewById(R.id.currentFitEdit);
         goalEdit = findViewById(R.id.goalEdit);
         medicalEdit = findViewById(R.id.medicalEdit);

@@ -25,7 +25,7 @@
                 android:layout_centerHorizontal="true"
                 android:text="Insert Name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="30sp"
+                android:textSize="36sp"
                 android:textStyle="bold" />
 
             <ScrollView

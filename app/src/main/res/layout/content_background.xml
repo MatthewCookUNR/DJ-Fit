@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_become_trainer"
+    tools:showIn="@layout/activity_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -53,7 +53,8 @@
             android:gravity="center"
             android:text="Your Background"
             android:textAppearance="@android:style/TextAppearance.Large"
-            android:textSize="30sp" />
+            android:textSize="36sp"
+            android:textStyle="bold"/>
 
 
         <TextView
@@ -185,7 +186,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginStart="21dp"
                 android:layout_marginLeft="21dp"
-                android:layout_marginTop="38dp"
+                android:layout_marginTop="10dp"
                 android:text="Current Fitness Program:"
                 android:textAppearance="@android:style/TextAppearance.Medium"
                 android:textStyle="bold" />

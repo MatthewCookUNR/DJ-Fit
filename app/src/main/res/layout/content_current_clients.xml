@@ -34,7 +34,7 @@
                 android:layout_centerHorizontal="true"
                 android:text="Your Clients"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="30sp"
+                android:textSize="36sp"
                 android:textStyle="bold"
                 android:visibility="invisible" />
 
