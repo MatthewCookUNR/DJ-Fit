@@ -22,7 +22,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -70,7 +69,6 @@ public class WorkoutOutlineActivity extends BaseActivity {
     private int viewNum = 1;
     private final static int REQUEST_CODE_1 = 1;
     private RelativeLayout container, topContent, botButtons;
-    private FloatingActionButton fab;
     private EditText hrEdit, restPeriodEdit, repRangeEdit, setsEdit;
     private Button btnAddDay, btnSaveOutline, btnRemoveDay;
     private ImageView splashImage;

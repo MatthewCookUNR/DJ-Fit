@@ -67,7 +67,7 @@ class TrainerProfileActivity : BaseActivity() {
     private var aboutMeText: TextView? = null
     private var btnRequestTrainer: Button? = null
     private var btnGetTrainerCode: Button? = null
-    private var imageName: String? = null
+    private var imageName: String? = ""
     private var trainerID: String? = null
     private var topGradLayout: RelativeLayout? = null
     private var trainerScroll: ScrollView? = null
@@ -94,8 +94,6 @@ class TrainerProfileActivity : BaseActivity() {
         btnRequestTrainer = findViewById(R.id.btnRequestTrainer)
         btnGetTrainerCode = findViewById(R.id.btnGetTrainerCode)
         val isOwner = intent.getBooleanExtra("isOwner", true)
-        imageName = null
-        trainerID = null
 
         val rotateAnimation = RotateAnimation(0f, 360f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
@@ -108,6 +106,12 @@ class TrainerProfileActivity : BaseActivity() {
         mDatabase = FirebaseFirestore.getInstance()
 
         splashLocal?.startAnimation(rotateAnimation)
+
+        val signUp = intent.getBooleanExtra("signUp", false)
+        if (signUp) {
+            println("Sign up act")
+            showSignedUpMessage()
+        }
 
 
         //If viewer is owner of profile, display self profile
@@ -189,7 +193,7 @@ class TrainerProfileActivity : BaseActivity() {
             experienceText!!.text = docData["experience"].toString()
             aboutMeText!!.text = docData["aboutYou"].toString()
             closeSplashScreen()
-            if (imageName == null) {
+            if (imageName == "") {
                 println("Image is null")
             } else {
                 println(imageName)
@@ -431,10 +435,36 @@ class TrainerProfileActivity : BaseActivity() {
         trainerScroll!!.visibility = View.VISIBLE
     }
 
+    /*
+     *@Name: Show Signed Up Message
+     *
+     *@Purpose: Function shows the user their trainer code and allows them to copy it
+     *
+     *@Param N/A
+     *
+     *@Brief: N/A
+     *
+     *@ErrorsHandled: N/A
+     */
+    private fun showSignedUpMessage() {
+        val myPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val trainerCode = myPreferences.getString("trainerCode", "")
+        val codeAlert = AlertDialog.Builder(this).setMessage(trainerCode)
+        codeAlert.setTitle("Here is a code used by clients to connect with you.")
+        codeAlert.setNeutralButton("Copy To Clipboard") { dialog, which ->
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("Trainer Code", trainerCode)
+            clipboard.primaryClip = clip
+            val mToast = Toast.makeText(this@TrainerProfileActivity, "Code Copied", Toast.LENGTH_SHORT)
+            mToast.show()
+        }
+        val textView = codeAlert.show().findViewById<TextView>(android.R.id.message)
+        textView.textSize = 50f
+    }
+
     companion object {
 
         //Class variables
         private val TAG = "TrainerProfileActivity"
     }
-
 }

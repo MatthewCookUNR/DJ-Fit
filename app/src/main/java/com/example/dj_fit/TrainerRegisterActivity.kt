@@ -55,6 +55,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.OnProgressListener
@@ -89,6 +90,7 @@ class TrainerRegisterActivity : BaseActivity() {
     private var imageName: String? = null
     private var uploadedImageName: String? = ""
     private var userID: String? = null
+    private var signUp: Boolean? = true
 
 
     // Function to generate a random string of length 8
@@ -180,6 +182,12 @@ class TrainerRegisterActivity : BaseActivity() {
             }
             setTrainerStatusInDB(true)
             uploadToDB()
+            if( imageToUpload == null && signUp == true)
+            {
+                val trainerIntent = Intent(applicationContext, TrainerProfileActivity::class.java)
+                trainerIntent.putExtra("signUp", true)
+                startActivity(trainerIntent)
+            }
         }
 
         btnUnregister!!.setOnClickListener { showUnregisterAlert() }
@@ -307,6 +315,12 @@ class TrainerRegisterActivity : BaseActivity() {
                 }
                 uploadedImageName = "trainerPics/" + imageName!!
                 println("After: " + uploadedImageName!!)
+                if( signUp == true)
+                {
+                    val trainerIntent = Intent(applicationContext, TrainerProfileActivity::class.java)
+                    trainerIntent.putExtra("signUp", true)
+                    startActivity(trainerIntent)
+                }
             }.addOnFailureListener { Toast.makeText(this@TrainerRegisterActivity, "File upload failed", Toast.LENGTH_SHORT).show() }.addOnProgressListener { }
         } else {
             Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show()
@@ -326,7 +340,6 @@ class TrainerRegisterActivity : BaseActivity() {
      *@ErrorsHandled: N/A
      */
     private fun uploadToDB() {
-        var signedUp = true
         val start = System.currentTimeMillis()
 
         //Checks to see if a image is currently exists for profile
@@ -359,7 +372,6 @@ class TrainerRegisterActivity : BaseActivity() {
 
         //If not trainer ID exists, create a random ID of 8 length
         if (trainerCode == "false") {
-            signedUp = false
             trainerCode = alphaNumericString
             val myEditor = myPreferences.edit()
             myEditor.putString("trainerCode", trainerCode)
@@ -387,12 +399,6 @@ class TrainerRegisterActivity : BaseActivity() {
                     Log.w(TAG, "Error adding document", e)
                     Toast.makeText(applicationContext, "Failure!", Toast.LENGTH_SHORT).show()
                 }
-
-        //If signing up and not updating, display message
-        if (!signedUp) {
-            val trainerProfileIntent = Intent(this@TrainerRegisterActivity, TrainerProfileActivity::class.java)
-            showSignedUpMessage(trainerProfileIntent)
-        }
     }
 
     /*
@@ -460,6 +466,7 @@ class TrainerRegisterActivity : BaseActivity() {
                     Log.d(TAG, "DocumentSnapshot data: " + document.data!!)
                     Log.d(TAG, "Logged at " + (end - start))
                     adjustUI()
+                    signUp = false
                     populateTrainerRegister(document.data!!)
                     splashLocal?.clearAnimation()
                     closeSplashScreen()
@@ -571,14 +578,14 @@ class TrainerRegisterActivity : BaseActivity() {
                     setTrainerStatusInDB(false)
 
                     //Delete user's profile picture if they have one
-                    if (uploadedImageName != null) {
+                    if (uploadedImageName != "") {
                         deleteCurrentProfilePic()
                     }
                     val myPreferences = PreferenceManager.getDefaultSharedPreferences(this@TrainerRegisterActivity)
                     val trainerCode = myPreferences.getString("trainerCode", "")
 
                     //Remove trainer from list of trainer codes in DB
-                    removeTrainerIdDB(trainerCode)
+                    removeTrainerCodeDB(trainerCode)
 
                     //Set trainer code as false in shared preferences
                     val myEditor = myPreferences.edit()
@@ -608,24 +615,6 @@ class TrainerRegisterActivity : BaseActivity() {
         dayBuilder.setPositiveButton("Yes") { dialog, which -> unRegisterTrainer() }
         dayBuilder.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
         dayBuilder.show()
-    }
-
-    //Function shows the user their trainer code and allows them to copy it
-    private fun showSignedUpMessage(trainerProfileIntent: Intent) {
-        val myPreferences = PreferenceManager.getDefaultSharedPreferences(this@TrainerRegisterActivity)
-        val trainerCode = myPreferences.getString("trainerCode", "")
-        val codeAlert = AlertDialog.Builder(this).setMessage(trainerCode)
-        codeAlert.setTitle("Here is a code used by clients to connect with you.")
-        codeAlert.setNeutralButton("Copy to Clipboard") { dialog, id ->
-            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("Trainer Code", trainerCode)
-            clipboard.primaryClip = clip
-            val mToast = Toast.makeText(this@TrainerRegisterActivity, "Code Copied", Toast.LENGTH_SHORT)
-            mToast.show()
-            startActivity(trainerProfileIntent)
-        }
-        val textView = codeAlert.show().findViewById<TextView>(android.R.id.message)
-        textView.textSize = 50f
     }
 
     /*
@@ -658,9 +647,9 @@ class TrainerRegisterActivity : BaseActivity() {
                     //Checks to see if generated string is already in use
                     if (index != -1) {
                         alphaNumericString
-                    } else {
-                        list.add(alphaString)
-                        setTrainerCodesDB(list)
+                    } else
+                    {
+                        addTrainerCodesDB(alphaString)
                     }//Else, puts new on in list of trainer codes and uploads the new list
                 } else {
                     Log.d(TAG, "No such document")
@@ -682,14 +671,12 @@ class TrainerRegisterActivity : BaseActivity() {
      *
      *@ErrorsHandled: N/A
      */
-    private fun setTrainerCodesDB(list: ArrayList<String>) {
+    private fun addTrainerCodesDB(alphaString: String) {
         val start = System.currentTimeMillis()
-        val map = HashMap<String, ArrayList<String>>()
-        map["trainerCodes"] = list
 
         //Sets document in DB to user inputted information
         mDatabase!!.collection("trainers").document("0eh3S7vf62XX4DB2dsTG")
-                .set(map).addOnSuccessListener {
+                .update("trainerCodes", FieldValue.arrayUnion(alphaString)).addOnSuccessListener {
                     val end = System.currentTimeMillis()
                     Log.d(TAG, "Document Snapshot added w/ time : " + (end - start))
                 }
@@ -697,42 +684,26 @@ class TrainerRegisterActivity : BaseActivity() {
     }
 
     /*
-     *@Name: Remove Trainer ID from DB
-     *
-     *@Purpose: Removes given trainer code from list of trainer codes
-     *
-     *@Param N/A
-     *
-     *@Brief: N/A
-     *
-     *@ErrorsHandled: N/A
-     */
-    private fun removeTrainerIdDB(trainerCode: String?) {
-        //Part of function checks to make sure the generated string is not already used by another user
+ *@Name: Set Trainer Codes DB
+ *
+ *@Purpose: Set updated list of trainer codes to DB
+ *
+ *@Param N/A
+ *
+ *@Brief: N/A
+ *
+ *@ErrorsHandled: N/A
+ */
+    private fun removeTrainerCodeDB(alphaString: String) {
         val start = System.currentTimeMillis()
-        val docRef = mDatabase!!.collection("trainers").document("0eh3S7vf62XX4DB2dsTG")
-        docRef.get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val document = task.result
-                if (document!!.exists()) {
+
+        //Sets document in DB to user inputted information
+        mDatabase!!.collection("trainers").document("0eh3S7vf62XX4DB2dsTG")
+                .update("trainerCodes", FieldValue.arrayRemove(alphaString)).addOnSuccessListener {
                     val end = System.currentTimeMillis()
-                    Log.d(TAG, "DocumentSnapshot data: " + document.data!!)
-                    Log.d(TAG, "Logged at " + (end - start))
-                    val list = document.data!!["trainerCodes"] as ArrayList<String>
-                    val index = list.indexOf(trainerCode)
-                    if (index != -1) {
-                        list.removeAt(index)
-                        setTrainerCodesDB(list)
-                    } else {
-                        Log.d(TAG, "Trainer code does not exist")
-                    }
-                } else {
-                    Log.d(TAG, "No such document")
+                    Log.d(TAG, "Document Snapshot added w/ time : " + (end - start))
                 }
-            } else {
-                Log.d(TAG, "get failed with ", task.exception)
-            }
-        }
+                .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
     }
 
     /*
