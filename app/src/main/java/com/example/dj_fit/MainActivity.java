@@ -17,7 +17,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -33,7 +32,7 @@ public class MainActivity extends BaseActivity {
     //Class variables
     private static final String TAG = "MainActivity";
     RelativeLayout activity_main;
-    private Button btnBackground, btnWorkoutOutline, btnFindTrainer;
+    private Button btnBackground, btnWorkoutOutline, btnFindTrainer, btnMyTrainers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +47,7 @@ public class MainActivity extends BaseActivity {
         btnBackground = findViewById(R.id.btnBackground);
         btnWorkoutOutline = findViewById(R.id.btnWorkoutOutline);
         btnFindTrainer = findViewById(R.id.btnFindTrainer);
+        btnMyTrainers = findViewById(R.id.btnMyTrainers);
 
         btnBackground.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +70,14 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent findTrainerIntent = new Intent(MainActivity.this, FindTrainerActivity.class);
                 startActivity(findTrainerIntent);
+            }
+        });
+
+        btnMyTrainers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myTrainersIntent = new Intent(MainActivity.this, MyTrainersActivity.class);
+                startActivity(myTrainersIntent);
             }
         });
 
@@ -107,41 +115,5 @@ public class MainActivity extends BaseActivity {
 
             }
         });
-    }
-
-    // Function definitions ////////////////////////////////////////////////////////
-
-    /*
-     *@Name: Adjust UI
-     *
-     *@Purpose: Change UI based on if user is a trainer
-     *
-     *@Param N/A
-     *
-     *@Brief: Function makes the trainer menu button visisble and removes the register
-     *        as trainer button
-     *
-     *@ErrorsHandled: N/A
-     */
-    private void adjustUI()
-    {
-        /*
-        Button btnTrainerMenu = new Button(MainActivity.this);
-        RelativeLayout.LayoutParams paramsR = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        paramsR.addRule(RelativeLayout.BELOW, R.id.btnFindTrainer);
-        String myText = "Trainer Menu";
-        btnTrainerMenu.setLayoutParams(paramsR);
-        btnTrainerMenu.setTextAppearance(this, android.R.style.TextAppearance_Large);
-        btnTrainerMenu.setTransformationMethod(null);
-        btnTrainerMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent trainerMenuIntent = new Intent(MainActivity.this, TrainerMenuActivity.class);
-                startActivity(trainerMenuIntent);
-            }
-        });
-        btnTrainerMenu.setText(myText);
-        activity_main.addView(btnTrainerMenu);
-        */
     }
 }

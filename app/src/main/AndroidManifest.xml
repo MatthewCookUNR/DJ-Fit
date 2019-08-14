@@ -13,10 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".MyTrainersActivity"
+            android:label="@string/title_activity_my_trainers"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".BecomeTrainerActivity"
             android:label="@string/title_activity_become_trainer"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TrainerMenuActivity"
             android:label="@string/title_activity_trainer_menu"
@@ -74,7 +78,7 @@
             android:name=".TrainerRegisterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".TrainerProfileActivity"
             android:screenOrientation="portrait"

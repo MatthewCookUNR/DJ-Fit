@@ -14,6 +14,19 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:id="@+id/botBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true">
+
+            <android.support.design.widget.BottomNavigationView
+                android:id="@+id/bottomNavigationItemView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:menu="@menu/bottom_navigation_menu" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_above="@id/botBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -100,23 +113,29 @@
                         android:textSize="32sp"
                         android:textStyle="bold" />
 
+                    <Button
+                        android:id="@+id/btnMyTrainers"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_below="@id/btnFindTrainer"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:drawableStart="@drawable/ic_clients_list"
+                        android:drawableLeft="@drawable/ic_clients_list"
+                        android:text="My Trainers"
+                        android:background="@color/compGreen"
+                        android:textAppearance="@android:style/TextAppearance.Large"
+                        android:textColor="@color/white"
+                        android:textSize="32sp"
+                        android:textStyle="bold"/>
+
                 </RelativeLayout>
 
             </ScrollView>
 
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/botBar"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_alignParentBottom="true">
-
-            <android.support.design.widget.BottomNavigationView
-                android:id="@+id/bottomNavigationItemView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:menu="@menu/bottom_navigation_menu" />
         </RelativeLayout>
 
     </RelativeLayout>
