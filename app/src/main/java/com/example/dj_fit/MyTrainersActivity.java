@@ -152,7 +152,8 @@ public class MyTrainersActivity extends AppCompatActivity {
      *        and creates views to display them as trainers
      *
      *@ErrorsHandled: N/A
-     */    private void populateTrainers( List<DocumentSnapshot> documents)
+     */
+    private void populateTrainers( List<DocumentSnapshot> documents)
     {
         for(int i = 0; i < documents.size(); i++)
         {
@@ -215,10 +216,10 @@ public class MyTrainersActivity extends AppCompatActivity {
      *
      *@Purpose: Create button that allows user to view client's profile
      *
-     *@Param in: Client's ID (documentID)
-     *       in: Client's first name (first_name)
-     *       in: Client's last name (last_name)
-     *       out: Accept view profile button (viewBut)
+     *@Param in: Trainer's ID (documentID)
+     *       in: Trainer's first name (first_name)
+     *       in: Trainer's last name (last_name)
+     *       out: View profile button (viewBut)
      *
      *@Brief: Function creates a button with trainer's user information like ID and
      *        first/last name which will allow the trainer to distinguish them and
@@ -248,10 +249,10 @@ public class MyTrainersActivity extends AppCompatActivity {
      *
      *@Purpose: Create button that removes user as client's trainer
      *
-     *@Param in: Client's ID (documentID)
-     *       in: Client's first name (first_name)
-     *       in: Client's last name (last_name)
-     *       out: Accept client button (removeBut)
+     *@Param in: Trainer's ID (documentID)
+     *       in: Trainer's first name (first_name)
+     *       in: Trainer's last name (last_name)
+     *       out: Remove Trainer button (removeBut)
      *
      *@Brief: Function creates a button with trainer's user information like ID and
      *        first/last name which will allow the trainer to distinguish them and
@@ -269,7 +270,7 @@ public class MyTrainersActivity extends AppCompatActivity {
         removeBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeClientRequest( (String) v.getTag());
+                removeTrainer( (String) v.getTag());
             }
         });
         return removeBut;
@@ -281,44 +282,44 @@ public class MyTrainersActivity extends AppCompatActivity {
      *
      *@Purpose: Views the trainer's profile page
      *
-     *@Param in: Client's Tag (clientTag)
+     *@Param in: Trainer's Tag (trainerTag)
      *
      *@Brief: Function takes user to the trainer's profile page
      *        through a intent
      *
      *@ErrorsHandled: N/A
      */
-    private void viewTrainerProfile (String clientTag)
+    private void viewTrainerProfile (String trainerTag)
     {
-        String[] clientData = clientTag.split("/");
+        String[] trainerData = trainerTag.split("/");
         Intent viewProfileIntent = new Intent(MyTrainersActivity.this, TrainerProfileActivity.class);
-        viewProfileIntent.putExtra("first_name", clientData[1]);
-        viewProfileIntent.putExtra("last_name", clientData[2]);
+        viewProfileIntent.putExtra("first_name", trainerData[1]);
+        viewProfileIntent.putExtra("last_name", trainerData[2]);
         viewProfileIntent.putExtra("isOwner", false);
         startActivity(viewProfileIntent);
     }
 
     /*
-     *@Name: Remove Client Request
+     *@Name: Remove Trainer
      *
-     *@Purpose: Remove client request from list of client requests
+     *@Purpose: Remove user as the client's existing trainer
      *
-     *@Param in: Client's Tag (clientTag)
+     *@Param in: Trainer's Tag (trainerTag)
      *
-     *@Brief: Function deletes document that contains client request
-     *        and removes the access to data that the client gave
-     *        the trainer
+     *@Brief: Function deletes document that contains trainer's access
+     *        to client's data and removes itself as the trainer's client
+     *        from list of current clients
      *
      *@ErrorsHandled: N/A
      */
-    private void removeClientRequest(String clientTag)
+    private void removeTrainer(String trainerTag)
     {
         final long start = System.currentTimeMillis();
-        String[] clientData = clientTag.split("/");
+        String[] trainerData = trainerTag.split("/");
 
         //Deletes the document that is in the trainer's collection of clients
         mDatabase.collection("users").document(userID).collection("editors")
-                .document(clientData[0]).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                .document(trainerData[0]).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid)
             {
@@ -334,7 +335,7 @@ public class MyTrainersActivity extends AppCompatActivity {
                 });
 
         //Deletes the document that allows the trainer to view the user's fitness program
-        mDatabase.collection("trainers").document(clientData[0]).collection("clientsCurrent")
+        mDatabase.collection("trainers").document(trainerData[0]).collection("clientsCurrent")
                 .document(userID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid)
