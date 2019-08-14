@@ -61,6 +61,7 @@ public class ClientRequestsActivity extends BaseActivity
     private RelativeLayout clientReqLayout;
     private TextView titleText;
     private ImageView splashImage;
+    private List<DocumentSnapshot> documents;
     private String userID;
     private FirebaseFirestore mDatabase;
 
@@ -138,7 +139,7 @@ public class ClientRequestsActivity extends BaseActivity
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful())
                 {
-                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                    documents = task.getResult().getDocuments();
                     Log.d(TAG, "Getting documents successful");
                     if(documents.size() != 0)
                     {
@@ -339,15 +340,19 @@ public class ClientRequestsActivity extends BaseActivity
                     public void onSuccess(Void aVoid)
                     {
                         long end = System.currentTimeMillis();
-                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                        Log.d(TAG, "Document deleted w/ time : " + (end - start) );
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
+                        Log.w(TAG, "Error deleting document", e);
                     }
                 });
+        //Remake views without accepted client
+        removeFromDocuments(clientData[0]);
+        destroyViews();
+        populatePossibleClients(documents);
 
     }
 
@@ -377,7 +382,7 @@ public class ClientRequestsActivity extends BaseActivity
                     public void onSuccess(Void aVoid)
                     {
                         long end = System.currentTimeMillis();
-                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                        Log.d(TAG, "Document deleted w/ time : " + (end - start) );
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -394,7 +399,7 @@ public class ClientRequestsActivity extends BaseActivity
                     public void onSuccess(Void aVoid)
                     {
                         long end = System.currentTimeMillis();
-                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                        Log.d(TAG, "Document deleted w/ time : " + (end - start) );
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -404,6 +409,57 @@ public class ClientRequestsActivity extends BaseActivity
                     }
                 });
 
+        //Remake views without declined client
+        removeFromDocuments(clientData[0]);
+        destroyViews();
+        populatePossibleClients(documents);
+    }
+
+    /*
+     *@Name: Remove From Documents
+     *
+     *@Purpose: Remove document with same id as given
+     *
+     *@Param in: Client's ID (clientID)
+     *
+     *@Brief: Function loops through the list of all client docs and
+     *        deletes the one given
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void removeFromDocuments(String clientID)
+    {
+        for( int i = 0; i < documents.size(); i++)
+        {
+            if(documents.get(i).getId().equals(clientID))
+            {
+                documents.remove(i);
+                break;
+            }
+        }
+    }
+
+    /*
+     *@Name: Destroy Views
+     *
+     *@Purpose: Destroys the views for all the client requests
+     *
+     *@Param N/A
+     *
+     *@Brief: Function destroys all of the views populated to the
+     *        client request layout
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void destroyViews()
+    {
+        while(integer > 0)
+        {
+            View currentView = findViewById(integer);
+            clientReqLayout.removeView(currentView);
+            integer--;
+        }
+        integer++;
     }
 
     /*

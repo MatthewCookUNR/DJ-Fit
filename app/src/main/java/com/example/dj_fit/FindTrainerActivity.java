@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -133,7 +134,15 @@ public class FindTrainerActivity extends BaseActivity {
                 {
                     List<DocumentSnapshot> documents = task.getResult().getDocuments();
                     Log.d(TAG, "Getting documents successful");
-                    viewTrainerProfilePage(documents.get(0).getData(), documents.get(0).getId());
+                    if(documents.size() == 0)
+                    {
+                        Toast mToast = Toast.makeText(FindTrainerActivity.this, "Invalid Code", Toast.LENGTH_SHORT);
+                        mToast.show();
+                    }
+                    else
+                    {
+                        viewTrainerProfilePage(documents.get(0).getData(), documents.get(0).getId());
+                    }
                 }
                 else
                 {

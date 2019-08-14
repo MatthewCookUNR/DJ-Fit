@@ -56,6 +56,7 @@ public class CurrentClientsActivity extends BaseActivity {
     private TextView titleText;
     private FirebaseAuth mAuth;
     private ImageView splashImage;
+    private List<DocumentSnapshot> documents;
     private FirebaseFirestore mDatabase;
 
     @Override
@@ -129,7 +130,7 @@ public class CurrentClientsActivity extends BaseActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                    documents = task.getResult().getDocuments();
                     Log.d(TAG, "Getting documents successful");
                     if (documents.size() != 0) {
                         populateClients(documents);
@@ -322,7 +323,7 @@ public class CurrentClientsActivity extends BaseActivity {
             public void onSuccess(Void aVoid)
             {
                 long end = System.currentTimeMillis();
-                Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                Log.d(TAG, "Document deleted w/ time : " + (end - start) );
             }
         })
                 .addOnFailureListener(new OnFailureListener() {
@@ -339,7 +340,7 @@ public class CurrentClientsActivity extends BaseActivity {
             public void onSuccess(Void aVoid)
             {
                 long end = System.currentTimeMillis();
-                Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                Log.d(TAG, "Document deleted w/ time : " + (end - start) );
             }
         })
                 .addOnFailureListener(new OnFailureListener() {
@@ -349,6 +350,58 @@ public class CurrentClientsActivity extends BaseActivity {
                     }
                 });
 
+        //Remake views without removed client
+        removeFromDocuments(clientData[0]);
+        destroyViews();
+        populateClients(documents);
+
+    }
+
+    /*
+     *@Name: Remove From Documents
+     *
+     *@Purpose: Remove document with same id as given
+     *
+     *@Param in: Client's ID (clientID)
+     *
+     *@Brief: Function loops through the list of all client docs and
+     *        deletes the one given
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void removeFromDocuments(String clientID)
+    {
+        for( int i = 0; i < documents.size(); i++)
+        {
+            if(documents.get(i).getId().equals(clientID))
+            {
+                documents.remove(i);
+                break;
+            }
+        }
+    }
+
+    /*
+     *@Name: Destroy Views
+     *
+     *@Purpose: Destroys the views for all the user's current clients
+     *
+     *@Param N/A
+     *
+     *@Brief: Function destroys all of the views populated to the
+     *        client layout
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void destroyViews()
+    {
+        while(integer > 0)
+        {
+            View currentView = findViewById(integer);
+            clientLayout.removeView(currentView);
+            integer--;
+        }
+        integer++;
     }
 
     /*

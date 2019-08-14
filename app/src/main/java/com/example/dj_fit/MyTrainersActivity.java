@@ -1,5 +1,7 @@
 package com.example.dj_fit;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -40,6 +42,7 @@ public class MyTrainersActivity extends AppCompatActivity {
     private RelativeLayout trainersLayout;
     private TextView titleText;
     private int integer = 1;
+    private List<DocumentSnapshot> documents;
     private FirebaseFirestore mDatabase;
     private String userID;
 
@@ -119,7 +122,7 @@ public class MyTrainersActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful())
                 {
-                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                    documents = task.getResult().getDocuments();
                     Log.d(TAG, "Getting documents successful");
                     if(documents.size() != 0)
                     {
@@ -270,7 +273,7 @@ public class MyTrainersActivity extends AppCompatActivity {
         removeBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeTrainer( (String) v.getTag());
+                showRemoveAlert( (String) v.getTag());
             }
         });
         return removeBut;
@@ -324,13 +327,13 @@ public class MyTrainersActivity extends AppCompatActivity {
             public void onSuccess(Void aVoid)
             {
                 long end = System.currentTimeMillis();
-                Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                Log.d(TAG, "Document deleted w/ time : " + (end - start) );
             }
         })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
+                        Log.w(TAG, "Error deleting document", e);
                     }
                 });
 
@@ -341,14 +344,101 @@ public class MyTrainersActivity extends AppCompatActivity {
             public void onSuccess(Void aVoid)
             {
                 long end = System.currentTimeMillis();
-                Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
+                Log.d(TAG, "Document deleted w/ time : " + (end - start) );
             }
         })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
+                        Log.w(TAG, "Error deleting document", e);
                     }
                 });
     }
+
+    /*
+     *@Name: Show Remove Alert
+     *
+     *@Purpose: Show alert asking user if they want to remove trainer
+     *
+     *@Param in: Trainer's Tag (trainerTag)
+     *
+     *@Brief: Function shows alert that asks user yes or no if they want
+     *        to remove trainer. If yes, it removes user as client's trainer
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void showRemoveAlert(final String trainerTag)
+    {
+        final AlertDialog.Builder removeBuilder = new AlertDialog.Builder(MyTrainersActivity.this);
+        final String[] trainerData = trainerTag.split("/");
+        String trainerName = trainerData[1] + " " + trainerData[2];
+        removeBuilder.setTitle("Are you sure you want to remove " + trainerName + "?");
+        removeBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                removeTrainer(trainerTag);
+
+                //Remake views without removed trainer
+                removeFromDocuments(trainerData[0]);
+                destroyViews();
+                populateTrainers(documents);
+            }
+        });
+        removeBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        removeBuilder.show();
+    }
+
+    /*
+     *@Name: Remove From Documents
+     *
+     *@Purpose: Remove document with same id as given
+     *
+     *@Param in: Trainer's ID (trainerID)
+     *
+     *@Brief: Function loops through the list of all trainer docs and
+     *        deletes the one given
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void removeFromDocuments(String trainerID)
+    {
+        for( int i = 0; i < documents.size(); i++)
+        {
+            if(documents.get(i).getId().equals(trainerID))
+            {
+                documents.remove(i);
+                break;
+            }
+        }
+    }
+
+
+    /*
+     *@Name: Destroy Views
+     *
+     *@Purpose: Destroys the views for all the user's trainers
+     *
+     *@Param N/A
+     *
+     *@Brief: Function destroys all of the views populated to the
+     *        trainers layout
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void destroyViews()
+    {
+        while(integer > 0)
+        {
+            View currentView = findViewById(integer);
+            trainersLayout.removeView(currentView);
+            integer--;
+        }
+        integer++;
+    }
+
 }
