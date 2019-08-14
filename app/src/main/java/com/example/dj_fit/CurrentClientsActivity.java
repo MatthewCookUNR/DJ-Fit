@@ -13,6 +13,8 @@
 
 package com.example.dj_fit;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -272,7 +274,7 @@ public class CurrentClientsActivity extends BaseActivity {
         removeBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeUserAsClient((String) v.getTag());
+                showRemoveAlert((String) v.getTag());
             }
         });
         return removeBut;
@@ -349,12 +351,44 @@ public class CurrentClientsActivity extends BaseActivity {
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
+    }
 
-        //Remake views without removed client
-        removeFromDocuments(clientData[0]);
-        destroyViews();
-        populateClients(documents);
+    /*
+     *@Name: Show Remove Alert
+     *
+     *@Purpose: Show alert asking user if they want to remove trainer
+     *
+     *@Param in: Trainer's Tag (trainerTag)
+     *
+     *@Brief: Function shows alert that asks user yes or no if they want
+     *        to remove trainer. If yes, it removes user as client's trainer
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void showRemoveAlert(final String trainerTag)
+    {
+        final AlertDialog.Builder removeBuilder = new AlertDialog.Builder(CurrentClientsActivity.this);
+        final String[] trainerData = trainerTag.split("/");
+        String trainerName = trainerData[1] + " " + trainerData[2];
+        removeBuilder.setTitle("Are you sure you want to remove " + trainerName + "?");
+        removeBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                removeUserAsClient(trainerTag);
 
+                //Remake views without removed trainer
+                removeFromDocuments(trainerData[0]);
+                destroyViews();
+                populateClients(documents);
+            }
+        });
+        removeBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        removeBuilder.show();
     }
 
     /*
