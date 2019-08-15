@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <RelativeLayout
             android:id="@+id/botBar"
             android:layout_width="match_parent"
@@ -30,6 +31,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/splashImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/splash_port_xhdpi" />
+
             <TextView
                 android:id="@+id/titleText"
                 android:layout_width="match_parent"
@@ -38,6 +47,7 @@
                 android:textAppearance="@android:style/TextAppearance.Large"
                 android:textSize="36sp"
                 android:textStyle="bold"
+                android:visibility="invisible"
                 android:text="My Trainers" />
 
             <ScrollView

@@ -8,15 +8,17 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,7 +34,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +42,7 @@ public class MyTrainersActivity extends AppCompatActivity {
     private static final String TAG = "MyTrainersActivity";
     private RelativeLayout trainersLayout;
     private TextView titleText;
+    private ImageView splashImage;
     private int integer = 1;
     private List<DocumentSnapshot> documents;
     private FirebaseFirestore mDatabase;
@@ -56,11 +58,19 @@ public class MyTrainersActivity extends AppCompatActivity {
 
         trainersLayout = findViewById(R.id.trainersLayout);
         titleText = findViewById(R.id.titleText);
+        splashImage = findViewById(R.id.splashImage);
 
         userID = FirebaseAuth.getInstance().getUid();
         mDatabase = FirebaseFirestore.getInstance();
 
-        checkForNewClients();
+        final RotateAnimation rotateAnimation = new RotateAnimation(0f, 720f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(5000);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+
+        splashImage.startAnimation(rotateAnimation);
+
+        checkForCurrentTrainers();
 
         BottomNavigationView bottomNavigationItemView = findViewById(R.id.bottomNavigationItemView);
         bottomNavigationItemView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -112,7 +122,7 @@ public class MyTrainersActivity extends AppCompatActivity {
      *
      *@ErrorsHandled: N/A
      */
-    private void checkForNewClients()
+    private void checkForCurrentTrainers()
     {
         CollectionReference userRef = mDatabase.collection("users").document(userID)
                 .collection("editors");
@@ -127,16 +137,17 @@ public class MyTrainersActivity extends AppCompatActivity {
                     if(documents.size() != 0)
                     {
                         populateTrainers(documents);
+                        closeSplashScreen();
                     }
                     else
                     {
-                        //closeSplashScreen();
+                        closeSplashScreen();
 
                     }
                 }
                 else
                 {
-                    //closeSplashScreen();
+                    closeSplashScreen();
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }
@@ -439,6 +450,27 @@ public class MyTrainersActivity extends AppCompatActivity {
             integer--;
         }
         integer++;
+    }
+
+    /*
+     *@Name: Close Splash Screen
+     *
+     *@Purpose: Removes Splash Image to show background
+     *
+     *@Param N/A
+     *
+     *@Brief: Sets splash image visibility to gone and the other elements to visible.
+     *        Also ends splash image spin animation. The result is that the layout
+     *        elements are now shown.
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void closeSplashScreen()
+    {
+        splashImage.clearAnimation();
+        splashImage.setVisibility(View.GONE);
+        titleText.setVisibility(View.VISIBLE);
+        trainersLayout.setVisibility(View.VISIBLE);
     }
 
 }

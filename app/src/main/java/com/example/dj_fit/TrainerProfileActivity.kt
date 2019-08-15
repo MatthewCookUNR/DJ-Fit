@@ -116,7 +116,7 @@ class TrainerProfileActivity : BaseActivity() {
 
         //If viewer is owner of profile, display self profile
         if (isOwner) {
-            checkIfTrainerProfileExists(splashLocal)
+            checkIfTrainerProfileExists()
             btnGetTrainerCode!!.visibility = View.VISIBLE
         } else
         {
@@ -222,7 +222,7 @@ class TrainerProfileActivity : BaseActivity() {
      *
      *@ErrorsHandled: N/A
      */
-    private fun checkIfTrainerProfileExists(splashLocal: ImageView?) {
+    private fun checkIfTrainerProfileExists() {
         val start = System.currentTimeMillis()
         val docRef = mDatabase!!.collection("trainers").document(userID!!)
         docRef.addSnapshotListener { documentSnapshot, e ->
@@ -235,9 +235,8 @@ class TrainerProfileActivity : BaseActivity() {
                 Log.d(TAG, "Current data: " + documentSnapshot.data!!)
                 Log.d(TAG, "Logged at " + (end - start))
                 populateProfilePage(documentSnapshot.data!!)
-                splashLocal?.clearAnimation()
+                closeSplashScreen()
             } else {
-                splashLocal?.clearAnimation()
                 closeSplashScreen()
                 Log.d(TAG, "Current data: null")
             }
@@ -462,6 +461,18 @@ class TrainerProfileActivity : BaseActivity() {
         textView.textSize = 50f
     }
 
+    /*
+     *@Name: Check My Trainer Status
+     *
+     *@Purpose: Checks to see if trainer is user's current trainer or
+     *          one he has already sent a request too
+     *
+     *@Param N/A
+     *
+     *@Brief: N/A
+     *
+     *@ErrorsHandled: N/A
+     */
     private fun checkMyTrainerStatus ()
     {
         val start = System.currentTimeMillis()
