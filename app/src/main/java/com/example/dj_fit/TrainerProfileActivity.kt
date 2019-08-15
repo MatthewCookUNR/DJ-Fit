@@ -118,8 +118,8 @@ class TrainerProfileActivity : BaseActivity() {
         if (isOwner) {
             checkIfTrainerProfileExists(splashLocal)
             btnGetTrainerCode!!.visibility = View.VISIBLE
-        } else {
-            adjustUI()
+        } else
+        {
             val first_name = intent.getStringExtra("first_name")
             val last_name = intent.getStringExtra("last_name")
             findTrainerInfo(first_name, last_name)
@@ -192,7 +192,6 @@ class TrainerProfileActivity : BaseActivity() {
             employerText!!.text = docData["employment"].toString()
             experienceText!!.text = docData["experience"].toString()
             aboutMeText!!.text = docData["aboutYou"].toString()
-            closeSplashScreen()
             if (imageName == "") {
                 println("Image is null")
             } else {
@@ -303,6 +302,7 @@ class TrainerProfileActivity : BaseActivity() {
                 Log.d(TAG, "Getting documents successful")
                 populateProfilePage(documents[0].data!!)
                 trainerID = documents[0].id
+                checkMyTrainerStatus()
             } else {
                 Log.d(TAG, "Error getting documents: ", task.exception)
                 closeSplashScreen()
@@ -460,6 +460,51 @@ class TrainerProfileActivity : BaseActivity() {
         }
         val textView = codeAlert.show().findViewById<TextView>(android.R.id.message)
         textView.textSize = 50f
+    }
+
+    private fun checkMyTrainerStatus ()
+    {
+        val start = System.currentTimeMillis()
+        mDatabase!!.collection("trainers").document(trainerID!!)
+        .collection("clientsCurrent").document(userID!!).get()
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val end = System.currentTimeMillis()
+                Log.d(TAG, "Getting documents successful " + (end - start))
+                if(task.result!!.exists())
+                {
+                    btnRequestTrainer!!.setText("Current Trainer")
+                    btnRequestTrainer!!.isClickable = false
+                    adjustUI()
+                    closeSplashScreen()
+                }
+            } else {
+                Log.d(TAG, "Error getting documents: ", task.exception)
+            }
+        }
+
+        mDatabase!!.collection("trainers").document(trainerID!!)
+                .collection("clientRequests").document(userID!!).get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val end = System.currentTimeMillis()
+                        Log.d(TAG, "Getting documents successful " + (end - start))
+                        if(task.result!!.exists())
+                        {
+                            btnRequestTrainer!!.setText("Request Sent")
+                            btnRequestTrainer!!.isClickable = false
+                            adjustUI()
+                            closeSplashScreen()
+                        }
+                        else
+                        {
+                            adjustUI()
+                            closeSplashScreen()
+                        }
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.exception)
+                    }
+                }
     }
 
     companion object {

@@ -38,7 +38,6 @@
                     android:id="@+id/btnGetTrainerCode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:focusable="true"
                     android:text="Get Your Trainer Code"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:visibility="invisible" />
