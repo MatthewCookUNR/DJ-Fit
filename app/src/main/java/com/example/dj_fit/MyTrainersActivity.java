@@ -127,7 +127,8 @@ public class MyTrainersActivity extends AppCompatActivity {
         CollectionReference userRef = mDatabase.collection("users").document(userID)
                 .collection("editors");
         Query query = userRef.limit(50);
-        query.whereEqualTo("Role", "Trainer").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        query.whereEqualTo("Role", "Trainer").whereEqualTo("isAccepted", true)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful())
@@ -153,7 +154,6 @@ public class MyTrainersActivity extends AppCompatActivity {
             }
         });
     }
-
 
     /*
      *@Name: Populate Trainers

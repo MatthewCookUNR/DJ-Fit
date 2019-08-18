@@ -191,6 +191,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void checkIfUserIsTrainer()
     {
+
         final SharedPreferences myPreferences =
                 PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
         final long start = System.currentTimeMillis();

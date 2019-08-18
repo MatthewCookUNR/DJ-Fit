@@ -349,6 +349,23 @@ public class ClientRequestsActivity extends BaseActivity
                         Log.w(TAG, "Error deleting document", e);
                     }
                 });
+
+        //Update document for user telling them that they have accepted the request
+        mDatabase.collection("users").document(clientData[0])
+                .collection("editors").document(userID).update("isAccepted", true)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        @Override
+        public void onSuccess(Void aVoid)
+        {
+            long end = System.currentTimeMillis();
+            Log.d(TAG, "Document deleted w/ time : " + (end - start) );
+        }
+    })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG, "Error deleting document", e); }
+            });
         //Remake views without accepted client
         removeFromDocuments(clientData[0]);
         destroyViews();

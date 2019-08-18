@@ -161,10 +161,7 @@ class TrainerRegisterActivity : BaseActivity() {
 
         //Button removes old profile image
         btnRemovePic!!.setOnClickListener {
-            mImage?.layout(0, 0, 0, 0)
-            mImage?.setImageDrawable(null)
-            mImage!!.visibility = View.GONE
-            imageToUpload = null
+            showRemovePicAlert()
         }
 
         //Button registers the user as a trainer, uploading the given data on the page for use in their profile
@@ -609,12 +606,36 @@ class TrainerRegisterActivity : BaseActivity() {
      *@ErrorsHandled: N/A
      */
     private fun showUnregisterAlert() {
-        val dayBuilder = AlertDialog.Builder(this@TrainerRegisterActivity)
-        dayBuilder.setTitle("Are you sure you want to unregister as a trainer?")
+        val unregisterBuilder = AlertDialog.Builder(this@TrainerRegisterActivity)
+        unregisterBuilder.setTitle("Are you sure you want to unregister as a trainer?")
 
-        dayBuilder.setPositiveButton("Yes") { dialog, which -> unRegisterTrainer() }
-        dayBuilder.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
-        dayBuilder.show()
+        unregisterBuilder.setPositiveButton("Yes") { dialog, which -> unRegisterTrainer() }
+        unregisterBuilder.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
+        unregisterBuilder.show()
+    }
+
+    /*
+     *@Name: Show Unregister Alert
+     *
+     *@Purpose: Displays a alert that allows the user to unregister
+     *
+     *@Param N/A
+     *
+     *@Brief: N/A
+     *
+     *@ErrorsHandled: N/A
+     */
+    private fun showRemovePicAlert() {
+        val removePicBuilder = AlertDialog.Builder(this@TrainerRegisterActivity)
+        removePicBuilder.setTitle("Are you sure you want to remove your profile picture?")
+
+        removePicBuilder.setPositiveButton("Yes") { dialog, which ->
+            mImage?.layout(0, 0, 0, 0)
+            mImage?.setImageDrawable(null)
+            mImage!!.visibility = View.GONE
+            imageToUpload = null }
+        removePicBuilder.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
+        removePicBuilder.show()
     }
 
     /*

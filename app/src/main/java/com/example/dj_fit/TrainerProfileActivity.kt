@@ -360,10 +360,11 @@ class TrainerProfileActivity : BaseActivity() {
         val start = System.currentTimeMillis()
 
         //Sets permissions to allow trainer to view user's content
-        val editData = HashMap<String, String>()
+        val editData = HashMap<String, Any>()
         editData["Role"] = "Trainer"
         editData["first_name"] = intent.getStringExtra("first_name")
         editData["last_name"] = intent.getStringExtra("last_name")
+        editData["isAccepted"] = false
 
         //Sets document in DB to user inputted information
         mDatabase!!.collection("users").document(userID!!).collection("editors")
