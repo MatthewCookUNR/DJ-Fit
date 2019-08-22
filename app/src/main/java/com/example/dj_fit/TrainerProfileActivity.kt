@@ -299,9 +299,17 @@ class TrainerProfileActivity : BaseActivity() {
             if (task.isSuccessful) {
                 val documents = task.result!!.documents
                 Log.d(TAG, "Getting documents successful")
-                populateProfilePage(documents[0].data!!)
-                trainerID = documents[0].id
-                checkMyTrainerStatus()
+                if(documents.size != 0)
+                {
+                    populateProfilePage(documents[0].data!!)
+                    trainerID = documents[0].id
+                    checkMyTrainerStatus()
+                }
+                else
+                {
+                    //Trainer deleted their profile so close activity
+                    finish()
+                }
             } else {
                 Log.d(TAG, "Error getting documents: ", task.exception)
                 closeSplashScreen()
@@ -519,8 +527,8 @@ class TrainerProfileActivity : BaseActivity() {
                 }
     }
 
-    companion object {
-
+    companion object
+    {
         //Class variables
         private val TAG = "TrainerProfileActivity"
     }

@@ -173,18 +173,14 @@ class TrainerRegisterActivity : BaseActivity() {
             }
             else if (imageToUpload == null && uploadedImageName != "")
             {
-                println("No image")
-                deleteCurrentProfilePic()
-                uploadedImageName = ""
+                println("No image to upload")
+                if(mImage!!.visibility == View.GONE)
+                {
+                    deleteCurrentProfilePic()
+                    uploadedImageName = ""
+                }
             }
-            setTrainerStatusInDB(true)
             uploadToDB()
-            if( imageToUpload == null && signUp == true)
-            {
-                val trainerIntent = Intent(applicationContext, TrainerProfileActivity::class.java)
-                trainerIntent.putExtra("signUp", true)
-                startActivity(trainerIntent)
-            }
         }
 
         btnUnregister!!.setOnClickListener { showUnregisterAlert() }
@@ -370,9 +366,6 @@ class TrainerRegisterActivity : BaseActivity() {
         //If not trainer ID exists, create a random ID of 8 length
         if (trainerCode == "false") {
             trainerCode = alphaNumericString
-            val myEditor = myPreferences.edit()
-            myEditor.putString("trainerCode", trainerCode)
-            myEditor.apply()
         }
 
         //Put all data about trainer into a map for upload to DB
@@ -385,17 +378,46 @@ class TrainerRegisterActivity : BaseActivity() {
         doctData["profilePic"] = imageLink!!
         doctData["trainerCode"] = trainerCode
 
-        //Sets document in DB to user inputted information
-        mDatabase!!.collection("trainers").document(userID!!)
-                .set(doctData).addOnSuccessListener {
-                    val end = System.currentTimeMillis()
-                    Log.d(TAG, "Document Snapshot added w/ time : " + (end - start))
-                    Toast.makeText(applicationContext, "Success!", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener { e ->
-                    Log.w(TAG, "Error adding document", e)
-                    Toast.makeText(applicationContext, "Failure!", Toast.LENGTH_SHORT).show()
-                }
+        val batch = mDatabase!!.batch()
+
+        val trainerColDocRef = mDatabase!!.collection("trainers").document(userID!!)
+
+        val trainerCodeDocRef = mDatabase!!.collection("trainers")
+                .document("0eh3S7vf62XX4DB2dsTG")
+
+        val editorsDocRef = mDatabase!!.collection("users").document(userID!!)
+                .collection("editors").document(userID!!)
+
+        //First part create document for trainer using given data
+        batch.set(trainerColDocRef, doctData)
+
+        //Second part adds the new trainer's code to list of trainer codes
+        batch.update(trainerCodeDocRef, "trainerCodes", FieldValue.arrayUnion(trainerCode))
+
+        //Last part sets user as a trainer in his/her editors doc
+        batch.update(editorsDocRef, "isTrainer", true)
+
+        batch.commit().addOnSuccessListener {
+            val end = System.currentTimeMillis()
+            Log.d(TAG, "Batch success w/ time : " + (end - start))
+            val myEditor = myPreferences.edit()
+            myEditor.putString("trainerCode", trainerCode)
+            myEditor.apply()
+
+            if( imageToUpload == null && signUp == true)
+            {
+                val trainerIntent = Intent(applicationContext, TrainerProfileActivity::class.java)
+                trainerIntent.putExtra("signUp", true)
+                startActivity(trainerIntent)
+            }
+            Toast.makeText(applicationContext, "Success!", Toast.LENGTH_SHORT).show()
+
+        }.addOnFailureListener {
+            val end = System.currentTimeMillis()
+            Log.d(TAG, "Batch failure w/ time : " + (end - start))
+            Toast.makeText(applicationContext, "Failure!", Toast.LENGTH_SHORT).show()
+
+        }
     }
 
     /*
@@ -532,28 +554,6 @@ class TrainerRegisterActivity : BaseActivity() {
     }
 
     /*
-     *@Name: Set Trainer Status in DB
-     *
-     *@Purpose: Sets user's status as being a trainer in DB
-     *
-     *@Param in: boolean stating status of being trainer (status)
-     *
-     *@Brief: Sets field in user's editors subcollection
-     *        to being a trainer (isTrainer)
-     *
-     *@ErrorsHandled: N/A
-     */
-    private fun setTrainerStatusInDB(status: Boolean) {
-        val doctData2 = HashMap<String, Any>()
-        doctData2["isTrainer"] = status
-        mDatabase!!.collection("users")
-                .document(userID!!)
-                .collection("editors")
-                .document(userID!!)
-                .update(doctData2).addOnSuccessListener { Log.d(TAG, "Document2 Snapshot added") }.addOnFailureListener { e -> Log.w(TAG, "Error adding document 2", e) }
-    }
-
-    /*
      *@Name: Unregister Trainer
      *
      *@Purpose: Unregisters the user as a trainer
@@ -565,33 +565,55 @@ class TrainerRegisterActivity : BaseActivity() {
      *
      *@ErrorsHandled: N/A
      */
-    private fun unRegisterTrainer() {
-        mDatabase!!.collection("trainers").document(userID!!)
-                .delete()
-                .addOnSuccessListener {
-                    Log.d(TAG, "DocumentSnapshot successfully deleted!")
+    private fun unRegisterTrainer()
+    {
+        val start = System.currentTimeMillis()
 
-                    //Set's status as trainer to false in DB
-                    setTrainerStatusInDB(false)
+        val batch = mDatabase!!.batch()
 
-                    //Delete user's profile picture if they have one
-                    if (uploadedImageName != "") {
-                        deleteCurrentProfilePic()
-                    }
-                    val myPreferences = PreferenceManager.getDefaultSharedPreferences(this@TrainerRegisterActivity)
-                    val trainerCode = myPreferences.getString("trainerCode", "")
+        val myPreferences = PreferenceManager.getDefaultSharedPreferences(this@TrainerRegisterActivity)
+        val trainerCode = myPreferences.getString("trainerCode", "")
 
-                    //Remove trainer from list of trainer codes in DB
-                    removeTrainerCodeDB(trainerCode)
+        val trainerColDocRef = mDatabase!!.collection("trainers").document(userID!!)
 
-                    //Set trainer code as false in shared preferences
-                    val myEditor = myPreferences.edit()
-                    myEditor.putString("trainerCode", "false")
-                    myEditor.apply()
-                    val trainerRegisterIntent = Intent(this@TrainerRegisterActivity, MainActivity::class.java)
-                    startActivity(trainerRegisterIntent)
-                }
-                .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
+        val trainerCodeDocRef = mDatabase!!.collection("trainers")
+                .document("0eh3S7vf62XX4DB2dsTG")
+
+        val editorsDocRef = mDatabase!!.collection("users").document(userID!!)
+                .collection("editors").document(userID!!)
+
+        //First write is to delete the user's document in the trainer database
+        batch.delete(trainerColDocRef)
+
+        //Second write is to update the Trainer codes document with the new trainer's code
+        batch.update(trainerCodeDocRef, "trainerCodes", FieldValue.arrayRemove(trainerCode))
+
+        //Third write is to set the user as a trainer in his/her owner editors doc
+        batch.update(editorsDocRef, "isTrainer", true)
+
+        batch.commit().addOnSuccessListener {
+            val end = System.currentTimeMillis()
+            Log.d(TAG, "Batch success w/ time : " + (end - start))
+
+            //Delete user's profile picture if they have one
+            if (uploadedImageName != "")
+            {
+                deleteCurrentProfilePic()
+            }
+
+            //Set trainer code as false in shared preferences
+            val myEditor = myPreferences.edit()
+            myEditor.putString("trainerCode", "false")
+            myEditor.apply()
+            val trainerRegisterIntent = Intent(this@TrainerRegisterActivity, MainActivity::class.java)
+            Toast.makeText(applicationContext, "Success!", Toast.LENGTH_SHORT).show()
+            startActivity(trainerRegisterIntent)
+
+        }.addOnFailureListener {
+            val end = System.currentTimeMillis()
+            Log.d(TAG, "Batch failure w/ time : " + (end - start))
+            Toast.makeText(applicationContext, "Failure!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     /*
@@ -670,7 +692,7 @@ class TrainerRegisterActivity : BaseActivity() {
                         alphaNumericString
                     } else
                     {
-                        addTrainerCodesDB(alphaString)
+
                     }//Else, puts new on in list of trainer codes and uploads the new list
                 } else {
                     Log.d(TAG, "No such document")
@@ -679,52 +701,6 @@ class TrainerRegisterActivity : BaseActivity() {
                 Log.d(TAG, "get failed with ", task.exception)
             }
         }
-    }
-
-    /*
-     *@Name: Set Trainer Codes DB
-     *
-     *@Purpose: Set updated list of trainer codes to DB
-     *
-     *@Param N/A
-     *
-     *@Brief: N/A
-     *
-     *@ErrorsHandled: N/A
-     */
-    private fun addTrainerCodesDB(alphaString: String) {
-        val start = System.currentTimeMillis()
-
-        //Sets document in DB to user inputted information
-        mDatabase!!.collection("trainers").document("0eh3S7vf62XX4DB2dsTG")
-                .update("trainerCodes", FieldValue.arrayUnion(alphaString)).addOnSuccessListener {
-                    val end = System.currentTimeMillis()
-                    Log.d(TAG, "Document Snapshot added w/ time : " + (end - start))
-                }
-                .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
-    }
-
-    /*
- *@Name: Set Trainer Codes DB
- *
- *@Purpose: Set updated list of trainer codes to DB
- *
- *@Param N/A
- *
- *@Brief: N/A
- *
- *@ErrorsHandled: N/A
- */
-    private fun removeTrainerCodeDB(alphaString: String) {
-        val start = System.currentTimeMillis()
-
-        //Sets document in DB to user inputted information
-        mDatabase!!.collection("trainers").document("0eh3S7vf62XX4DB2dsTG")
-                .update("trainerCodes", FieldValue.arrayRemove(alphaString)).addOnSuccessListener {
-                    val end = System.currentTimeMillis()
-                    Log.d(TAG, "Document Snapshot added w/ time : " + (end - start))
-                }
-                .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
     }
 
     /*

@@ -41,10 +41,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.HashMap;
 import java.util.List;
@@ -316,6 +318,38 @@ public class ClientRequestsActivity extends BaseActivity
         docData.put("first_name", clientData[1]);
         docData.put("last_name", clientData[2]);
 
+        WriteBatch batch = mDatabase.batch();
+
+        DocumentReference clientCurDocRef = mDatabase.collection("trainers").document(userID)
+                .collection("clientsCurrent").document(clientData[0]);
+
+        DocumentReference clientReqDocRef = mDatabase.collection("trainers").document(userID)
+                .collection("clientRequests").document(clientData[0]);
+
+        DocumentReference editorsDocRef = mDatabase.collection("users").document(clientData[0])
+                .collection("editors").document(userID);
+
+        batch.set(clientCurDocRef, docData);
+        batch.delete(clientReqDocRef);
+        batch.update(editorsDocRef, "isAccepted", true);
+
+        batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                long end = System.currentTimeMillis();
+                Log.d(TAG, "Batch success w/ time : " + (end - start) );
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                long end = System.currentTimeMillis();
+                Log.d(TAG, "Batch failure w/ time : " + (end - start) );
+            }
+        });
+
+        /*
+
+
         //Sets document in DB to user inputted information
         mDatabase.collection("trainers").document(userID).collection("clientsCurrent")
                 .document(clientData[0]).set(docData).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -358,14 +392,17 @@ public class ClientRequestsActivity extends BaseActivity
         public void onSuccess(Void aVoid)
         {
             long end = System.currentTimeMillis();
-            Log.d(TAG, "Document deleted w/ time : " + (end - start) );
+            Log.d(TAG, "Document updated w/ time : " + (end - start) );
         }
     })
             .addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.w(TAG, "Error deleting document", e); }
+                    Log.w(TAG, "Error updating document", e); }
             });
+
+        */
+
         //Remake views without accepted client
         removeFromDocuments(clientData[0]);
         destroyViews();

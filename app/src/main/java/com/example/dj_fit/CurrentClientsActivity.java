@@ -39,10 +39,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.List;
 import java.util.Map;
@@ -318,39 +320,32 @@ public class CurrentClientsActivity extends BaseActivity {
         final long start = System.currentTimeMillis();
         String[] clientData = clientTag.split("/");
 
-        //Deletes the document that is in the trainer's collection of clients
-        mDatabase.collection("trainers").document(userId).collection("clientsCurrent")
-                .document(clientData[0]).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid)
-            {
-                long end = System.currentTimeMillis();
-                Log.d(TAG, "Document deleted w/ time : " + (end - start) );
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
+        WriteBatch batch = mDatabase.batch();
 
-        //Deletes the document that allows the trainer to view the user's fitness program
-        mDatabase.collection("users").document(clientData[0]).collection("editors")
-                .document(userId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+        DocumentReference clientCurRef = mDatabase.collection("trainers").document(userId)
+                .collection("clientsCurrent").document(clientData[0]);
+        DocumentReference editorDocRef = mDatabase.collection("users").document(clientData[0])
+                .collection("editors").document(userId);
+
+        //First part deletes client in collection of all current clients
+        batch.delete(clientCurRef);
+
+        //Second part deletes document that allows trainer to edit them
+        batch.delete(editorDocRef);
+
+        batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onSuccess(Void aVoid)
-            {
+            public void onSuccess(Void aVoid) {
                 long end = System.currentTimeMillis();
-                Log.d(TAG, "Document deleted w/ time : " + (end - start) );
+                Log.d(TAG, "Batch success w/ time : " + (end - start) );
             }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                long end = System.currentTimeMillis();
+                Log.d(TAG, "Batch failure w/ time : " + (end - start) );
+            }
+        });
     }
 
     /*

@@ -137,11 +137,13 @@ public class MyTrainersActivity extends AppCompatActivity {
                     Log.d(TAG, "Getting documents successful");
                     if(documents.size() != 0)
                     {
+                        System.out.println("Size is not 0");
                         populateTrainers(documents);
                         closeSplashScreen();
                     }
                     else
                     {
+                        System.out.println("Size is 0");
                         closeSplashScreen();
 
                     }
