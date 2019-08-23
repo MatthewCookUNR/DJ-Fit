@@ -57,4 +57,9 @@ Development started on April 25th, 2019
 - Android Studio
 - Java
 - Firebase
+  - Authentication
+  - Cloud Firestore (NoSQL)
+  - File Storage
+  - Cloud Functions
+  - Cloud Messaging (Notifications)
 - YouTube Player API
