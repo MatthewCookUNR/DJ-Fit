@@ -329,8 +329,13 @@ public class ClientRequestsActivity extends BaseActivity
         DocumentReference editorsDocRef = mDatabase.collection("users").document(clientData[0])
                 .collection("editors").document(userID);
 
+        //First part adds user as the trainer's new client
         batch.set(clientCurDocRef, docData);
+
+        //Second part deletes the user's current request
         batch.delete(clientReqDocRef);
+
+        //Last part updates document telling user that the trainer has accepted them
         batch.update(editorsDocRef, "isAccepted", true);
 
         batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -346,62 +351,6 @@ public class ClientRequestsActivity extends BaseActivity
                 Log.d(TAG, "Batch failure w/ time : " + (end - start) );
             }
         });
-
-        /*
-
-
-        //Sets document in DB to user inputted information
-        mDatabase.collection("trainers").document(userID).collection("clientsCurrent")
-                .document(clientData[0]).set(docData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid)
-                    {
-                        long end = System.currentTimeMillis();
-                        Log.d(TAG, "Document Snapshot added w/ time : " + (end - start) );
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
-
-        //Sets document in DB to user inputted information
-        mDatabase.collection("trainers").document(userID).collection("clientRequests")
-                .document(clientData[0]).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid)
-                    {
-                        long end = System.currentTimeMillis();
-                        Log.d(TAG, "Document deleted w/ time : " + (end - start) );
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting document", e);
-                    }
-                });
-
-        //Update document for user telling them that they have accepted the request
-        mDatabase.collection("users").document(clientData[0])
-                .collection("editors").document(userID).update("isAccepted", true)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-        @Override
-        public void onSuccess(Void aVoid)
-        {
-            long end = System.currentTimeMillis();
-            Log.d(TAG, "Document updated w/ time : " + (end - start) );
-        }
-    })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.w(TAG, "Error updating document", e); }
-            });
-
-        */
 
         //Remake views without accepted client
         removeFromDocuments(clientData[0]);
@@ -429,39 +378,33 @@ public class ClientRequestsActivity extends BaseActivity
         final long start = System.currentTimeMillis();
         String[] clientData = clientTag.split("/");
 
-        //Deletes the document that is in the trainer's collection of clients
-        mDatabase.collection("trainers").document(userID).collection("clientRequests")
-                .document(clientData[0]).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid)
-                    {
-                        long end = System.currentTimeMillis();
-                        Log.d(TAG, "Document deleted w/ time : " + (end - start) );
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
+        WriteBatch batch = mDatabase.batch();
 
-        //Deletes the document that allows the trainer to view the user's fitness program
-        mDatabase.collection("users").document(clientData[0]).collection("editors")
-                .document(userID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid)
-                    {
-                        long end = System.currentTimeMillis();
-                        Log.d(TAG, "Document deleted w/ time : " + (end - start) );
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
+        DocumentReference clientReqDocRef = mDatabase.collection("trainers").document(userID)
+                .collection("clientRequests").document(clientData[0]);
+
+        DocumentReference editorsDocRef = mDatabase.collection("users").document(clientData[0])
+                .collection("editors").document(userID);
+
+        //First part deletes the user's current request
+        batch.delete(clientReqDocRef);
+
+        //Second part deletes document telling user that they have requested them
+        batch.delete(editorsDocRef);
+
+        batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                long end = System.currentTimeMillis();
+                Log.d(TAG, "Batch success w/ time : " + (end - start) );
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                long end = System.currentTimeMillis();
+                Log.d(TAG, "Batch failure w/ time : " + (end - start) );
+            }
+        });
 
         //Remake views without declined client
         removeFromDocuments(clientData[0]);

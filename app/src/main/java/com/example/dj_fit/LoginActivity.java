@@ -34,6 +34,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 // Login Activity Class ////////////////////////////////////////////////////////////////
 
@@ -174,6 +176,23 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         checkIfUserIsTrainer();
+
+        //Section of getting user data gets the user's unique token for use of Firestore Notifications
+        final DocumentReference docRef2 = FirebaseFirestore.getInstance().document("users/" + FirebaseAuth.getInstance().getUid());
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if(task.isSuccessful())
+                {
+                    docRef2.update("token", task.getResult().getToken());
+                    Log.d(TAG, "Getting token success");
+                }
+                else
+                {
+                    Log.d(TAG, "Getting token failed");
+                }
+            }
+        });
     }
 
     /*
