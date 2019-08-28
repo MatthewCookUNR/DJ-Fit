@@ -57,6 +57,8 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.FirebaseFunctionsException
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.OnProgressListener
 import com.google.firebase.storage.StorageReference
@@ -91,6 +93,8 @@ class TrainerRegisterActivity : BaseActivity() {
     private var uploadedImageName: String? = ""
     private var userID: String? = null
     private var signUp: Boolean? = true
+    private lateinit var functions: FirebaseFunctions
+
 
 
     // Function to generate a random string of length 8
@@ -146,6 +150,7 @@ class TrainerRegisterActivity : BaseActivity() {
         rotateAnimation.setInterpolator(LinearInterpolator())
 
         //Firebase parameters
+        functions = FirebaseFunctions.getInstance()
         userID = FirebaseAuth.getInstance().uid
         mDatabase = FirebaseFirestore.getInstance()
         mStorageRef = FirebaseStorage.getInstance().getReference("trainerPics")
@@ -560,8 +565,8 @@ class TrainerRegisterActivity : BaseActivity() {
      *
      *@Param N/A
      *
-     *@Brief: Deletes user's trainer data and sets isTrainer status
-     *        as false
+     *@Brief: Deletes user's trainer data atomically using a Cloud
+     *        Function
      *
      *@ErrorsHandled: N/A
      */
@@ -569,51 +574,30 @@ class TrainerRegisterActivity : BaseActivity() {
     {
         val start = System.currentTimeMillis()
 
-        val batch = mDatabase!!.batch()
+        val userID = userID
 
-        val myPreferences = PreferenceManager.getDefaultSharedPreferences(this@TrainerRegisterActivity)
-        val trainerCode = myPreferences.getString("trainerCode", "")
+        val data = hashMapOf(
+                "userID" to userID
+        )
 
-        val trainerColDocRef = mDatabase!!.collection("trainers").document(userID!!)
+        functions.getHttpsCallable("recursiveDeleteTrainer")
+                .call(data)
+                .addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful)
+                    {
+                        val e = task.exception
+                        if (e is FirebaseFunctionsException) {
+                            val code = e.code
+                            val details = e.details
+                        }
+                    }
+                    else
+                    {
+                        //On success, finish by updating some fields in Firestore
+                        updateTrainerData(start)
+                    }
+                })
 
-        val trainerCodeDocRef = mDatabase!!.collection("trainers")
-                .document("0eh3S7vf62XX4DB2dsTG")
-
-        val editorsDocRef = mDatabase!!.collection("users").document(userID!!)
-                .collection("editors").document(userID!!)
-
-        //First write is to delete the user's document in the trainer database
-        batch.delete(trainerColDocRef)
-
-        //Second write is to update the Trainer codes document with the new trainer's code
-        batch.update(trainerCodeDocRef, "trainerCodes", FieldValue.arrayRemove(trainerCode))
-
-        //Third write is to set the user as a trainer in his/her owner editors doc
-        batch.update(editorsDocRef, "isTrainer", true)
-
-        batch.commit().addOnSuccessListener {
-            val end = System.currentTimeMillis()
-            Log.d(TAG, "Batch success w/ time : " + (end - start))
-
-            //Delete user's profile picture if they have one
-            if (uploadedImageName != "")
-            {
-                deleteCurrentProfilePic()
-            }
-
-            //Set trainer code as false in shared preferences
-            val myEditor = myPreferences.edit()
-            myEditor.putString("trainerCode", "false")
-            myEditor.apply()
-            val trainerRegisterIntent = Intent(this@TrainerRegisterActivity, MainActivity::class.java)
-            Toast.makeText(applicationContext, "Success!", Toast.LENGTH_SHORT).show()
-            startActivity(trainerRegisterIntent)
-
-        }.addOnFailureListener {
-            val end = System.currentTimeMillis()
-            Log.d(TAG, "Batch failure w/ time : " + (end - start))
-            Toast.makeText(applicationContext, "Failure!", Toast.LENGTH_SHORT).show()
-        }
     }
 
     /*
@@ -745,6 +729,64 @@ class TrainerRegisterActivity : BaseActivity() {
         botButtons!!.visibility = View.VISIBLE
         registerInfo!!.visibility = View.VISIBLE
         trainerScroll!!.visibility = View.VISIBLE
+    }
+
+
+    /*
+     *@Name: Update Trainer Data
+     *
+     *@Purpose: Updates data related to unregistering as a trainer
+     *
+     *@Param start: Long indicating time when unregistering started
+     *
+     *@Brief: Batches two requests to update data that will cause the
+     *        trainer to be successfully unregistered on completion
+     *
+     *@ErrorsHandled: N/A
+     */
+    private fun updateTrainerData(start : Long)
+    {
+
+        val batch = mDatabase!!.batch()
+
+        val myPreferences = PreferenceManager.getDefaultSharedPreferences(this@TrainerRegisterActivity)
+        val trainerCode = myPreferences.getString("trainerCode", "")
+
+        val trainerCodeDocRef = mDatabase!!.collection("trainers")
+                .document("0eh3S7vf62XX4DB2dsTG")
+
+        val editorsDocRef = mDatabase!!.collection("users").document(userID!!)
+                .collection("editors").document(userID!!)
+
+        //First write is to update the Trainer codes document with the new trainer's code
+        batch.update(trainerCodeDocRef, "trainerCodes", FieldValue.arrayRemove(trainerCode))
+
+        //Second write is to set the user as a trainer in his/her owner editors doc
+        batch.update(editorsDocRef, "isTrainer", true)
+
+        batch.commit().addOnSuccessListener {
+            val end = System.currentTimeMillis()
+            Log.d(TAG, "Batch success w/ time : " + (end - start))
+
+            //Delete user's profile picture if they have one
+            if (uploadedImageName != "")
+            {
+                deleteCurrentProfilePic()
+            }
+
+            //Set trainer code as false in shared preferences
+            val myEditor = myPreferences.edit()
+            myEditor.putString("trainerCode", "false")
+            myEditor.apply()
+            val trainerRegisterIntent = Intent(this@TrainerRegisterActivity, MainActivity::class.java)
+            Toast.makeText(applicationContext, "Success!", Toast.LENGTH_SHORT).show()
+            startActivity(trainerRegisterIntent)
+
+        }.addOnFailureListener {
+            val end = System.currentTimeMillis()
+            Log.d(TAG, "Batch failure w/ time : " + (end - start))
+            Toast.makeText(applicationContext, "Failure!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {
