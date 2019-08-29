@@ -49,20 +49,12 @@ import android.widget.TextView
 import android.widget.Toast
 
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.OnProgressListener
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 
 import java.util.ArrayList
 import java.util.HashMap
@@ -574,29 +566,9 @@ class TrainerRegisterActivity : BaseActivity() {
     {
         val start = System.currentTimeMillis()
 
-        val userID = userID
+        val batch = getUpdateTrainerData()
 
-        val data = hashMapOf(
-                "userID" to userID
-        )
-
-        functions.getHttpsCallable("recursiveDeleteTrainer")
-                .call(data)
-                .addOnCompleteListener(OnCompleteListener { task ->
-                    if (!task.isSuccessful)
-                    {
-                        val e = task.exception
-                        if (e is FirebaseFunctionsException) {
-                            val code = e.code
-                            val details = e.details
-                        }
-                    }
-                    else
-                    {
-                        //On success, finish by updating some fields in Firestore
-                        updateTrainerData(start)
-                    }
-                })
+        pushUnregisterToClients(batch, start)
 
     }
 
@@ -737,14 +709,14 @@ class TrainerRegisterActivity : BaseActivity() {
      *
      *@Purpose: Updates data related to unregistering as a trainer
      *
-     *@Param start: Long indicating time when unregistering started
+     *@Param out: Batch containing some extra required updates for unregister
      *
      *@Brief: Batches two requests to update data that will cause the
      *        trainer to be successfully unregistered on completion
      *
      *@ErrorsHandled: N/A
      */
-    private fun updateTrainerData(start : Long)
+    private fun getUpdateTrainerData(): WriteBatch
     {
 
         val batch = mDatabase!!.batch()
@@ -764,29 +736,119 @@ class TrainerRegisterActivity : BaseActivity() {
         //Second write is to set the user as a trainer in his/her owner editors doc
         batch.update(editorsDocRef, "isTrainer", true)
 
-        batch.commit().addOnSuccessListener {
-            val end = System.currentTimeMillis()
-            Log.d(TAG, "Batch success w/ time : " + (end - start))
+        return batch
+    }
 
-            //Delete user's profile picture if they have one
-            if (uploadedImageName != "")
+    /*
+     *@Name: Push Unregister To Clients
+     *
+     *@Purpose: Unregister clients with trainer for safe unregistration
+     *
+     *@Param in: Batch containing some necessary updates when unregistering (batch)
+     *       in: Long indicating time expired since trying to unregister
+     *
+     *@Brief: Function gets list of clients and updates their editors data with the trainer
+     *        no longer being a current trainer and then deletes the trainers profile since it
+     *        is then safe to delete
+     *
+     *@ErrorsHandled: N/A
+     */
+    private fun pushUnregisterToClients(batch: WriteBatch, start: Long)
+    {
+        val myPreferences = PreferenceManager.getDefaultSharedPreferences(this@TrainerRegisterActivity)
+        val userRef = mDatabase!!.collection("trainers").document(userID!!).collection("clientsCurrent")
+        val query = userRef.limit(50)
+        query.get().addOnCompleteListener { task ->
+            if (task.isSuccessful)
             {
-                deleteCurrentProfilePic()
+                val documents = task.result!!.documents
+                Log.d(TAG, "Getting documents successful")
+                if (documents.size != 0)
+                {
+                    for (i in documents.indices)
+                    {
+                        Log.d(TAG, documents.get(i).id)
+                        val trainerEditorDoc = mDatabase!!.collection("users")
+                                .document(documents.get(i).id).collection("editors")
+                                .document(userID!!)
+
+                        batch.update(trainerEditorDoc, "isAccepted", false)
+                    }
+
+                    //Commits the batch with all required write requests to unregister
+                    //On success, trainer profile is finally deleted
+                    batch.commit().addOnSuccessListener {
+                        val end = System.currentTimeMillis()
+                        Log.d(TAG, "Batch success w/ time : " + (end - start))
+
+                        //Delete user's profile picture if they have one
+                        if (uploadedImageName != "")
+                        {
+                            deleteCurrentProfilePic()
+                        }
+                        //Set trainer code as false in shared preferences
+                        val myEditor = myPreferences.edit()
+                        myEditor.putString("trainerCode", "false")
+                        myEditor.apply()
+                        val trainerRegisterIntent = Intent(this@TrainerRegisterActivity, MainActivity::class.java)
+                        deleteTrainerProfile()
+                        Toast.makeText(applicationContext, "Success!", Toast.LENGTH_SHORT).show()
+                        startActivity(trainerRegisterIntent)
+
+                    }.addOnFailureListener {
+                        val end = System.currentTimeMillis()
+                        Log.d(TAG, "Batch failure w/ time : " + (end - start))
+                        Toast.makeText(applicationContext, "Failure!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                else
+                {
+                    Log.d(TAG, "No documents")
+                }
+            } else
+            {
+                Log.d(TAG, "Error getting documents: ", task.exception)
             }
-
-            //Set trainer code as false in shared preferences
-            val myEditor = myPreferences.edit()
-            myEditor.putString("trainerCode", "false")
-            myEditor.apply()
-            val trainerRegisterIntent = Intent(this@TrainerRegisterActivity, MainActivity::class.java)
-            Toast.makeText(applicationContext, "Success!", Toast.LENGTH_SHORT).show()
-            startActivity(trainerRegisterIntent)
-
-        }.addOnFailureListener {
-            val end = System.currentTimeMillis()
-            Log.d(TAG, "Batch failure w/ time : " + (end - start))
-            Toast.makeText(applicationContext, "Failure!", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    /*
+ *@Name: Delete Trainer Profile
+ *
+ *@Purpose: Deletes the user's trainer profile
+ *
+ *@Param N/A
+ *
+ *@Brief: Cloud Function is called to recursively delete the user's
+ *        trainer document so that its subcollections/docs are all deleted
+ *        as well
+ *
+ *@ErrorsHandled: N/A
+ */
+    private fun deleteTrainerProfile()
+    {
+        val userID = userID
+
+        val data = hashMapOf(
+                "userID" to userID
+        )
+
+        functions.getHttpsCallable("recursiveDeleteTrainer")
+                .call(data)
+                .addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful)
+                    {
+                        val e = task.exception
+                        if (e is FirebaseFunctionsException) {
+                            val code = e.code
+                            val details = e.details
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                })
     }
 
     companion object {

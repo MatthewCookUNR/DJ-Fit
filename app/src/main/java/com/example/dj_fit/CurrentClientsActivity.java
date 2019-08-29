@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -337,12 +338,14 @@ public class CurrentClientsActivity extends BaseActivity {
             @Override
             public void onSuccess(Void aVoid) {
                 long end = System.currentTimeMillis();
+                Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "Batch success w/ time : " + (end - start) );
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 long end = System.currentTimeMillis();
+                Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "Batch failure w/ time : " + (end - start) );
             }
         });
