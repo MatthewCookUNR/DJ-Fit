@@ -62,7 +62,7 @@ public class ClientRequestsActivity extends BaseActivity
     private static final String TAG = "ClientRequestsActivity";
     private int integer = 1;
     private RelativeLayout clientReqLayout;
-    private TextView titleText;
+    private TextView titleText, newReqText, handoutText;
     private ImageView splashImage;
     private List<DocumentSnapshot> documents;
     private String userID;
@@ -79,6 +79,8 @@ public class ClientRequestsActivity extends BaseActivity
         clientReqLayout = findViewById(R.id.clientReqLayout);
         titleText = findViewById(R.id.titleText);
         splashImage = findViewById(R.id.splashImage);
+        newReqText = findViewById(R.id.newReqText);
+        handoutText = findViewById(R.id.handoutText);
 
 
         userID = FirebaseAuth.getInstance().getUid();
@@ -151,7 +153,7 @@ public class ClientRequestsActivity extends BaseActivity
                     else
                     {
                         closeSplashScreen();
-
+                        showNoRequestUI();
                     }
                 }
                 else
@@ -439,6 +441,10 @@ public class ClientRequestsActivity extends BaseActivity
                 break;
             }
         }
+        if(documents.size() == 0)
+        {
+            showNoRequestUI();
+        }
     }
 
     /*
@@ -462,6 +468,23 @@ public class ClientRequestsActivity extends BaseActivity
             integer--;
         }
         integer++;
+    }
+
+    /*
+     *@Name: Show No Request UI
+     *
+     *@Purpose: Displays message saying there is no current client requests
+     *
+     *@Param N/A
+     *
+     *@Brief: N/A
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void showNoRequestUI()
+    {
+        newReqText.setVisibility(View.VISIBLE);
+        handoutText.setVisibility(View.VISIBLE);
     }
 
     /*

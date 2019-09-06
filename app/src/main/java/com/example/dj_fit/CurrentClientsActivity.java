@@ -58,7 +58,7 @@ public class CurrentClientsActivity extends BaseActivity {
     private static final String TAG = "CurrentClientsActivity";
     private int integer = 1;
     private RelativeLayout clientLayout;
-    private TextView titleText;
+    private TextView titleText, noClientText, handoutText;
     private FirebaseAuth mAuth;
     private ImageView splashImage;
     private List<DocumentSnapshot> documents;
@@ -75,6 +75,8 @@ public class CurrentClientsActivity extends BaseActivity {
         clientLayout = findViewById(R.id.clientLayout);
         titleText = findViewById(R.id.titleText);
         splashImage = findViewById(R.id.splashImage);
+        noClientText = findViewById(R.id.noClientText);
+        handoutText = findViewById(R.id.handoutText);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
@@ -143,6 +145,7 @@ public class CurrentClientsActivity extends BaseActivity {
                     else
                     {
                         closeSplashScreen();
+                        showNoClientsUI();
                     }
                 } else {
                     closeSplashScreen();
@@ -411,6 +414,10 @@ public class CurrentClientsActivity extends BaseActivity {
                 break;
             }
         }
+        if(documents.size() == 0)
+        {
+            showNoClientsUI();
+        }
     }
 
     /*
@@ -434,6 +441,23 @@ public class CurrentClientsActivity extends BaseActivity {
             integer--;
         }
         integer++;
+    }
+
+    /*
+     *@Name: Show No Request UI
+     *
+     *@Purpose: Displays message saying there is no current client requests
+     *
+     *@Param N/A
+     *
+     *@Brief: N/A
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void showNoClientsUI()
+    {
+        noClientText.setVisibility(View.VISIBLE);
+        handoutText.setVisibility(View.VISIBLE);
     }
 
     /*

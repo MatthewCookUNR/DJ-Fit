@@ -35,6 +35,35 @@ exports.notifyNewClientRequest = functions.firestore
 
     });
 
+exports.notifyNewTrainer = functions.firestore
+    .document('trainers/{trainer}/clientsCurrent/{client}')
+    .onCreate((docSnapshot, context) => {
+        const recipientID = context.params.client;
+        console.log(recipientID);
+
+        return admin.firestore().doc('users/' + recipientID).get().then(userDoc => {
+            const registrationToken = userDoc.get('token');
+            console.log(userDoc);
+
+            const payload = {
+                notification: {
+                    title: "New Trainer",
+                    body: "A trainer has accepted your request!",
+                    clickAction: "MyTrainersActivity"
+                }
+            };
+            return admin.messaging().sendToDevice(registrationToken, payload).then( response => {
+                console.log("Successful notification sent", response);
+                return 0;
+            })
+                .catch( error =>
+                {
+                    console.log("Error sending message", error)
+                })
+        })
+
+    });
+
 /**
  * Initiate a recursive delete of documents at a given path.
  *

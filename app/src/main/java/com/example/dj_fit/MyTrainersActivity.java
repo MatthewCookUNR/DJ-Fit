@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,10 +30,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +44,7 @@ public class MyTrainersActivity extends AppCompatActivity {
 
     private static final String TAG = "MyTrainersActivity";
     private RelativeLayout trainersLayout;
-    private TextView titleText;
+    private TextView titleText, noTrainerText, findTrainerText;
     private ImageView splashImage;
     private int integer = 1;
     private List<DocumentSnapshot> documents;
@@ -59,6 +62,8 @@ public class MyTrainersActivity extends AppCompatActivity {
         trainersLayout = findViewById(R.id.trainersLayout);
         titleText = findViewById(R.id.titleText);
         splashImage = findViewById(R.id.splashImage);
+        noTrainerText = findViewById(R.id.noTrainerText);
+        findTrainerText = findViewById(R.id.findTrainerText);
 
         userID = FirebaseAuth.getInstance().getUid();
         mDatabase = FirebaseFirestore.getInstance();
@@ -137,15 +142,13 @@ public class MyTrainersActivity extends AppCompatActivity {
                     Log.d(TAG, "Getting documents successful");
                     if(documents.size() != 0)
                     {
-                        System.out.println("Size is not 0");
                         populateTrainers(documents);
                         closeSplashScreen();
                     }
                     else
                     {
-                        System.out.println("Size is 0");
+                        showNoClientsUI();
                         closeSplashScreen();
-
                     }
                 }
                 else
@@ -332,40 +335,38 @@ public class MyTrainersActivity extends AppCompatActivity {
     {
         final long start = System.currentTimeMillis();
         String[] trainerData = trainerTag.split("/");
+        WriteBatch batch = mDatabase.batch();
 
-        //Deletes the document that is in the trainer's collection of clients
-        mDatabase.collection("users").document(userID).collection("editors")
-                .document(trainerData[0]).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid)
-            {
-                long end = System.currentTimeMillis();
-                Log.d(TAG, "Document deleted w/ time : " + (end - start) );
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting document", e);
-                    }
-                });
+        DocumentReference trainerEditDoc = mDatabase.collection("users")
+                .document(userID).collection("editors")
+                .document(trainerData[0]);
 
-        //Deletes the document that allows the trainer to view the user's fitness program
-        mDatabase.collection("trainers").document(trainerData[0]).collection("clientsCurrent")
-                .document(userID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+        DocumentReference clientCurrentDoc = mDatabase.collection("trainers")
+                .document(trainerData[0]).collection("clientsCurrent")
+                .document(userID);
+
+
+        //First part adds user as the trainer's editors doc
+        batch.delete(trainerEditDoc);
+
+        //Second part deletes the trainer's client current doc
+        batch.delete(clientCurrentDoc);
+
+        batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onSuccess(Void aVoid)
-            {
+            public void onSuccess(Void aVoid) {
                 long end = System.currentTimeMillis();
-                Log.d(TAG, "Document deleted w/ time : " + (end - start) );
+                Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Batch success w/ time : " + (end - start) );
             }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting document", e);
-                    }
-                });
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                long end = System.currentTimeMillis();
+                Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Batch failure w/ time : " + (end - start) );
+            }
+        });
     }
 
     /*
@@ -428,6 +429,10 @@ public class MyTrainersActivity extends AppCompatActivity {
                 break;
             }
         }
+        if(documents.size() == 0)
+        {
+            showNoClientsUI();
+        }
     }
 
 
@@ -452,6 +457,23 @@ public class MyTrainersActivity extends AppCompatActivity {
             integer--;
         }
         integer++;
+    }
+
+    /*
+     *@Name: Show No Request UI
+     *
+     *@Purpose: Displays message saying there is no current client requests
+     *
+     *@Param N/A
+     *
+     *@Brief: N/A
+     *
+     *@ErrorsHandled: N/A
+     */
+    private void showNoClientsUI()
+    {
+        noTrainerText.setVisibility(View.VISIBLE);
+        findTrainerText.setVisibility(View.VISIBLE);
     }
 
     /*
