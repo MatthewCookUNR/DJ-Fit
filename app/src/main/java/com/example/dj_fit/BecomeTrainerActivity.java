@@ -37,11 +37,8 @@ public class BecomeTrainerActivity extends AppCompatActivity {
             {
                 switch(menuItem.getItemId())
                 {
-                    case R.id.ic_back:
-                        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(homeIntent);
-                        break;
                     case R.id.ic_home:
+                        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
                         homeIntent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(homeIntent);
                         break;

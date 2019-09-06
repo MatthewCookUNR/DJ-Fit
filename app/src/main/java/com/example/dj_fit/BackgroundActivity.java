@@ -125,19 +125,6 @@ public class BackgroundActivity extends BaseActivity {
             {
                 switch(menuItem.getItemId())
                 {
-                    case R.id.ic_back:
-                        if(isOwner)
-                        {
-                            Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(homeIntent);
-                        }
-                        else
-                        {
-                            Intent clientIntent = new Intent(getApplicationContext(), ClientProgramActivity.class);
-                            clientIntent.putExtra("clientTag", getIntent().getStringExtra("clientTag"));
-                            startActivity(clientIntent);
-                        }
-                        break;
                     case R.id.ic_home:
                         Intent homeIntent2 = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(homeIntent2);

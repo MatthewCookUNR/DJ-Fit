@@ -136,18 +136,6 @@ class TrainerProfileActivity : BaseActivity() {
         val bottomNavigationItemView : BottomNavigationView = findViewById(R.id.bottomNavigationItemView)
         bottomNavigationItemView.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.ic_back -> {
-                    if(isOwner)
-                    {
-                        val myProfileIntent = Intent(applicationContext, TrainerMenuActivity::class.java)
-                        startActivity(myProfileIntent)
-                    }
-                    else
-                    {
-                        val clientProfileIntent = Intent(applicationContext, FindTrainerActivity::class.java)
-                        startActivity(clientProfileIntent)
-                    }
-                }
                 R.id.ic_home -> {
                     val homeIntent = Intent(applicationContext, MainActivity::class.java)
                     startActivity(homeIntent)

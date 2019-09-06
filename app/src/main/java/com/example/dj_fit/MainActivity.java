@@ -88,8 +88,6 @@ public class MainActivity extends BaseActivity {
             {
                 switch(menuItem.getItemId())
                 {
-                    case R.id.ic_back:
-                        break;
                     case R.id.ic_home:
                         //Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
                         //startActivity(homeIntent);
