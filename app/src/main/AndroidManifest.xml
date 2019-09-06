@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.dj_fit">
+    package="com.fitness.dj_fit">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name="com.fitness.dj_fit.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -32,30 +32,30 @@
             android:resource="@color/colorAccent" />
 
         <activity
-            android:name=".MyTrainersActivity"
+            android:name="com.fitness.dj_fit.MyTrainersActivity"
             android:label="@string/title_activity_my_trainers"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".BecomeTrainerActivity"
+            android:name="com.fitness.dj_fit.BecomeTrainerActivity"
             android:label="@string/title_activity_become_trainer"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".TrainerMenuActivity"
+            android:name="com.fitness.dj_fit.TrainerMenuActivity"
             android:label="@string/title_activity_trainer_menu"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ClientProgramActivity"
+            android:name="com.fitness.dj_fit.ClientProgramActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CurrentClientsActivity"
+            android:name="com.fitness.dj_fit.CurrentClientsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
-            android:name=".ClientRequestsActivity"
+            android:name="com.fitness.dj_fit.ClientRequestsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
@@ -65,33 +65,33 @@
         </activity>
 
         <activity
-            android:name=".FindTrainerActivity"
+            android:name="com.fitness.dj_fit.FindTrainerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".PopActivity"
+            android:name="com.fitness.dj_fit.PopActivity"
             android:theme="@style/AppTheme.PopMe" />
         <activity
-            android:name=".WorkoutOutlineActivity"
+            android:name="com.fitness.dj_fit.WorkoutOutlineActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".SignUpActivity"
+            android:name="com.fitness.dj_fit.SignUpActivity"
             android:label="@string/title_activity_sign_up"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".BackgroundActivity"
+            android:name="com.fitness.dj_fit.BackgroundActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.fitness.dj_fit.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LoginActivity"
+            android:name="com.fitness.dj_fit.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -101,12 +101,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TrainerRegisterActivity"
+            android:name="com.fitness.dj_fit.TrainerRegisterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".TrainerProfileActivity"
+            android:name="com.fitness.dj_fit.TrainerProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

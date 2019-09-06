@@ -11,12 +11,13 @@ apply plugin: 'io.fabric'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.dj_fit"
+        applicationId "com.matthewcook.fitness.dj_fit"
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
