@@ -15,4 +15,5 @@
     <string name="title_activity_trainer_menu">TrainerMenuActivity</string>
     <string name="title_activity_become_trainer">BecomeTrainerActivity</string>
     <string name="title_activity_my_trainers">MyTrainersActivity</string>
+    <string name="title_activity_privacy_policy">PrivacyPolicyActivity</string>
 </resources>

@@ -1,8 +1,21 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file workoutRow.java
+ *
+ * @brief Class used to organize data stored in each row of the workout routine table
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.fitness.dj_fit;
 
 import java.util.ArrayList;
 
-//Class used to organize data stored in each row of the workout routine table
+// workoutRow Class ////////////////////////////////////////////////////////////////
+
 public class workoutRow
 {
     //Class variables

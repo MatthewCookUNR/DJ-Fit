@@ -1,3 +1,15 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file MyTrainersActivity.java
+ *
+ * @brief Shows a list of all the user's current trainers
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.fitness.dj_fit;
 
 import android.app.AlertDialog;
@@ -40,8 +52,11 @@ import com.google.firebase.firestore.WriteBatch;
 import java.util.List;
 import java.util.Map;
 
+// My Trainers Activity Class ////////////////////////////////////////////////////////////////
+
 public class MyTrainersActivity extends AppCompatActivity {
 
+    //Class variables
     private static final String TAG = "MyTrainersActivity";
     private RelativeLayout trainersLayout;
     private TextView titleText, noTrainerText, findTrainerText;

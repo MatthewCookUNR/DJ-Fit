@@ -1,3 +1,15 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file BecomeTrainerActivity.java
+ *
+ * @brief Shows activity that takes user to trainer registration screen
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.fitness.dj_fit;
 
 import android.content.Intent;
@@ -9,6 +21,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+// Become Trainer Activity Class ////////////////////////////////////////////////////////////////
+
 
 public class BecomeTrainerActivity extends AppCompatActivity {
 

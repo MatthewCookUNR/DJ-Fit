@@ -13,9 +13,13 @@
 
 package com.fitness.dj_fit;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -67,7 +71,7 @@ public class BaseActivity extends AppCompatActivity
             case R.id.action_about:
                 AlertDialog aboutDialog = new AlertDialog.Builder(this).create();
                 aboutDialog.setTitle("About DJ FIT");
-                aboutDialog.setMessage("Application is being developed by Matthew Cook and Collin Potter.");
+                aboutDialog.setMessage("The application is completely open-source. The source code for app can be found at https://github.com/MatthewCookUNR/DJ-Fit.");
                 aboutDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -75,7 +79,21 @@ public class BaseActivity extends AppCompatActivity
                         dialog.dismiss();
                     }
                 });
+                aboutDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Copy Link", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("GitHub Link", "https://github.com/MatthewCookUNR/DJ-Fit.");
+                        clipboard.setPrimaryClip(clip);
+                        dialog.dismiss();
+                    }
+                });
                 aboutDialog.show();
+                return true;
+            //Give link to app's privacy policy
+            case R.id.action_privacy:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dj-fit.flycricket.io/privacy.html")));
                 return true;
         }
 

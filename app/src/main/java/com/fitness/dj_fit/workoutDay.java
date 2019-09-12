@@ -1,3 +1,15 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file workoutDay.java
+ *
+ * @brief Class that holds all the data for a single workout day
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.fitness.dj_fit;
 
 import android.view.View;
@@ -6,6 +18,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+// workoutDay Class ////////////////////////////////////////////////////////////////
 
 public class workoutDay
 {

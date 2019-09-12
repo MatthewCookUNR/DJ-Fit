@@ -1,4 +1,18 @@
+// Program Information /////////////////////////////////////////////////////////
+/*
+ * @file YouTubeConfig.java
+ *
+ * @brief Class holds API key for YouTubePlayerAPI
+ *
+ * @author Matthew Cook
+ *
+ */
+
+// PACKAGE AND IMPORTED FILES ////////////////////////////////////////////////////////////////
+
 package com.fitness.dj_fit;
+
+// YouTubeConfig Class ////////////////////////////////////////////////////////////////
 
 public class YouTubeConfig
 {
@@ -7,7 +21,8 @@ public class YouTubeConfig
 
     }
 
-    private  static final String API_KEY = "AIzaSyAVuqwy5VZe34elJDKEM7RrZ7eEJdFY2hU";
+    //Insert your own YouTube API key
+    private  static final String API_KEY = "Insert Key Here";
 
     public static String getApiKey()
     {
