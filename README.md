@@ -53,6 +53,8 @@ a online database so that users can always retrieve it. DJ Fit will allow users 
 ### Project Status
 Development started on April 25th, 2019
 
+Version 1.0 published on the Play Store on September 11th, 2019
+
 ### Technologies Used
 - Android Studio
 - Java
