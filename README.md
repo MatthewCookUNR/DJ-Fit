@@ -1,7 +1,7 @@
 # DJ-Fit
 
 ### Abstract
-Many gym members have different preferences, medical needs, time availabilities, and goals that must be taken into account when creating
+Many gym members have different preferences, medical needs, time availability, and goals that must be taken into account when creating
 a fitness program. Developing a personal workout routine that works best for you isn't as easy as it sounds. DJ Fit is the solution to 
 this problem. The goal of DJ Fit is to allow fitness trainers and gym members to work together and create a customized experience that
 tailors to individual needs. Workout routines can be created and structured using the application. Information will be stored on
