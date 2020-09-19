@@ -5,7 +5,7 @@ Many gym members have different preferences, medical needs, time availability, a
 a fitness program. Developing a personal workout routine that works best for you isn't as easy as it sounds. DJ Fit is the solution to 
 this problem. The goal of DJ Fit is to allow fitness trainers and gym members to work together and create a customized experience that
 tailors to individual needs. Workout routines can be created and structured using the application. Information will be stored on
-a online database so that users can always retrieve it. DJ Fit will allow users to add instructional videos to aid both trainers and members alike. The application can be used by trainers to provide customers with a user-friendly way to access information about their personal fitness program on the go.
+a online database so that users can always retrieve it. DJ Fit allows users to add instructional videos to aid both trainers and members alike. The application can be used by trainers to provide customers with a user-friendly way to access information about their personal fitness program on the go.
 
 ## Screenshots
   
